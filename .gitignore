@@ -1,0 +1,14 @@
+cofre/.obsidian/workspace*.json
+cofre/.obsidian/cache/
+cofre/.obsidian/plugins/
+cofre/.trash/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+dados-privados/
+node_modules/
+__pycache__/
+.DS_Store
+Thumbs.db
