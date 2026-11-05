@@ -22,6 +22,6 @@ Nenhuma tarefa da equipe concluída ainda.
 
 ## Bloqueios
 - Recursos oficiais: aguardando publicação.
-- Repositório remoto: depende da conexão com o GitHub.
+- Repositório privado publicado: https://github.com/PedroPaulorf/saude-em-orbita — falta convidar os membros.
 
 Para cada tarefa, registrar responsável, prazo, issue/PR e critério de conclusão.
