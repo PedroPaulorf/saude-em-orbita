@@ -2,7 +2,20 @@
 
 Cofre de organização do hackathon — equipe de cinco pessoas.
 
+## Papéis dos 5 membros
+
+| Pessoa | Papel | Responsabilidades | Área de trabalho |
+|---|---|---|---|
+| 1 — A definir | Pesquisador(a) de saúde espacial | Buscar fontes, selecionar indicadores e revisar o conteúdo de saúde | [[Pesquisa e saúde]] |
+| 2 — A definir | Designer UI/UX | Desenhar a jornada, as telas, a identidade visual e o protótipo | [[Experiência e design]] |
+| 3 — A definir | Programador(a) de interface (front-end) | Construir telas, gráficos, formulários e interações | [[Interface]] |
+| 4 — A definir | Programador(a) de dados e lógica (back-end) | Organizar dados, validações, regras e integração com a interface | [[Dados e regras]] |
+| 5 — A definir | Apresentador(a) e coordenador(a) | Preparar o pitch, organizar o roteiro, conduzir a demonstração e acompanhar os prazos | [[Integração e apresentação]] |
+
+Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apresentação pode ter apoio de todos; a integração e os testes são responsabilidades compartilhadas.
+
 ## Navegação
+
 - [[Equipe]] — escolha dos responsáveis
 - [[Desafio e escopo]] — contexto recebido e limites atuais
 - [[Quadro de tarefas]] — próximos passos
@@ -16,9 +29,10 @@ Cofre de organização do hackathon — equipe de cinco pessoas.
 - [[Modelo de reunião]]
 
 ## Primeiro encontro
+
 1. Preencher os cinco responsáveis.
 2. Confirmar data, horário, duração e regras do evento.
 3. Ler o desafio juntos e escolher uma jornada demonstrável após a liberação dos recursos.
 4. Distribuir entregas e registrar dependências no quadro.
 
-Data do evento: **a confirmar**. “Próxima sexta-feira” foi a referência recebida; nenhuma data foi presumida.
+Data do evento: dia 13 as 18 horas, endereço no grupo

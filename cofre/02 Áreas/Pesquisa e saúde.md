@@ -21,4 +21,3 @@ Entrega revisada por outro membro e vinculada no [[Quadro de tarefas]].
 
 ## Notas e links de trabalho
 A preencher.
-
