@@ -4,13 +4,13 @@ Cofre de organização do hackathon — equipe de cinco pessoas.
 
 ## Papéis dos 5 membros
 
-| Pessoa | Papel | Responsabilidades | Área de trabalho |
-|---|---|---|---|
-| 1 — A definir | Pesquisador(a) de saúde espacial | Buscar fontes, selecionar indicadores e revisar o conteúdo de saúde | [[Pesquisa e saúde]] |
-| 2 — A definir | Designer UI/UX | Desenhar a jornada, as telas, a identidade visual e o protótipo | [[Experiência e design]] |
-| 3 — A definir | Programador(a) de interface (front-end) | Construir telas, gráficos, formulários e interações | [[Interface]] |
-| 4 — A definir | Programador(a) de dados e lógica (back-end) | Organizar dados, validações, regras e integração com a interface | [[Dados e regras]] |
-| 5 — A definir | Apresentador(a) e coordenador(a) | Preparar o pitch, organizar o roteiro, conduzir a demonstração e acompanhar os prazos | [[Integração e apresentação]] |
+| Pessoa        | Papel                                       | Responsabilidades                                                                     | Área de trabalho              |
+| ------------- | ------------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------- |
+| 1 — A definir | Líder da equipe, apresentação e orientação  | Buscar fontes, selecionar indicadores e revisar o conteúdo de saúde                   | [[Pesquisa e saúde]]          |
+| 2 — A definir | Designer UI/UX (Via ForgeGui)               | Desenhar a jornada, as telas, a identidade visual e o protótipo                       | [[Experiência e design]]      |
+| 3 — A definir | Programador(a) de interface (front-end)     | Construir telas, gráficos, formulários e interações                                   | [[Interface]]                 |
+| 4 — A definir | Programador(a) de dados e lógica (back-end) | Organizar dados, validações, regras e integração com a interface                      | [[Dados e regras]]            |
+| 5 — A definir | Apresentador(a) e coordenador(a)            | Preparar o pitch, organizar o roteiro, conduzir a demonstração e acompanhar os prazos | [[Integração e apresentação]] |
 
 Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apresentação pode ter apoio de todos; a integração e os testes são responsabilidades compartilhadas.
 

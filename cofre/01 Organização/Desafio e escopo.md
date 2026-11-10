@@ -26,3 +26,8 @@ Uma jornada curta: registrar indicadores simulados → visualizar histórico e e
 - Explicar origem e limitações de cada sinalização.
 - Usar orientações rastreáveis, sem inventar diagnósticos, doses ou limiares médicos.
 - Ter uma demonstração reproduzível.
+- Usar dados reais. (Artigo valeria)
+
+## Ideias para o prótotipo
+    -Usar dados reais
+    -

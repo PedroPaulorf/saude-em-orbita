@@ -4,11 +4,11 @@
 
 | Membro | Papel principal | Área | Papel de apoio | Usuário GitHub |
 |---|---|---|---|---|
-| A definir | Pesquisador(a) de saúde espacial | [[Pesquisa e saúde]] | A definir | A definir |
-| A definir | Designer UI/UX | [[Experiência e design]] | A definir | A definir |
-| A definir | Programador(a) de interface (front-end) | [[Interface]] | A definir | A definir |
-| A definir | Programador(a) de dados e lógica (back-end) | [[Dados e regras]] | A definir | A definir |
-| A definir | Apresentador(a) e coordenador(a) | [[Integração e apresentação]] | A definir | A definir |
+|  Valéria L.,Joao| Pesquisador(a) de saúde espacial | [[Pesquisa e saúde]] |  Pesquisador| A definir |
+| PH(ForgeGui),Joao         | Designer UI/UX | [[Experiência e design]] | Dev | A definir |
+| Ph,Yvens  | Programador(a) de interface (front-end) | [[Interface]] | Dev | A definir |
+      | Yvens,Pedro,Arthus    | Programador(a) de dados e lógica (back-end) | [[Dados e regras]] | Dev | A definir |
+| PedroP,Arthus   | Apresentador(a) e coordenador(a) | [[Integração e apresentação]] | Apresentador | A definir |
 
 Distribuição sugerida para cinco pessoas. Troquem os papéis conforme experiência e interesse. Cada pessoa assume uma função principal e apoia outra; integração, testes e revisão são compartilhados.
 
