@@ -8,7 +8,7 @@
   O dia é o dia UTC, como no resto do app.
 */
 import simulated from '@/data/simulated.json'
-import type { CheckIn } from '@/lib/storage'
+import { hasHealthAnswers, type CheckIn } from '@/lib/storage'
 import { planPointsByDay, viewPlan, type StoredPlan } from '@/lib/plans'
 import type { WaterLog } from '@/lib/water'
 
@@ -53,7 +53,7 @@ export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredP
   for (const c of checkIns) {
     if (c.sync === 'rejected') continue
     const d = days.get(dayOf(c.at)) ?? { health: false, behavioral: false }
-    if (Object.keys(c.vitals ?? {}).length) d.health = true
+    if (hasHealthAnswers(c)) d.health = true
     if (Object.keys(c.behavioral ?? {}).length) d.behavioral = true
     days.set(dayOf(c.at), d)
   }

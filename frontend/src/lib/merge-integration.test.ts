@@ -9,6 +9,7 @@ import { trendSentence, historyRows } from './progress'
 import { dailyPoints, summarize } from './game'
 import { crewBoard } from './progress'
 import { parseMeasure } from './checkin'
+import { checkInPayload } from './api'
 import { loadCheckIns, normalizeCheckIn, replaceCheckIns } from './storage'
 import { loadWater } from './water'
 
@@ -86,4 +87,11 @@ test('the signed-in crew replaces its simulated leaderboard counterpart', () => 
   const board = crewBoard(summarize([], {}))
   expect(board.rows.filter(row => row.id === 'crew-03')).toHaveLength(1)
   expect(board.rows.find(row => row.id === 'crew-03')?.you).toBe(true)
+})
+
+test('elimination reports survive queued payloads and count in the health domain', () => {
+  const record = normalizeCheckIn({ clientId: 'details', at: '2026-11-14T10:00:00Z', healthDetails: { urine: 'Fixture report' }, behavioral: { rest: 3 } })
+  expect(record.kind).toBe('combined')
+  expect(checkInPayload(record)).toEqual(expect.objectContaining({ healthDetails: { urine: 'Fixture report' } }))
+  expect(dailyPoints([record], {})[0].healthDone).toBe(true)
 })

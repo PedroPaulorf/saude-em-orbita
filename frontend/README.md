@@ -28,6 +28,7 @@ Chat do companheiro: copie `.env.example` para `.env.local` e preencha `VITE_N8N
 - O avatar abre os registros e sintomas da região selecionada. A consulta apresenta os últimos 30 dias, até 100 registros, e informa quando o histórico foi limitado. Os gráficos mostram somente datas com medições, preservando lacunas.
 - Água, planos e chat ainda não são sincronizados entre dispositivos. O cache antigo sem dono não é migrado automaticamente. Radiação e comparação com a tripulação continuam sendo demonstrações identificadas.
 - A API aceita as sete medidas. Saturação, frequência respiratória e massa corporal aparecem sem dado até um registro fornecê-las; não há aparelho conectado. Comparações exigem linha de base cadastrada no perfil.
+- O banco agora separa Pessoa, Saúde e Ambiente: peso fica em Pessoa, e Saúde inclui os relatos opcionais `healthDetails.urine` e `healthDetails.stool`. O cliente preserva esses relatos na fila; os novos formulários e a adaptação visual da lista antiga de medidas ainda não estão incluídos. Contrato em `../backend/DATABASE.md`.
 - Os cenários adicionam registros fictícios à conta conectada e os colocam na fila para o servidor. Água e planos locais dessa conta são substituídos; registros existentes no servidor e conversa são preservados.
 - Sincronizar com o backend não envia relatórios para a Terra. O chat com n8n continua sendo uma integração opcional separada.
 

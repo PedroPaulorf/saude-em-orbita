@@ -12,6 +12,7 @@ export interface CheckIn {
   source: 'simulated'
   vitals: Vitals
   behavioral: Record<string, number>
+  healthDetails?: { urine?: string; stool?: string }
   id?: string
   crewId?: string
   receivedAt?: string
@@ -23,6 +24,7 @@ export type CheckInInput = Omit<CheckIn, 'clientId' | 'kind' | 'source' | 'vital
 }
 export type HealthCheckIn = CheckInInput & { kind: 'health'; vitals: Vitals }
 export type BehavioralCheckIn = CheckInInput & { kind: 'behavioral'; behavioral: Record<string, number> }
+export const hasHealthAnswers = (record: Pick<CheckInInput, 'vitals' | 'healthDetails'>) => Object.keys(record.vitals ?? {}).length > 0 || Object.keys(record.healthDetails ?? {}).length > 0
 
 const key = (crewId?: string) => scopedStorageKey('health7:checkins:v2', crewId)
 let version = 0
@@ -33,7 +35,7 @@ subscribeActiveProfile(changed)
 /** Backend records have no kind; derive it from the domains actually present. */
 export function normalizeCheckIn(record: CheckInInput): CheckIn {
   const vitals = record.vitals ?? {}, behavioral = record.behavioral ?? {}
-  const health = Object.keys(vitals).length > 0, behavior = Object.keys(behavioral).length > 0
+  const health = hasHealthAnswers(record), behavior = Object.keys(behavioral).length > 0
   const kind = health && behavior ? 'combined' : health ? 'health' : behavior ? 'behavioral' : record.kind ?? 'health'
   return { ...record, clientId: record.clientId ?? createClientId(), kind, source: record.source ?? 'simulated', vitals, behavioral }
 }

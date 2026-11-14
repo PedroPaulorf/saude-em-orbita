@@ -165,6 +165,8 @@ trocas de sessão concorrentes; a identidade continua vindo da sessão no servid
 
 ## Rotas
 
+A estrutura **Pessoa / Saúde / Ambiente**, unidades, exemplos e consultas para pgAdmin estão em [DATABASE.md](DATABASE.md). Peso fica em Pessoa; urina e fezes entram em Saúde como relatos opcionais.
+
 Prefixo `/api/v1`:
 
 | Método | Rota | Função |
@@ -172,6 +174,9 @@ Prefixo `/api/v1`:
 | POST | `/auth/login` | Entrar com `{username, password}` |
 | POST | `/auth/logout` | Revogar a sessão atual |
 | GET | `/me` | Perfil do astronauta autenticado |
+| GET / POST | `/me/person` | Consultar / atualizar os dados de Pessoa |
+| GET | `/me/health` | Histórico tipado de Saúde, sem peso |
+| GET / POST | `/me/environment` | Consultar / registrar o contexto ambiental |
 | GET / POST | `/me/checkins` | Histórico / novo check-up |
 | GET / POST | `/me/symptoms` | Consultar / iniciar relatos de sintomas |
 | POST | `/me/symptoms/:id/events` | Acrescentar evolução ou resolução |
@@ -204,6 +209,8 @@ Datas impossíveis, intervalos invertidos e identificadores inválidos são reje
   "behavioral": { "mood": 4, "stress": 3, "rest": 2 }
 }
 ```
+
+Também são aceitos `spo2` (%) e `respiratoryRate` (respirações/min), além de `healthDetails: { urine?, stool? }` com relatos de até 2000 caracteres. Peso deve ser atualizado por `/me/person` com `weightKg`; `vitals.bodyMass` permanece como compatibilidade para pendências antigas e é direcionado a Pessoa.
 
 Unidades: bpm, mmHg, horas e graus Celsius. Escalas psicológicas de 1 a 5 são
 autorrelato. Não se calcula diagnóstico a partir delas.
@@ -352,7 +359,7 @@ O teste de provedor de IA usa somente um servidor HTTP de teste no próprio comp
 - `test/auth.test.ts`: hash, salt e verificação de senhas.
 - `compose.yaml`: PostgreSQL local opcional por Docker.
 
-Tabelas: `crew` (perfil e credenciais), `sessions`, `checkins`, `symptoms`,
+Tabelas: `person`, `health`, `environment`, `crew` (perfil e credenciais), `sessions`, `checkins`, `symptoms`,
 `symptom_events`, `analyses` e `schema_migrations`.
 Índices relacionam registros ao astronauta e à data. Check-ups usam `jsonb` para
 os campos; datas e vínculos permanecem em colunas próprias. Eventos de sintomas

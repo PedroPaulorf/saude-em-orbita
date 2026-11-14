@@ -58,7 +58,7 @@ export function historyRows(checkIns: CheckIn[]): HistoryRow[] {
     const first = !seen.has(key)
     seen.add(key)
     let offCount: number | null = null
-    if (c.kind === 'health') {
+    if (c.kind === 'health' && vitalConfigs.some(cfg => c.vitals[cfg.id] != null && Number.isFinite(cfg.baseline))) {
       offCount = vitalConfigs.filter((cfg) => {
         const value = c.vitals[cfg.id]
         return value != null && evaluate(value - cfg.baseline, cfg.rule) !== 'baseline'

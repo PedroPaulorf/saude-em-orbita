@@ -43,7 +43,7 @@ export async function apiRequest<T>(path: string, body?: unknown, signal?: Abort
     throw new ApiError(timeout.aborted ? 'The server took too long. Your pending records stay on this device.' : 'Cannot reach the server. Your pending records stay on this device.')
   }
 }
-export const checkInPayload = (c: CheckIn) => ({ clientId: c.clientId, at: c.at, source: c.source, vitals: c.vitals, behavioral: c.behavioral })
+export const checkInPayload = (c: CheckIn) => ({ clientId: c.clientId, at: c.at, source: c.source, vitals: c.vitals, behavioral: c.behavioral, ...(c.healthDetails ? { healthDetails: c.healthDetails } : {}) })
 
 export function createClientId(cryptoApi:Crypto=crypto):string {
   if(cryptoApi.randomUUID)return cryptoApi.randomUUID()
