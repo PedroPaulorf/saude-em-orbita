@@ -27,7 +27,7 @@ A equipe fechou cinco itens no fim da reunião:
 | 3   | Interface intuitiva                                    | Obrigatória         |
 | 4   | IA rodando localmente para ajudar em problemas médicos | Opcional            |
 | 5   | Modelo 2d visando 3d do corpo, masculino e feminino    | Obrigatótrio        |
-|     |                                                        |                     |
+| 6   | Sistema de gamificação                                 |                     |
 
 Também foi citado um item que a transcrição registra como "Terfáceito auditivo" [14:34]. **Interpretação:** pode ser "interface auditiva" (alertas ou comandos por voz). Confirmar com a equipe. Gamificação foi tratada como subtópico, não como função própria [14:34].
 

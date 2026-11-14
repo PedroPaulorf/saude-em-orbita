@@ -9,7 +9,7 @@ import { BodyAvatar } from './BodyAvatar'
  * Cartão do avatar, o maior da Home. O cartão leva para Detailed stats; cada região leva para
  * Detailed stats com ela aberta. O link do título é o caminho pelo teclado para o cartão.
  */
-export function AvatarCard({ vitals, regions, className }: { vitals: Vital[]; regions: BodyRegion[]; className?: string }) {
+export function AvatarCard({ vitals, regions, bodyModel, className }: { bodyModel: 'male' | 'female'; vitals: Vital[]; regions: BodyRegion[]; className?: string }) {
   const flagged = vitals.some((v) => v.status === 'flagged')
   return (
     <section
@@ -41,7 +41,7 @@ export function AvatarCard({ vitals, regions, className }: { vitals: Vital[]; re
       </header>
 
       <div className="flex flex-1 items-center justify-center [--avatar-h:300px] sm:[--avatar-h:400px] xl:[--avatar-h:min(50vh,430px)]">
-        <BodyAvatar regions={regions} onSelect={(id) => navigate('/stats', { region: id })} className="w-full" />
+        <BodyAvatar gender={bodyModel} regions={regions} onSelect={(id) => navigate('/stats', { region: id })} className="w-full" />
       </div>
       <p className="text-center text-sm text-ink-soft">Select a body region to see what differs and the linked NASA risks.</p>
     </section>

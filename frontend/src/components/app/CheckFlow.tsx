@@ -178,8 +178,8 @@ export function ScaleChoice({
   )
 }
 
-/** Confirmação curta depois de salvar: "Saved. Queued for ground." e o resumo. */
-export function CheckSaved({ title, children }: { title: string; children: ReactNode }) {
+/** Confirmação curta depois de salvar: "{status}" e o resumo. */
+export function CheckSaved({ title, status, children }: { title: string; status: string; children: ReactNode }) {
   return (
     <div className="mx-auto w-full max-w-xl px-4 pt-8 pb-10 md:pt-14">
       <section
@@ -191,7 +191,7 @@ export function CheckSaved({ title, children }: { title: string; children: React
           <div>
             <p className="text-sm font-semibold text-ink-soft">{title}</p>
             <h1 id="saved-title" tabIndex={-1} className="font-display text-[26px] leading-tight font-semibold outline-none">
-              Saved on this device.
+              {status}
             </h1>
           </div>
         </div>

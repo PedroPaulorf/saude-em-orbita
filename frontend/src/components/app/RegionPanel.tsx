@@ -78,7 +78,7 @@ function LinkedMeasure({ v }: { v: Vital }) {
     <li className="grid gap-1.5 rounded-lg bg-surface-2/60 p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="font-semibold">{v.label}</span>
-        <StatusBadge status={v.status} />
+        {v.observed === false || v.comparable === false ? <span className="text-xs text-ink-soft">{v.observed === false ? 'No measurement recorded' : 'No personal baseline available'}</span> : <StatusBadge status={v.status} />}
       </div>
       <p className="font-mono text-sm text-ink-soft">
         <span className="text-2xl text-ink">{v.value}</span> {v.unit}
@@ -177,7 +177,7 @@ export function RegionPanel({
         <h2 id="panel-title" className="font-display text-xl font-semibold">
           {regionTitle(region, focus)}
         </h2>
-        <StatusBadge status={region?.status ?? 'baseline'} />
+        {region?.observed === false || region?.comparable === false ? <span className="text-sm text-ink-soft">{region?.stateText}</span> : <StatusBadge status={region?.status ?? 'baseline'} />}
       </header>
       {patternTitles.length > 0 && (
         <a

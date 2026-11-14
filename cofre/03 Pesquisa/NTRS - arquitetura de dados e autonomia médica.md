@@ -29,7 +29,7 @@ O resumo descreve a MDA como uma plataforma já desenvolvida e demonstrada sobre
 
 O resumo propõe uma transferência gradual de cuidados e decisões para sistemas e tripulação a bordo, integrada ao planejamento de missão e à arquitetura de dados. Considera atrasos e interrupções de comunicação, sensores, bases de referência e apoio ao Crew Medical Officer. [Fonte](https://ntrs.nasa.gov/citations/20250000009).
 
-**Proposta para o projeto:** salvar cada registro antes de tentar transmitir; manter uma fila persistente com identificador estável, estado de envio e confirmação do servidor; permitir consulta local do histórico e das referências. A aplicação já salva check-ups no navegador, mas isso ainda não constitui sincronização com o backend nem garante que toda a aplicação carregue sem rede.
+**Aplicação no projeto:** a fila autenticada da aplicação salva cada registro antes de transmitir e mantém seu identificador para reenvio. A integração preserva o cache separado por conta e acrescenta referências e avaliações ao histórico. Isso não garante que toda a aplicação carregue sem rede; restaurar a sessão ainda exige verificar a API.
 
 **Limite:** autonomia de software e funcionamento sem conexão não demonstram capacidade de atendimento médico autônomo. Confirmação da API local também não equivale a envio à Terra ou revisão médica.
 
@@ -60,10 +60,10 @@ Os caminhos abaixo são relativos à raiz do repositório.
 | Ponto do projeto | O que existe | Evolução proposta |
 |---|---|---|
 | `frontend/src/types.ts` e `frontend/src/lib/health.ts` | Medidas com unidade, origem e entrada manual ou de aparelho; comparação com linha de base. | Metadados por observação, qualidade explícita e versão da regra e da linha de base. |
-| `frontend/src/lib/storage.ts` | Check-ups físicos e comportamentais separados, persistidos em `localStorage`, com migração do formato antigo. | Identificadores estáveis, fila persistente, tratamento de falha de gravação e adaptação ao contrato da API. |
-| `backend/src/contracts.ts` e `backend/README.md` | API de demonstração com `clientId` para reenvios sem duplicação. | Compatibilizar o formato separado do front com o contrato do backend antes de conectar a fila. |
+| `frontend/src/lib/storage.ts` e `frontend/src/lib/session.ts` | Check-ups, fila e cache separados por conta; login e reenvio com identificador estável. | Preservar procedência e avaliações nos registros e tratar reenvios e falhas sem misturar contas. |
+| `backend/src/contracts.ts`, `backend/src/medical.ts` e `backend/migrations/003_medical_traceability.sql` | API autenticada e PostgreSQL com Pessoa, Saúde e Ambiente. | Migração adicional de referências, regras e snapshots pessoais; payloads antigos continuam aceitos. |
 | `frontend/src/lib/notes.ts`, `frontend/src/lib/prevention.ts` e `frontend/src/components/app/Report.tsx` | Notas, padrões e relatório com regras de demonstração. | Expor evidência, versão e limites de cada avaliação; preservar a distinção entre referência de arquitetura e fonte clínica. |
-| Futuro módulo de simulação | Nenhuma implementação do IMM identificada nesta revisão. | Avaliar um simulador de missão independente do acompanhamento diário. |
+| `backend/src/simulation.ts` e tela `#/data` | Simulação educativa de cenários hipotéticos, com semente reproduzível e resultados privados da conta. | Selecionar dados e validar antes de atribuir interpretação médica; não é o IMM da NASA. |
 
 ## Próximos passos propostos
 

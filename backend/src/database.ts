@@ -1,33 +1,35 @@
-import { DatabaseSync } from 'node:sqlite'
-import { mkdirSync } from 'node:fs'
-import { dirname } from 'node:path'
-import { initializeMedical, storeObservations } from './medical.js'
-import type { CheckInInput } from './contracts.js'
+import pg from 'pg'
+import { readFile, readdir } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+import { createHash } from 'node:crypto'
 
-export function openDatabase(path: string) {
-  if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true })
-  const db = new DatabaseSync(path)
-  db.exec(`PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;
-    CREATE TABLE IF NOT EXISTS crew (id TEXT PRIMARY KEY, profile TEXT NOT NULL);
-    CREATE TABLE IF NOT EXISTS checkins (
-      id TEXT PRIMARY KEY, crew_id TEXT NOT NULL REFERENCES crew(id), client_id TEXT NOT NULL,
-      at TEXT NOT NULL, received_at TEXT NOT NULL, payload TEXT NOT NULL,
-      UNIQUE(crew_id, client_id)
-    );
-    CREATE INDEX IF NOT EXISTS checkins_crew_time ON checkins(crew_id, at);`)
-  db.prepare('INSERT OR IGNORE INTO crew(id, profile) VALUES (?, ?)').run('crew-02', JSON.stringify({
-    id: 'crew-02', displayName: 'Crew member 02', missionDay: 47, source: 'simulated',
-    baselineVersion: 'crew-02-demo-v1',
-    baseline: { heartRate: 62, bloodPressure: 116, bloodPressureDiastolic: 74, sleep: 7.2, temperature: 36.6, spo2: 97, respiratoryRate: 14, bodyMass: 74 },
-  }))
-  initializeMedical(db)
-  // Existing databases gain traceability without inventing collection provenance.
-  db.exec('BEGIN')
+export function openDatabase(databaseUrl: string) {
+  if (!databaseUrl) throw new Error('DATABASE_URL is required')
+  return new pg.Pool({ connectionString: databaseUrl, max: 10, connectionTimeoutMillis: 5000, statement_timeout: 10000 })
+}
+
+/** Transactional, schema-scoped lock serializes concurrent application starts. */
+export async function migrate(pool: pg.Pool) {
+  const client = await pool.connect()
   try {
-    for (const row of db.prepare('SELECT id, payload FROM checkins WHERE id NOT IN (SELECT checkin_id FROM observations)').all()) {
-      storeObservations(db, row.id as string, JSON.parse(row.payload as string) as CheckInInput, true)
+    await client.query('BEGIN')
+    await client.query("SELECT pg_advisory_xact_lock(hashtextextended(current_database() || ':' || current_schema() || ':health7-migrations', 0))")
+    await client.query('CREATE TABLE IF NOT EXISTS schema_migrations(version text PRIMARY KEY, checksum text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now())')
+    const directory = fileURLToPath(new URL('../migrations/', import.meta.url))
+    for (const version of (await readdir(directory)).filter(name => /^\d+.*\.sql$/.test(name)).sort()) {
+      const sql = (await readFile(directory + '/' + version, 'utf8')).replace(/\r\n/g, '\n')
+      const checksum = createHash('sha256').update(sql).digest('hex')
+      // Accept a legacy Windows checksum only when the SQL differs solely in line endings.
+      const windowsChecksum = createHash('sha256').update(sql.replace(/\n/g, '\r\n')).digest('hex')
+      const existing = await client.query('SELECT checksum FROM schema_migrations WHERE version = $1', [version])
+      if (existing.rowCount) {
+        if (![checksum, windowsChecksum].includes(existing.rows[0].checksum)) throw new Error('Applied migration changed: ' + version)
+        continue
+      }
+      await client.query(sql)
+      await client.query('INSERT INTO schema_migrations(version, checksum) VALUES ($1, $2)', [version, checksum])
     }
-    db.exec('COMMIT')
-  } catch (error) { db.exec('ROLLBACK'); db.close(); throw error }
-  return db
+    await client.query('COMMIT')
+  } catch (error) { await client.query('ROLLBACK'); throw error }
+  finally { client.release() }
 }

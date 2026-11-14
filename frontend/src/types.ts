@@ -13,6 +13,9 @@ export type VitalId = 'heartRate' | 'bloodPressure' | 'sleep' | 'temperature' | 
 export type VitalInput = 'manual' | 'device'
 
 export interface Vital {
+  comparable?: boolean
+  observed?: boolean
+  at?: string
   id: VitalId
   label: string
   unit: string
@@ -25,6 +28,7 @@ export interface Vital {
   status: Status
   /** Últimos 7 dias, para o VitalCard em linha de tendência. */
   history?: number[]
+  historyDays?: string[]
   /** Valor numérico da linha de base, para o tracejado do gráfico. */
   baselineValue?: number
   /** Regra que gerou o estado, mostrada no relatório. */
@@ -37,6 +41,8 @@ export interface Vital {
 export type BodyRegionId = 'head' | 'chest' | 'core' | 'leftArm' | 'rightArm' | 'leftLeg' | 'rightLeg'
 
 export interface BodyRegion {
+  comparable?: boolean
+  observed?: boolean
   id: BodyRegionId
   /** Rótulo ao lado da figura (ex.: "Chest · cardiovascular"); a tela decide a caixa. */
   name?: string

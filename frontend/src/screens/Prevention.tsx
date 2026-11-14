@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ShieldCheck } from 'lucide-react'
 import { Dot } from '@/components/app/Dot'
 import { PatternCard } from '@/components/app/PatternCard'
@@ -28,7 +28,7 @@ export function Prevention({ game, connection, params }: { game: GameSummary; co
   const inactive = patterns.filter((p) => !p.active)
   const running = useActivePlan()
   const views = usePlanViews()
-  const vitals = useMemo(() => getTodayVitals(), [])
+  const vitals = getTodayVitals()
   const [confirmEnd, setConfirmEnd] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
   const today = utcDayKey()

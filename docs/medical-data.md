@@ -1,70 +1,76 @@
 # Dados médicos, referências e sincronização
 
-O Health7 tem uma API Fastify com **SQLite persistente** e uma fila no navegador. A tela **Medical data & sources**, acessível pelo cartão Report (`#/data`), mostra referências, estados de envio, avaliações salvas e os últimos 20 registros do servidor. O painel diário continua usando o histórico deste navegador; consultar o servidor não substitui automaticamente esse histórico.
+O Health7 usa **PostgreSQL**, login com cookie de sessão e histórico separado por astronauta. A tela **Medical data & sources** (`#/data`), acessível pelo cartão Report após login, mostra referências NTRS, estados de envio, avaliações versionadas e cenários educativos privados da conta.
+
+Esta integração amplia as estruturas existentes de Pessoa, Saúde e Ambiente. Não cria um segundo banco SQLite nem uma fila paralela, e não usa `crew-02` fixo ou chave compartilhada no navegador.
 
 ## Executar
 
-Requer Node.js 24 ou superior. Instale as dependências com `npm ci` em `backend/` e `frontend/`.
+Requer Node.js 24 ou superior e PostgreSQL. Siga `backend/README.md` para configurar `DATABASE_URL`, contas fictícias (`DEMO_PASSWORD`) e `CORS_ORIGINS`. Não sobrescreva um `.env` já preenchido.
 
-Na pasta `backend/`, execute em PowerShell:
+Dentro de `backend/`:
 
 ```powershell
-$env:API_KEY = 'health7-demo-local-token'
+npm ci
+npm run migrate
+npm run seed
 npm run dev
 ```
 
-Em `frontend/.env.local`, configure:
+Em `frontend/.env.local`, configure a origem da API, sem `/api/v1`:
 
 ```dotenv
-VITE_HEALTH_API_URL=http://localhost:3001
-VITE_HEALTH_API_KEY=health7-demo-local-token
+VITE_API_URL=http://localhost:3001
 ```
 
-Depois, execute `npm run dev` em `frontend/` e abra o endereço mostrado pelo Vite. Reinicie o Vite depois de alterar as variáveis. Sem URL e chave, o front mantém o modo local. A chave compartilhada é de demonstração, visível no navegador, e a API continua aceitando somente dados identificados como simulados.
+Dentro de `frontend/`, execute `npm ci` e `npm run dev`. Entre com uma conta fictícia criada pelo seed e a senha configurada. O padrão da API é o hostname do front na porta 3001. Reinicie o Vite após mudar variáveis. Tablets devem apontar para o servidor, com origens permitidas configuradas; `localhost` no tablet aponta para ele próprio.
 
-Em tablets, a URL deve apontar para o IP do servidor; configure `HOST`, `CORS_ORIGINS` e a origem do Vite conforme `backend/README.md`. `localhost` no tablet aponta para o próprio tablet.
+## Migração e persistência
 
-## Banco e rastreabilidade
+A migração adicional `003_medical_traceability.sql` preserva as tabelas e os registros anteriores. O controle de checksum das migrações existentes permanece ativo.
 
-O arquivo padrão é `backend/data/health7.sqlite`; `DATABASE_PATH` permite outro local. As tabelas existentes `crew` e `checkins` são preservadas. A inicialização cria as tabelas adicionais sem apagar dados:
-
-| Tabela | Conteúdo |
+| Tabela adicional | Conteúdo |
 |---|---|
-| `medical_references` | Quatro referências NTRS, identificadores, links e papel na arquitetura/metodologia. |
-| `medical_rules` | Conjunto versionado de regras de demonstração e sua indicação de ausência de fonte clínica. |
-| `observations` | Valor, unidade, horário, método, qualidade, linha de base, regra aplicada, estado e explicação por medida e check-up. |
-| `mission_simulations` | Entradas, semente, versão e resultados de cenários educativos. |
+| `medical_references` | Quatro referências NTRS, links e papel de arquitetura/metodologia. |
+| `medical_rules` | Conjuntos de regras de demonstração versionados, com `clinicalSource: null`. |
+| `medical_observations` | Valor, unidade, horário, procedência, linha de base pessoal, regra e resultado por medida/check-up/conta. |
+| `mission_simulations` | Cenários educativos, entradas, resultados, semente e conta proprietária. |
 
-Novos registros e suas observações são gravados na mesma transação. A avaliação usa a linha de base do perfil do tripulante; sem linha de base ou regra, a medida fica sem avaliação. Pressão diastólica é preservada, mas o estado da regra de demonstração de pressão usa apenas a sistólica. Os resultados históricos são snapshots: não são recalculados quando uma linha de base muda.
+Ao iniciar a API, o registro de fontes e regras é preenchido de forma idempotente. Check-ups anteriores que ainda não têm avaliações recebem snapshots **retrospectivos**, identificados como tal: usam a linha de base disponível na atualização, sem alegar que ela era a linha de base na data original. Procedência ausente continua `unknown`; o payload original não é reescrito.
 
-Registros antigos recebem procedência `unknown` quando não havia metadados. As regras são guardadas com `INSERT OR IGNORE`: para mudar um conjunto de regras, crie uma nova versão em `backend/src/medical.ts`, em vez de reutilizar o identificador. As regras e linhas de base continuam fictícias.
+Novos check-ups, projeções em Saúde/Pessoa e avaliações são gravados na mesma transação. A perda de uma gravação de avaliação desfaz também o check-up e suas projeções. Reenvios simultâneos com o mesmo `clientId` não duplicam registros. Mesmo identificador com conteúdo diferente continua retornando HTTP 409.
 
-## Fila e falhas
+Cada avaliação preserva a linha de base pessoal usada, um identificador derivado do conteúdo dessa linha de base, a versão da regra e a explicação. Uma mudança posterior do perfil não recalcula avaliações antigas. Sem linha de base pessoal ou regra, a medida recebe `not-evaluated`. A diastólica é preservada, mas a regra de demonstração de pressão compara apenas a sistólica.
 
-O front salva o check-up e seu payload de reenvio **no mesmo registro** em `localStorage`, preservando os dados v1/v2 existentes. Cada novo registro ganha um `clientId` estável; registros anteriores recebem identificador na primeira sincronização. Histórico corrompido não é sobrescrito por uma nova gravação. Falhas de gravação não mostram confirmação de sucesso.
+Para mudar os limiares, crie um novo `RULE_VERSION` em `backend/src/medical.ts`; a versão existente é imutável por convenção de implementação (`ON CONFLICT DO NOTHING`). Referências de arquitetura não são fontes clínicas dos limiares.
 
-- `pending`: sem confirmação. Rede indisponível, timeout, HTTP 408/429 e erros de servidor mantêm esse estado. Tenta novamente na abertura, reconexão, novo registro ou a cada 30 segundos.
-- `synced`: somente após HTTP 200/201 com identificador correspondente e resposta de confirmação válida. As observações retornadas ficam também no navegador.
-- `conflict`: HTTP 409; preserva o registro para revisão, sem reenvio automático.
-- `rejected`: outros erros HTTP 4xx; interrompe reenvios automáticos. Após corrigir configuração ou dados, o botão de sincronização permite nova tentativa.
+## Fila autenticada e isolamento
 
-Uma resposta perdida pode resultar em um novo POST com o mesmo conteúdo e identificador; o servidor devolve o registro existente. O histórico local não é apagado após confirmação. O funcionamento sem conexão cobre registros e dados já disponíveis; o carregamento inicial de toda a aplicação não tem service worker. Abrir os documentos originais do NTRS requer conexão.
+A integração usa `frontend/src/lib/session.ts`, `api.ts` e `storage.ts` da aplicação atual. O check-up é salvo primeiro no navegador, em chave separada por conta, com identificador e metadados estáveis para reenvio. Respostas perdidas mantêm o mesmo payload. Uma gravação local que falha não mostra sucesso; um histórico corrompido não é sobrescrito silenciosamente.
 
-**Stored on server** confirma armazenamento de check-ups na API configurada. Não significa relatório completo transmitido à Terra, plano de prevenção sincronizado ou revisão médica. Chat, água, planos e radiação continuam fora desta sincronização.
+- `pending`: aguarda confirmação. Rede indisponível, timeout, HTTP 408/429 e falhas de servidor preservam o registro para reenvio. Há tentativas no login/restauração, reconexão, gravação, botão de sincronização e a cada 30 segundos enquanto houver pendências.
+- `saved`: resposta bem-sucedida com `clientId` correspondente e sem proprietário divergente. Avaliações retornadas são preservadas no cache da conta e no histórico sincronizado.
+- `rejected`: rejeição permanente, incluindo HTTP 409. O registro é mantido para revisão; não há reenvio automático desses dados.
+
+Cookies HttpOnly continuam sendo a autoridade da sessão. As requisições usam `credentials: include`, o cabeçalho CSRF existente `X-Requested-With: Health7` nas mutações e `X-Health7-Crew` para vinculá-las ao perfil capturado. Troca de conta, logout e sessão expirada cancelam ou descartam respostas antigas. Cenários usam essa mesma proteção e não podem ser consultados por outra conta.
+
+O histórico exibido é a janela da sessão atual (padrão de 30 dias, até 100 check-ups), com aviso de truncamento. Os resumos das referências estão incluídos no pacote do front; abrir os documentos originais requer conexão. A aplicação não tem service worker para garantir carregamento inicial offline, e restaurar a sessão exige verificar a API.
+
+Armazenamento no servidor não equivale a transmissão à Terra, relatório revisado ou atendimento médico autônomo. Chat, água, planos e radiação do painel continuam com suas integrações existentes.
 
 ## API
 
-Todas as rotas abaixo exigem `X-API-Key`:
+Todas as rotas exigem a sessão autenticada. O proprietário vem da sessão, nunca do corpo da requisição.
 
 | Método | Rota | Resultado |
 |---|---|---|
-| POST / GET | `/api/v1/crew/crew-02/checkins` | Gravação idempotente / histórico com observações e avaliações. |
-| GET | `/api/v1/references` | Referências públicas e papel de cada uma. |
+| POST / GET | `/api/v1/me/checkins` | Contrato atual, acrescido de procedência opcional e observações versionadas na resposta. |
+| GET | `/api/v1/references` | Fontes e papel de cada uma. |
 | GET | `/api/v1/rules` | Conjuntos de regras versionados. |
-| POST | `/api/v1/simulations` | Simulação educativa e armazenamento do cenário. |
-| GET | `/api/v1/simulations/:simulationId` | Recuperação de cenário salvo. |
+| POST / GET | `/api/v1/me/simulations` | Gravação / histórico de cenários da própria conta. |
+| GET | `/api/v1/me/simulations/:id` | Recuperação de cenário próprio; HTTP 404 para outro proprietário. |
 
-O contrato de check-up anterior permanece aceito. `vitals` também aceita `spo2`, `respiratoryRate` e `bodyMass`. O campo opcional `provenance` usa as mesmas chaves das medidas enviadas; cada item tem `method` (`manual`, `simulated-device`, `unknown`) e `quality` (`simulated`, `unknown`). Unidade e avaliação são atribuídas pelo servidor, não aceitas como resultado clínico do cliente.
+`healthDetails` e os domínios Pessoa, Saúde e Ambiente permanecem compatíveis. `provenance`, quando informado, usa as chaves das medidas enviadas, com `method` (`manual`, `simulated-device`, `unknown`) e `quality` (`simulated`, `unknown`). Unidade, linha de base e avaliação são atribuídas pelo servidor.
 
 Exemplo de corpo de simulação:
 
@@ -81,12 +87,10 @@ Exemplo de corpo de simulação:
 }
 ```
 
-O modelo amostra eventos de Poisson independentes com taxa constante e uma unidade de recurso compartilhada. Entradas são hipotéticas; o exemplo não é uma taxa médica. Limites: 100–5.000 simulações, 1–12 tripulantes, 1–1.000 dias, até 10 condições com taxa entre 0 e 0,01 evento/pessoa/dia. O resultado inclui média de eventos e recursos, percentis e fração de simulações que excedem os recursos. Semente e versão permitem reproduzir o cenário. Não modela tratamento, evacuação ou mortalidade e **não implementa o IMM da NASA**.
+O modelo amostra eventos de Poisson independentes, com taxas constantes e uma unidade compartilhada de recurso. As taxas são hipotéticas, não dados de incidência médica. Limites: 100–5.000 simulações, 1–12 tripulantes, 1–1.000 dias, até 10 condições e taxa de 0 a 0,01 evento/pessoa/dia; no máximo 20 requisições de simulação/minuto. Semente e versão permitem reproduzir resultados. Não modela tratamento, evacuação ou mortalidade e **não implementa o IMM da NASA**.
 
-## Referências
+## Referências e verificação
 
-Os registros públicos apoiam os conceitos usados: [MDA / suporte à decisão](https://ntrs.nasa.gov/citations/20220017869), [EIMO](https://ntrs.nasa.gov/citations/20250000009), [AMO](https://ntrs.nasa.gov/citations/20180002541) e [validação do IMM](https://ntrs.nasa.gov/citations/20180006877). Nenhum desses registros foi usado como justificativa clínica para os limiares do protótipo. Veja a nota `cofre/03 Pesquisa/NTRS - arquitetura de dados e autonomia médica.md` para a análise e os limites das fontes.
+Fontes: [MDA / suporte à decisão](https://ntrs.nasa.gov/citations/20220017869), [EIMO](https://ntrs.nasa.gov/citations/20250000009), [AMO](https://ntrs.nasa.gov/citations/20180002541) e [validação do IMM](https://ntrs.nasa.gov/citations/20180006877). Veja também a nota `cofre/03 Pesquisa/NTRS - arquitetura de dados e autonomia médica.md`.
 
-## Verificação
-
-Em `backend/`: `npm run build` e `npm test`. Os testes usam bancos temporários e verificam persistência, atualização do esquema legado, avaliações imutáveis, compatibilidade das regras com o front, validação de metadados, deduplicação após resposta perdida e simulação reproduzível. Em `frontend/`: `npm run build` e `npm run lint`.
+Backend: `npm run build` e `npm test`, com `TEST_DATABASE_URL` apontando para um PostgreSQL de testes separado. Front: `npm test`, `npm run build` e `npm run lint`. Testes de navegador: `npm run test:e2e` no front, também com `TEST_DATABASE_URL`; o runner cria e remove um schema isolado, sem usar registros da demonstração.

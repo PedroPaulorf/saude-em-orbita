@@ -14,18 +14,19 @@ const DOT: Record<Status, string> = { baseline: 'var(--ink)', attention: 'var(--
  */
 export function TrendChart({ vital, compact = false }: { vital: Vital; compact?: boolean }) {
   const history = vital.history ?? []
-  const days = lastSevenDays().slice(-history.length)
+  const days = vital.historyDays?.map(day => new Date(day + 'T00:00:00Z').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' })) ?? lastSevenDays().slice(-history.length)
   const statuses = dayStatuses(vital)
   const data = history.map((value, i) => ({ day: days[i], value }))
-  const base = vital.baselineValue ?? 0
+  const base = vital.baselineValue
   const decimals = vitalConfigs.find((c) => c.id === vital.id)?.decimals ?? 0
-  const all = [...history, base]
+  const all = base == null ? history : [...history, base]
   const pad = (Math.max(...all) - Math.min(...all)) * 0.2 || 1
   const lo = Math.min(...all) - pad
   const hi = Math.max(...all) + pad
   const fmt = (n: number) => n.toFixed(decimals)
   const config = { value: { label: vital.label, color: 'var(--interactive)' } } satisfies ChartConfig
   const sentence = trendSentence(vital)
+  if (!history.length) return <figure className="rounded-xl border border-hairline bg-surface-1 p-4"><figcaption>{vital.label}</figcaption><p className="text-sm text-ink-soft">No measurements recorded in this window.</p></figure>
 
   return (
     <figure className={cn('flex min-w-0 flex-col gap-2 rounded-xl border border-hairline bg-surface-1', compact ? 'p-4' : 'p-4 md:p-5')}>
@@ -38,7 +39,7 @@ export function TrendChart({ vital, compact = false }: { vital: Vital; compact?:
           </p>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <StatusBadge status={vital.status} />
+          {vital.observed && vital.comparable !== false ? <StatusBadge status={vital.status} /> : <span className="text-sm text-ink-soft">{vital.observed ? 'No personal baseline available' : 'No measurement today'}</span>}
           <span className="flex items-center gap-1.5 font-mono text-xs text-ink-soft">
             <svg width="18" height="2" aria-hidden>
               <line x1="0" y1="1" x2="18" y2="1" stroke="var(--ink-soft)" strokeWidth="1.5" strokeDasharray="4 3" />
@@ -60,7 +61,7 @@ export function TrendChart({ vital, compact = false }: { vital: Vital; compact?:
             tick={{ fill: 'var(--ink-soft)', fontSize: 11 }}
             tickFormatter={fmt}
           />
-          <ReferenceLine y={base} stroke="var(--ink-soft)" strokeDasharray="5 4" />
+          {base != null && <ReferenceLine y={base} stroke="var(--ink-soft)" strokeDasharray="5 4" />}
           <ChartTooltip cursor={{ stroke: 'var(--hairline-strong)' }} content={<ChartTooltipContent hideIndicator />} />
           <Line
             dataKey="value"

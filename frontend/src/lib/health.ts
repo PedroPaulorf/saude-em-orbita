@@ -1,147 +1,89 @@
-/*
-  Dados de saúde do painel: junta os dados simulados com o último check-up salvo
-  e calcula o estado de cada medida em relação à linha de base da pessoa.
-
-  AS REGRAS SÃO DE DEMONSTRAÇÃO: não têm fonte clínica. Os limites ficam em
-  data/simulated.json ("rule") para quem cuida de dados e regras ajustar sem mexer aqui.
-*/
 import simulated from '@/data/simulated.json'
-import type { BodyRegion, Status, Vital, VitalId, VitalInput } from '@/types'
-import { loadCheckIns, type HealthCheckIn } from '@/lib/storage'
-
-type Direction = 'above' | 'below' | 'both'
+import type { BodyRegion, BodyRegionId, CrewMember, Status, Vital, VitalId, VitalInput } from '@/types'
+import type { Profile, Symptom } from './api'
+import { loadCheckIns, type CheckInInput } from './storage'
+import { getActiveProfile } from './active-profile'
 
 export interface VitalConfig {
-  id: VitalId
-  label: string
-  question: string
-  fieldLabel: string
-  unit: string
-  decimals: number
-  baseline: number
-  baselineDiastolic?: number
-  todayDiastolic?: number
-  history: number[]
-  rule: { direction: Direction; attention: number; flagged: number }
-  source: string
-  input: VitalInput
+  id: VitalId; label: string; question: string; fieldLabel: string; unit: string; decimals: number
+  baseline: number; baselineDiastolic?: number; todayDiastolic?: number; history: number[]
+  rule: { direction: 'above' | 'below' | 'both'; attention: number; flagged: number }
+  source: string; input: VitalInput
 }
-
-export const crew = simulated.crew
-export const vitalConfigs = simulated.vitals as VitalConfig[]
-/** Só as medidas perguntadas no check-up; as de aparelho chegam sozinhas. */
-export const manualVitalConfigs = vitalConfigs.filter((c) => c.input === 'manual')
+const definitions = simulated.vitals as VitalConfig[]
+export const crew: CrewMember = {
+  get id() { return getActiveProfile()?.id ?? '' },
+  get displayName() { return getActiveProfile()?.displayName ?? '' },
+  get missionDay() { return getActiveProfile()?.missionDay ?? 0 },
+}
+// Compatibility exports stay live when a different account signs in.
+export const vitalConfigs = definitions.map(c => ({ ...c,
+  get baseline() { return getActiveProfile()?.baseline[c.id] ?? Number.NaN },
+  get baselineDiastolic() { return c.id === 'bloodPressure' ? getActiveProfile()?.baseline.bloodPressureDiastolic : undefined },
+  history: [],
+}))
+export const manualVitalConfigs = vitalConfigs.filter(c => c.input === 'manual')
 export const behavioralQuestions = simulated.behavioral
-
-const MINUS = '−' // sinal de menos tipográfico, como no design system
-
-function fmt(n: number, decimals: number) {
-  return n.toFixed(decimals).replace('-', MINUS)
-}
-
-function fmtDelta(n: number, decimals: number) {
-  const rounded = Number(n.toFixed(decimals))
-  if (rounded === 0) return fmt(0, decimals)
-  return rounded > 0 ? `+${fmt(rounded, decimals)}` : fmt(rounded, decimals)
-}
-
-/** Aplica a regra de demonstração ao desvio em relação à linha de base. */
+export const configForProfile = (profile: Profile) => definitions.map(c => ({ ...c,
+  baseline: profile.baseline[c.id] ?? Number.NaN,
+  baselineDiastolic: c.id === 'bloodPressure' ? profile.baseline.bloodPressureDiastolic : undefined,
+  history: [],
+}))
+const fmt = (n: number, decimals: number) => Number.isFinite(n) ? n.toFixed(decimals).replace('-', '−') : '—'
 export function evaluate(delta: number, rule: VitalConfig['rule']): Status {
-  const relevant =
-    rule.direction === 'above' ? Math.max(delta, 0) : rule.direction === 'below' ? Math.max(-delta, 0) : Math.abs(delta)
-  if (relevant >= rule.flagged) return 'flagged'
-  if (relevant >= rule.attention) return 'attention'
-  return 'baseline'
+  const relevant = rule.direction === 'above' ? Math.max(delta, 0) : rule.direction === 'below' ? Math.max(-delta, 0) : Math.abs(delta)
+  return relevant >= rule.flagged ? 'flagged' : relevant >= rule.attention ? 'attention' : 'baseline'
 }
-
-/** Texto da regra, mostrado ao lado de toda sinalização. */
 export function ruleText(c: VitalConfig, status: Status) {
   const limit = status === 'flagged' ? c.rule.flagged : c.rule.attention
   const side = c.rule.direction === 'above' ? 'above' : c.rule.direction === 'below' ? 'below' : 'away from'
-  return `Rule: ${fmt(limit, c.decimals)} ${c.unit} or more ${side} baseline today.`
+  return `Demonstration rule: ${fmt(limit, c.decimals)} ${c.unit} or more ${side} personal baseline. No clinical source.`
 }
-
-function toVital(c: VitalConfig, today: number, history: number[], todayDiastolic?: number): Vital {
-  const delta = today - c.baseline
-  const status = evaluate(delta, c.rule)
-  const isBP = c.id === 'bloodPressure'
-  return {
-    id: c.id,
-    label: c.label,
-    unit: c.unit,
-    value: isBP ? `${fmt(today, 0)}/${fmt(todayDiastolic ?? c.todayDiastolic ?? 0, 0)}` : fmt(today, c.decimals),
-    baseline: isBP ? `${c.baseline}/${c.baselineDiastolic}` : fmt(c.baseline, c.decimals),
-    delta: fmtDelta(delta, c.decimals),
-    status,
-    history,
-    baselineValue: c.baseline,
-    rule: status === 'baseline' ? undefined : ruleText(c, status),
-    source: c.source,
-    input: c.input,
-  }
-}
-
-/** Os últimos `n` dias UTC (AAAA-MM-DD), terminando hoje. */
 export function lastDayKeys(n = 7, today = new Date()) {
-  return Array.from({ length: n }, (_, i) =>
-    new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (n - 1 - i))).toISOString().slice(0, 10),
-  )
+  return Array.from({ length: n }, (_, i) => new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (n - 1 - i))).toISOString().slice(0, 10))
 }
-
-/** Último check-up de saúde salvo em cada dia UTC. */
-function healthByDay(): Map<string, HealthCheckIn> {
-  const map = new Map<string, HealthCheckIn>()
-  for (const c of loadCheckIns()) if (c.kind === 'health') map.set(c.at.slice(0, 10), c)
-  return map
-}
-
-/**
- * Medidas de hoje com o histórico dos últimos 7 dias UTC. Para cada dia: o valor do check-up de saúde
- * salvo naquele dia, se houver; senão, o valor simulado da mesma posição. O último dia é hoje.
- */
-export function getTodayVitals(today = new Date()): Vital[] {
-  const days = lastDayKeys(7, today)
-  const byDay = healthByDay()
-  return vitalConfigs.map((c) => {
-    const offset = c.history.length - days.length
-    const history = days.map((d, i) => byDay.get(d)?.vitals[c.id] ?? c.history[offset + i])
-    const todaySaved = byDay.get(days[days.length - 1])
-    return toVital(c, history[history.length - 1], history, todaySaved?.vitals.bloodPressureDiastolic)
+export function getTodayVitals(profile: Profile, records: CheckInInput[]): Vital[]
+export function getTodayVitals(today?: Date): Vital[]
+export function getTodayVitals(profileOrDate?: Profile | Date, records?: CheckInInput[]): Vital[] {
+  const profile = profileOrDate instanceof Date || !profileOrDate ? getActiveProfile() : profileOrDate
+  const today = profileOrDate instanceof Date ? profileOrDate : new Date()
+  const days = lastDayKeys(7, today), todayKey = days.at(-1)!
+  const currentRecords = records ?? (profile ? loadCheckIns(profile.id) : [])
+  const configs = profile ? configForProfile(profile) : vitalConfigs
+  return configs.map(c => {
+    const byDay = new Map<string, CheckInInput>()
+    currentRecords.filter(r => r.sync !== 'rejected' && (!r.crewId || r.crewId === profile?.id) && Number.isFinite(r.vitals?.[c.id]))
+      .sort((a, b) => a.at.localeCompare(b.at)).forEach(r => byDay.set(r.at.slice(0, 10), r))
+    const historyDays = days.filter(day => byDay.has(day))
+    const history = historyDays.map(day => byDay.get(day)!.vitals![c.id]!)
+    const latest = byDay.get(todayKey), value = latest?.vitals?.[c.id]
+    const observed = value != null, hasBaseline = Number.isFinite(c.baseline)
+    const delta = observed && hasBaseline ? value - c.baseline : Number.NaN
+    const status = evaluate(delta, c.rule), isBP = c.id === 'bloodPressure'
+    return { id: c.id, label: c.label, unit: c.unit, observed, comparable: hasBaseline, at: latest?.at,
+      value: !observed ? '—' : isBP ? `${fmt(value, 0)}/${latest?.vitals?.bloodPressureDiastolic ?? '—'}` : fmt(value, c.decimals),
+      baseline: isBP ? `${fmt(c.baseline, 0)}/${fmt(c.baselineDiastolic ?? Number.NaN, 0)}` : fmt(c.baseline, c.decimals),
+      delta: Number.isFinite(delta) ? `${delta > 0 ? '+' : ''}${fmt(delta, c.decimals)}` : '—', status,
+      history, historyDays, baselineValue: hasBaseline ? c.baseline : undefined,
+      rule: observed && hasBaseline && status !== 'baseline' ? ruleText(c, status) : undefined,
+      source: c.source, input: c.input }
   })
 }
-
-const ORDER: Record<Status, number> = { baseline: 0, attention: 1, flagged: 2 }
-const worst = (...s: Status[]) => s.reduce((a, b) => (ORDER[b] > ORDER[a] ? b : a), 'baseline' as Status)
-
-const STATUS_TEXT: Record<Status, string> = {
-  baseline: 'Within baseline',
-  attention: 'Attention',
-  flagged: 'Flagged for ground',
-}
-
-/** Estado de um grupo de medidas: o pior entre elas, com o detalhe da medida que o define. */
-function group(list: Vital[]) {
-  const status = worst(...list.map((x) => x.status))
-  const lead = list.find((x) => x.status === status) ?? list[0]
-  return { status, stateText: withDetail(status, `${lead.delta} ${lead.unit}`) }
-}
-
-/** Liga as medidas às regiões da figura do corpo. Peito: coração e respiração; tronco: temperatura e massa. */
+export const STATUS_TEXT: Record<Status, string> = { baseline: 'Within baseline', attention: 'Attention', flagged: 'Flagged for ground' }
 export function getBodyRegions(vitals: Vital[]): BodyRegion[] {
-  const v = Object.fromEntries(vitals.map((x) => [x.id, x])) as Record<VitalId, Vital>
-  return [
-    { id: 'head', name: 'Head · sleep', ...group([v.sleep]) },
-    { id: 'chest', name: 'Chest · heart and lungs', ...group([v.heartRate, v.bloodPressure, v.spo2, v.respiratoryRate]) },
-    { id: 'core', name: 'Core · temperature and mass', ...group([v.temperature, v.bodyMass]) },
-    { id: 'leftArm', status: 'baseline' },
-    { id: 'rightArm', status: 'baseline' },
-    { id: 'leftLeg', status: 'baseline' },
-    { id: 'rightLeg', status: 'baseline' },
-  ]
+  const groups: { id: BodyRegionId; name?: string; ids: VitalId[] }[] = [
+    { id: 'head', name: 'Head · sleep', ids: ['sleep'] },
+    { id: 'chest', name: 'Chest · heart and lungs', ids: ['heartRate', 'bloodPressure', 'spo2', 'respiratoryRate'] },
+    { id: 'core', name: 'Core · temperature and mass', ids: ['temperature', 'bodyMass'] },
+    ...(['leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as BodyRegionId[]).map(id => ({ id, ids: [] })) ]
+  const severity = { baseline: 0, attention: 1, flagged: 2 }
+  return groups.map(g => {
+    const observed = vitals.filter(v => g.ids.includes(v.id) && v.observed !== false)
+    const worst = observed.filter(v => v.comparable !== false).sort((a, b) => severity[b.status] - severity[a.status])[0]
+    return { id: g.id, name: g.name, observed: observed.length > 0, comparable: !!worst, status: worst?.status ?? 'baseline',
+      stateText: worst ? `${STATUS_TEXT[worst.status]} · ${worst.delta} ${worst.unit}` : observed.length ? 'No personal baseline available' : 'No measurement recorded' }
+  })
 }
-
-function withDetail(status: Status, detail: string) {
-  return status === 'baseline' ? STATUS_TEXT.baseline : `${STATUS_TEXT[status]} · ${detail}`
-}
-
-export { STATUS_TEXT }
+const SYMPTOM_REGIONS: Record<BodyRegionId, string[]> = { head: ['head', 'neck'], chest: ['chest'], core: ['abdomen', 'back'], leftArm: ['left-arm'], rightArm: ['right-arm'], leftLeg: ['left-leg'], rightLeg: ['right-leg'] }
+export const symptomsForRegion = (symptoms: Symptom[], region: BodyRegionId) => symptoms.filter(s => SYMPTOM_REGIONS[region].includes(s.bodyPart))
+export const normalizeRegion = (raw?: string | null): BodyRegionId => raw && Object.hasOwn(SYMPTOM_REGIONS, raw) ? raw as BodyRegionId : 'head'

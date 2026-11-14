@@ -6,11 +6,14 @@ import { measureError, parseMeasure } from '@/lib/checkin'
 import { getTodayVitals, manualVitalConfigs as vitalConfigs } from '@/lib/health'
 import { reportItems, summarySentence } from '@/lib/present'
 import { navigate } from '@/lib/route'
-import { saveCheckIn, type HealthCheckIn } from '@/lib/storage'
+import { type HealthCheckIn } from '@/lib/storage'
+import { session } from '@/lib/session'
+import { useSession } from '@/lib/use-session'
 import type { Vital } from '@/types'
 
 /** Check-up de saúde: uma medida por etapa. Salva um registro { kind: 'health' }. */
 export function HealthCheckUp() {
+  const state = useSession()
   const [step, setStep] = useState(0)
   const [raw, setRaw] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
@@ -21,7 +24,7 @@ export function HealthCheckUp() {
     if (saved) document.getElementById('saved-title')?.focus()
   }, [saved])
 
-  function next() {
+  async function next() {
     if (!parseMeasure(c.id, raw[c.id] ?? '')) {
       setError(measureError(c.id))
       return
@@ -38,12 +41,7 @@ export function HealthCheckUp() {
       vitals[cfg.id] = parsed.value
       if (parsed.diastolic) vitals.bloodPressureDiastolic = parsed.diastolic
     }
-    try {
-      saveCheckIn({ kind: 'health', at: new Date().toISOString(), vitals })
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not save. Try again.')
-      return
-    }
+    try { await session.save({ kind: 'health', at: new Date().toISOString(), vitals }) } catch (error) { setError((error as Error).message); return }
     setSaved(getTodayVitals())
   }
 
@@ -56,7 +54,7 @@ export function HealthCheckUp() {
   if (saved) {
     const items = reportItems(saved)
     return (
-      <CheckSaved title="Health check-up">
+      <CheckSaved title="Health check-up" status={state.syncing ? 'Saved on this device. Syncing…' : state.checkins.some(c => c.sync === 'pending') ? 'Saved on this device. Waiting to sync.' : state.error ? 'Saved on this device. Check sync status.' : 'Saved to server.'}>
         <div className="grid gap-3">
           <p className="text-ink">{summarySentence(saved)}.</p>
           {items.length > 0 && (
@@ -96,6 +94,7 @@ export function HealthCheckUp() {
       onBack={back}
       onSubmit={next}
       nextLabel={isLast ? 'Save check-up' : 'Next'}
+      nextDisabled={state.syncing}
     >
       <Question>{c.question}</Question>
       <MeasureField

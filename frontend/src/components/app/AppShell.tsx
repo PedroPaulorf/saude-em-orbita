@@ -21,15 +21,15 @@ function activeTab(path: Path): Path {
 }
 
 const CONNECTION_TEXT: Record<Connection, string> = {
-  offline: 'Local only',
-  queued: 'Sync pending',
-  online: 'Stored on server',
+  offline: 'Offline',
+  queued: 'Queued locally',
+  online: 'Server synced',
 }
 
 /** Estado da comunicação com o solo: ponto + palavra, nunca só cor. */
 function ConnectionStatus({ state }: { state: Connection }) {
   return (
-    <span role="status" className="inline-flex items-center gap-2 font-mono text-[13px] text-ink-soft">
+    <span role="status" className="hidden items-center gap-2 font-mono text-[13px] text-ink-soft sm:inline-flex">
       <span
         aria-hidden
         className={cn(

@@ -7,7 +7,7 @@ import { Progress as Bar } from '@/components/ui/progress'
 import { formatPoints, type GameSummary } from '@/lib/game'
 import { behavioralQuestions, getTodayVitals } from '@/lib/health'
 import { crewBoard, historyRows } from '@/lib/progress'
-import { loadCheckIns, type BehavioralCheckIn } from '@/lib/storage'
+import { loadCheckIns, useCheckInsVersion } from '@/lib/storage'
 import { cn, utcDateTime, utcDay } from '@/lib/utils'
 
 /*
@@ -169,7 +169,7 @@ function History({ game }: { game: GameSummary }) {
 /** Uma linha por pergunta, uma coluna por check-in. Sem somar e sem interpretar. */
 function BehavioralOverTime() {
   const entries = loadCheckIns()
-    .filter((c): c is BehavioralCheckIn => c.kind === 'behavioral')
+    .filter(c => c.sync !== 'rejected' && Object.keys(c.behavioral).length > 0)
     .slice(-7)
   return (
     <Panel aria-labelledby="beh-title">
@@ -216,7 +216,8 @@ function BehavioralOverTime() {
 }
 
 export function ProgressScreen({ game }: { game: GameSummary }) {
-  const vitals = useMemo(() => getTodayVitals(), [])
+  const checkinsVersion = useCheckInsVersion()
+  const vitals = useMemo(() => { void checkinsVersion; return getTodayVitals() }, [checkinsVersion])
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-8 md:px-8">
       <h1 className="mb-4 font-display text-2xl font-semibold">Progress</h1>

@@ -1,8 +1,10 @@
 # Health7 — front-end
 
-React + TypeScript + Vite + Tailwind CSS v4 + shadcn/ui. Sem servidor: os dados ficam no `localStorage` do navegador. Os planos estão em `cofre/01 Organização/`: `Plano do front-end v2.md` (visual, telas, pontos, chat) e `Plano do front-end v3 - medicina preventiva.md` (padrões de sinais, plano de volta à linha de base, radiação).
+React + TypeScript + Vite + Tailwind CSS v4 + shadcn/ui, integrado ao backend Node/Fastify com PostgreSQL. Login, perfil, check-ups e sintomas são individuais. O navegador mantém uma fila e um cache por conta. Água, planos e conversa ficam localmente, também separados por conta. Os planos estão em `cofre/01 Organização/`: `Plano do front-end v2.md` (visual, telas, pontos, chat) e `Plano do front-end v3 - medicina preventiva.md` (padrões de sinais, plano de volta à linha de base, radiação).
 
 ## Rodar
+
+Primeiro configure o PostgreSQL e inicie o backend seguindo `../backend/README.md` (porta 3001). Cadastre as contas fictícias com `npm run seed` no backend e a senha definida em `DEMO_PASSWORD`. Use `crew02` ou `crew03` para entrar; a segunda conta tem o avatar feminino. As contas começam sem registros de saúde.
 
 ```sh
 cd frontend
@@ -15,6 +17,22 @@ npm run data:donki # atualiza a cópia local do DONKI (src/data/donki-snapshot.j
 ```
 
 Chat do companheiro: copie `.env.example` para `.env.local` e preencha `VITE_N8N_CHAT_WEBHOOK_URL` (ver "Chat de IA" abaixo). Sem isso o chat roda em modo de demonstração.
+
+`VITE_API_URL` pode definir a origem do backend (ex.: `http://localhost:3001`); por padrão é o mesmo hostname do frontend na porta 3001. O backend precisa incluir a origem exata do frontend em `CORS_ORIGINS`. A sessão usa cookie HttpOnly; mantenha o mesmo hostname nos dois serviços.
+
+### Login, registros e sincronização
+
+- O perfil autenticado define nome, avatar e linha de base. Valores ausentes aparecem como ausentes, sem usar o histórico fixo do JSON como medições pessoais.
+- Os check-ups de saúde e comportamental continuam separados. Cada registro recebe um identificador estável, fica na fila da própria conta e é enviado ao servidor. `Sync now` e a reconexão repetem o envio sem duplicar registros.
+- Login e restauração da sessão exigem o servidor. Após autenticação, falhas de conexão conservam os registros pendentes. Ao sair ou trocar de conta, o app limpa a tela e impede respostas atrasadas de aparecerem na nova conta.
+- O avatar abre os registros e sintomas da região selecionada. A consulta apresenta os últimos 30 dias, até 100 registros, e informa quando o histórico foi limitado. Os gráficos mostram somente datas com medições, preservando lacunas.
+- Água, planos e chat ainda não são sincronizados entre dispositivos. O cache antigo sem dono não é migrado automaticamente. Radiação e comparação com a tripulação continuam sendo demonstrações identificadas.
+- A API aceita as sete medidas. Saturação, frequência respiratória e massa corporal aparecem sem dado até um registro fornecê-las; não há aparelho conectado. Comparações exigem linha de base cadastrada no perfil.
+- O banco agora separa Pessoa, Saúde e Ambiente: peso fica em Pessoa, e Saúde inclui os relatos opcionais `healthDetails.urine` e `healthDetails.stool`. O cliente preserva esses relatos na fila; os novos formulários e a adaptação visual da lista antiga de medidas ainda não estão incluídos. Contrato em `../backend/DATABASE.md`.
+- Os cenários adicionam registros fictícios à conta conectada e os colocam na fila para o servidor. Água e planos locais dessa conta são substituídos; registros existentes no servidor e conversa são preservados.
+- Sincronizar com o backend não envia relatórios para a Terra. O chat com n8n continua sendo uma integração opcional separada.
+
+Validação: `npm test`, `npm run lint`, `npm run build`. Para os testes no navegador, configure `TEST_DATABASE_URL` com um banco PostgreSQL exclusivo de testes e rode `npm run test:e2e`; o executor cria e remove um schema temporário. Instale o Chromium do Playwright ou defina `PLAYWRIGHT_EXECUTABLE_PATH`.
 
 ## Telas e rotas
 
@@ -39,9 +57,10 @@ Em todas: cabeçalho (abas, tripulante, rank, chip "Simulated data", conexão) e
 | `src/components/app/` | Componentes do Health7: `AppShell`, `BodyAvatar`, `StatusBadge`, cartões da Home, `CheckFlow`, `RegionPanel`, `TrendChart`, `ChatPanel`... |
 | `src/screens/` | Uma tela por rota |
 | `src/styles/theme.css` | Tokens v2 (superfícies, linha fina, texto de apoio, cores de estado), com o contraste anotado |
-| `src/lib/health.ts` | Medidas de hoje e histórico dos últimos 7 dias UTC (check-up salvo no dia, senão o valor simulado); regras de demonstração (`evaluate`, `ruleText`); regiões do corpo |
-| `src/lib/storage.ts` | Check-ups em `health7:checkins:v2`, com `kind: 'health' \| 'behavioral'`; migra o v1 |
-| `src/lib/water.ts` | Registro de água por dia UTC (`health7:water:v1`) |
+| `src/lib/health.ts` | Medidas pessoais de hoje e histórico dos últimos 7 dias UTC; ausência explícita de dados; regras de demonstração e regiões do corpo |
+| `src/lib/storage.ts` | Check-ups por conta, com `kind: 'health' \| 'behavioral' \| 'combined'` e estado de sincronização |
+| `src/lib/water.ts` | Registro local de água por conta e dia UTC (`health7:water:v2:<conta>`) |
+| `src/lib/session.ts`, `api.ts`, `active-profile.ts` | Sessão autenticada, perfil ativo, fila de envio e proteção contra troca de conta |
 | `src/lib/game.ts` | Pontos, rank, sequência e conquistas, recalculados dos registros (nada guardado) |
 | `src/lib/notes.ts` | Health notes por regra de demonstração |
 | `src/lib/chat.ts` | Conversa, contexto enviado ao n8n, leitura da resposta e modo de demonstração |
@@ -78,10 +97,10 @@ O visual usa a paleta de [`../health7-design-system`](../health7-design-system) 
 
 ## Medicina preventiva (plano v3)
 
-- **Medidas e origens.** Sete medidas: quatro perguntadas no check-up (`input: "manual"`) e três que chegam de aparelho (`"device"`: saturação, frequência respiratória, massa corporal), simuladas no demo. Cada uma tem `source` em `simulated.json`.
+- **Medidas e origens.** Sete medidas: quatro perguntadas no check-up (`input: "manual"`) e três previstas para aparelho (`"device"`: saturação, frequência respiratória, massa corporal). Cada uma tem `source` em `simulated.json`; esses nomes descrevem a origem prevista. Não há aparelho real conectado.
 - **Padrões.** Um sinal é de medida (fora da linha de base de um lado por N dias seguidos), de autorrelato (resposta de hoje) ou de água (meta perdida nos últimos N dias). Incluir um padrão é incluir um item em `conditions.json`.
 - **Plano.** Passos automáticos (check-ups, meta de água) e manuais (caixas). Pontos: 5 por passo marcado, 10 pelo dia completo, 50 pelo plano. Um plano por vez.
-- **Cenários de demonstração.** "Day 1 · signs appear", "Day 3 · plan under way", "Day 5 · back within baseline" substituem check-ups, água e planos do navegador.
+- **Cenários de demonstração.** "Day 1 · signs appear", "Day 3 · plan under way", "Day 5 · back within baseline" adicionam check-ups fictícios e substituem água e planos locais da conta conectada.
 
 ## Regras de alerta
 
@@ -120,4 +139,4 @@ Companheiro de conversa, não assistente médico. A personalidade e os limites f
 
 ## Dados médicos e API
 
-Acesse **Medical data & sources** pelo cartão Report para ver a fila de check-ups, avaliações salvas, referências NTRS e cenários educativos de missão. Configure a API local seguindo [Dados médicos e sincronização](../docs/medical-data.md). A integração é opcional; sem configuração, os check-ups continuam no navegador.
+Acesse **Medical data & sources** pelo cartão Report após login para ver a fila da sua conta, avaliações versionadas, referências NTRS e cenários educativos privados. A integração usa o PostgreSQL, a sessão e o histórico individual existentes. Configure a API seguindo [Dados médicos e sincronização](../docs/medical-data.md).

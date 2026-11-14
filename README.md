@@ -19,4 +19,8 @@ Abra a pasta `cofre` como cofre no Obsidian e entre em **Início**. Preencha **E
 ## Colaborar
 Veja [CONTRIBUTING.md](CONTRIBUTING.md): uma branch por tarefa, PR para `main` e revisão por outro membro. Modelos de tarefas e PRs incluídos.
 
-**Status:** planejamento; recursos oficiais e escopo do protótipo aguardando confirmação. Nome provisório. Sem implementação da aplicação nesta etapa.
+**Status:** protótipo Health7 implementado, com frontend React, backend Node/Fastify e PostgreSQL. Login individual, avatar por perfil, check-ups, histórico de sintomas, prevenção, progresso e chat opcional com n8n.
+
+Para executar no notebook, siga o [README do backend](backend/README.md) para configurar o banco e iniciar a API; depois siga o [README do frontend](frontend/README.md). Os dados de saúde são fictícios para demonstração. Água, planos e conversa permanecem locais e separados por conta; check-ups e sintomas são persistidos no PostgreSQL.
+
+O banco se organiza em **Pessoa, Saúde e Ambiente**. Consulte [a estrutura e os exemplos da API](backend/DATABASE.md): peso em Pessoa; medidas corporais, urina e fezes em Saúde; radiação, altitude, temperatura ambiente e oxigênio em Ambiente.

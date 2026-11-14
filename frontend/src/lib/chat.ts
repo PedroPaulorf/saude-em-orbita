@@ -8,6 +8,7 @@
   - Sem VITE_N8N_CHAT_WEBHOOK_URL: modo de demonstração, com respostas prontas marcadas "Demo reply".
 */
 import { useSyncExternalStore } from 'react'
+import { getActiveCrewId, scopedStorageKey } from '@/lib/active-profile'
 import { indicators, type DonkiSnapshot, type SpaceWeatherSource } from '@/lib/donki'
 import type { GameSummary } from '@/lib/game'
 import { crew, getTodayVitals } from '@/lib/health'
@@ -47,20 +48,31 @@ interface ChatState {
 
 function load(): ChatState {
   try {
-    const raw = JSON.parse(localStorage.getItem(KEY) ?? 'null') as Partial<ChatState> | null
+    const key = scopedStorageKey(KEY)
+    const raw = JSON.parse((key ? localStorage.getItem(key) : null) ?? 'null') as Partial<ChatState> | null
     return { sessionId: raw?.sessionId ?? null, messages: Array.isArray(raw?.messages) ? raw!.messages : [], pending: false }
   } catch {
     return { sessionId: null, messages: [], pending: false }
   }
 }
 
-let state: ChatState = load()
+let state: ChatState = { sessionId: null, messages: [], pending: false }
+let owner: string | undefined
 const listeners = new Set<() => void>()
 
+function currentState() {
+  const active = getActiveCrewId()
+  if (owner !== active) { owner = active; state = load() }
+  return state
+}
+
 function set(next: Partial<ChatState>) {
+  currentState()
+  const key = scopedStorageKey(KEY)
+  if (!key) return
   state = { ...state, ...next }
   try {
-    localStorage.setItem(KEY, JSON.stringify({ sessionId: state.sessionId, messages: state.messages }))
+    localStorage.setItem(key, JSON.stringify({ sessionId: state.sessionId, messages: state.messages }))
   } catch {
     // sem espaço: a conversa vale só nesta visita
   }
@@ -73,8 +85,8 @@ export function useChat(): ChatState {
       listeners.add(cb)
       return () => listeners.delete(cb)
     },
-    () => state,
-    () => state,
+    currentState,
+    currentState,
   )
 }
 
@@ -239,6 +251,9 @@ async function fetchReply(payload: object): Promise<string> {
 
 /** Envia uma mensagem (ou repete a que falhou). Atualiza o estado com a resposta, a falha ou a resposta de demonstração. */
 export async function send(text: string, context: ReturnType<typeof buildContext>, opts: { retryOf?: string } = {}) {
+  currentState()
+  const requestOwner = owner
+  if (!requestOwner || context.crew.id !== requestOwner) return
   const message = text.trim()
   if (!message || state.pending) return
   const sessionId = state.sessionId ?? uid()
@@ -262,8 +277,12 @@ export async function send(text: string, context: ReturnType<typeof buildContext
     } else {
       reply = await fetchReply({ sessionId, message, context })
     }
+    currentState()
+    if (owner !== requestOwner || state.sessionId !== sessionId || !state.pending) return
     set({ pending: false, messages: [...state.messages, { id: uid(), role: 'assistant', text: reply, at: new Date().toISOString(), demo }] })
   } catch (err) {
+    currentState()
+    if (owner !== requestOwner || state.sessionId !== sessionId || !state.pending) return
     const timedOut = err instanceof DOMException && (err.name === 'TimeoutError' || err.name === 'AbortError')
     // fetch rejeita com TypeError quando não há rede (ou o CORS bloqueia)
     const network = err instanceof TypeError

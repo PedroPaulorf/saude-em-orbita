@@ -3,13 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24" },
-  "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "test": "tsx --test test/*.test.ts"
+  "engines": {
+    "node": ">=24"
   },
-  "dependencies": { "fastify": "^5.0.0", "@fastify/cors": "^11.0.0" },
-  "devDependencies": { "typescript": "^5.9.0", "tsx": "^4.20.0", "@types/node": "^24.0.0" }
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --import tsx --watch src/server.ts",
+    "build": "tsc",
+    "start": "node --env-file-if-exists=.env dist/server.js",
+    "test": "node --env-file-if-exists=.env --import tsx --test test/*.test.ts",
+    "migrate": "node --env-file-if-exists=.env --import tsx src/manage.ts",
+    "seed": "node --env-file-if-exists=.env --import tsx src/manage.ts seed"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.1.5",
+    "@fastify/cors": "^11.0.0",
+    "@fastify/rate-limit": "^11.2.2",
+    "fastify": "^5.0.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
 }

@@ -83,9 +83,11 @@ const num = (n: number, decimals: number) => n.toFixed(decimals).replace('-', MI
 /** Quantos dias seguidos, até hoje, a medida está fora da linha de base daquele lado. */
 export function runLength(v: Vital, cfg: VitalConfig, side: Side): number {
   const hist = v.history ?? []
+  if (!v.observed || !Number.isFinite(v.baselineValue)) return 0
   let n = 0
   for (let i = hist.length - 1; i >= 0; i--) {
-    const delta = hist[i] - cfg.baseline
+    if (v.historyDays && i < hist.length - 1 && Date.parse(v.historyDays[i + 1]) - Date.parse(v.historyDays[i]) !== 86400000) break
+    const delta = hist[i] - v.baselineValue!
     const onSide = side === 'below' ? delta < 0 : delta > 0
     if (!onSide || evaluate(delta, cfg.rule) === 'baseline') break
     n++
@@ -96,7 +98,7 @@ export function runLength(v: Vital, cfg: VitalConfig, side: Side): number {
 function measureSign(def: Extract<SignDef, { type: 'measure' }>, vitals: Vital[]): SignResult {
   const v = vitals.find((x) => x.id === def.measure)
   const cfg = vitalConfigs.find((c) => c.id === def.measure)
-  if (!v || !cfg) return { def, state: 'unknown' }
+  if (!v || !cfg || !v.observed || !Number.isFinite(v.baselineValue)) return { def, state: 'unknown', detail: 'No measurement today' }
   const run = runLength(v, cfg, def.side)
   const today = (v.history ?? [])[(v.history?.length ?? 1) - 1] ?? cfg.baseline
   const gap = Math.abs(today - cfg.baseline)
