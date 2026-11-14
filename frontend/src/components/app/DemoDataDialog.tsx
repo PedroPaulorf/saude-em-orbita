@@ -6,6 +6,7 @@ import { applyScenario, SCENARIOS } from '@/lib/demo'
 import { href } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import { Dotted } from './Dot'
+import { toast } from 'sonner'
 
 /**
  * "Demo data" (plano v3, seção 8): carrega um dia da história para gravar o vídeo.
@@ -16,7 +17,7 @@ export function DemoDataDialog({ open, onOpenChange }: { open: boolean; onOpenCh
 
   function load() {
     if (!chosen) return
-    applyScenario(chosen)
+    try { applyScenario(chosen) } catch (error) { toast.error((error as Error).message); return }
     // Recarrega na aba Prevention, onde a história acontece; os dados são relidos do zero.
     window.location.hash = href(chosen === 'day-1' ? '/' : '/prevention')
     window.location.reload()
@@ -65,7 +66,7 @@ export function DemoDataDialog({ open, onOpenChange }: { open: boolean; onOpenCh
 
         {chosen && (
           <p role="status" className="rounded-lg bg-surface-2 px-3 py-2 text-sm text-ink">
-            This replaces the check-ups, water log and plans saved in this browser. The chat is kept.
+            This adds fictional check-ups to your signed-in account and queues them for server sync. It replaces only this account’s local water log and plans. Existing server records and chat are kept.
           </p>
         )}
 

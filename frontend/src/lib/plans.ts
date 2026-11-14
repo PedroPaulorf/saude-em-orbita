@@ -9,6 +9,7 @@
   Pontos premiam cumprir o passo, nunca a medida melhorar.
 */
 import { useSyncExternalStore } from 'react'
+import { scopedStorageKey } from '@/lib/active-profile'
 import type { CheckIn } from '@/lib/storage'
 import { PATTERNS, type PatternDef, type PlanStepDef } from '@/lib/prevention'
 import { utcDayKey, type WaterLog } from '@/lib/water'
@@ -40,16 +41,18 @@ export interface StoredPlan {
 // ---------- armazenamento reativo ----------
 
 const listeners = new Set<() => void>()
-let cache: { raw: string | null; plans: StoredPlan[] } = { raw: null, plans: [] }
+let cache: { key: string | null; raw: string | null; plans: StoredPlan[] } = { key: null, raw: null, plans: [] }
 
 export function loadPlans(): StoredPlan[] {
+  const key = scopedStorageKey(KEY)
   let raw: string | null = null
   try {
-    raw = localStorage.getItem(KEY)
+    raw = key ? localStorage.getItem(key) : null
   } catch {
+    if (cache.key !== key) cache = { key, raw: null, plans: [] }
     return cache.plans
   }
-  if (raw === cache.raw) return cache.plans
+  if (key === cache.key && raw === cache.raw) return cache.plans
   let plans: StoredPlan[] = []
   try {
     const parsed: unknown = raw ? JSON.parse(raw) : []
@@ -57,13 +60,15 @@ export function loadPlans(): StoredPlan[] {
   } catch {
     // dado corrompido: sem planos
   }
-  cache = { raw, plans }
+  cache = { key, raw, plans }
   return plans
 }
 
 export function savePlans(plans: StoredPlan[]) {
+  const key = scopedStorageKey(KEY)
+  if (!key) throw new Error('Sign in before saving a plan.')
   try {
-    localStorage.setItem(KEY, JSON.stringify(plans))
+    localStorage.setItem(key, JSON.stringify(plans))
   } catch {
     // sem espaço: segue sem salvar
   }
@@ -108,8 +113,8 @@ export function stepDone(step: PlanStepDef, plan: StoredPlan, day: string, ctx: 
   if (step.type === 'manual') return (plan.done[day] ?? []).includes(step.id)
   if (step.rule === 'waterGoal') return (ctx.water[day] ?? 0) >= ctx.waterGoal
   if (step.rule === 'bothCheckUps') {
-    const kinds = new Set(ctx.checkIns.filter((c) => c.at.slice(0, 10) === day).map((c) => c.kind))
-    return kinds.has('health') && kinds.has('behavioral')
+    const records = ctx.checkIns.filter((c) => c.sync !== 'rejected' && c.at.slice(0, 10) === day)
+    return records.some(c => Object.keys(c.vitals ?? {}).length) && records.some(c => Object.keys(c.behavioral ?? {}).length)
   }
   return false
 }

@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
+import { PersonalRecords } from './Stats'
+import type { Profile, Symptom } from '@/lib/api'
+import type { CheckIn } from '@/lib/storage'
 import { Cpu, PenLine } from 'lucide-react'
 import { BodyAvatar } from '@/components/app/BodyAvatar'
 import { RegionPanel } from '@/components/app/RegionPanel'
 import { StatusBadge } from '@/components/app/StatusBadge'
 import { RADIATION_RISKS, REGION_RISKS } from '@/data/regions'
-import { getBodyRegions, getTodayVitals } from '@/lib/health'
+import { getBodyRegions, getTodayVitals, normalizeRegion } from '@/lib/health'
 import { VITAL_REGION } from '@/lib/notes'
 import { navigate } from '@/lib/route'
 import { usePatterns } from '@/lib/usePrevention'
@@ -18,18 +21,6 @@ import type { BodyRegionId } from '@/types'
   esta tela já com uma região ou com o risco de radiação (?risk=radiation).
 */
 
-const REGION_IDS = Object.keys(REGION_RISKS) as BodyRegionId[]
-const BODY_KEY = 'health7:body:v1'
-type Body = 'male' | 'female'
-
-function readBody(): Body {
-  try {
-    return localStorage.getItem(BODY_KEY) === 'female' ? 'female' : 'male'
-  } catch {
-    return 'male'
-  }
-}
-
 /** Em telas estreitas o painel fica embaixo do avatar: rola até ele quando a pessoa escolhe uma região. */
 function revealPanel() {
   if (window.matchMedia('(max-width: 1279px)').matches) {
@@ -37,10 +28,9 @@ function revealPanel() {
   }
 }
 
-export function DetailedStats({ params }: { params: URLSearchParams }) {
-  const vitals = useMemo(() => getTodayVitals(), [])
+export function DetailedStats({ params, profile, checkins, symptoms, truncated, historyLoaded }: { params: URLSearchParams; profile: Profile; checkins: CheckIn[]; symptoms: Symptom[]; truncated: boolean; historyLoaded: boolean }) {
+  const vitals = useMemo(() => getTodayVitals(profile, checkins), [profile, checkins])
   const regions = useMemo(() => getBodyRegions(vitals), [vitals])
-  const [body, setBody] = useState<Body>(readBody)
   // Padrões ativos com sinal de medida presente em cada região (para "Part of an active pattern").
   const activeByRegion = usePatterns()
     .filter((p) => p.active)
@@ -48,7 +38,7 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
 
   const regionParam = params.get('region') as BodyRegionId | null
   const focus: BodyRegionId | 'radiation' | null =
-    params.get('risk') === 'radiation' ? 'radiation' : regionParam && REGION_IDS.includes(regionParam) ? regionParam : null
+    params.get('risk') === 'radiation' ? 'radiation' : regionParam ? normalizeRegion(regionParam) : null
   const selected = focus === 'radiation' ? null : focus
 
   // Chegou de outra tela já com região ou risco: mostra o painel.
@@ -64,15 +54,6 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
     requestAnimationFrame(revealPanel)
   }
 
-  function chooseBody(b: Body) {
-    setBody(b)
-    try {
-      localStorage.setItem(BODY_KEY, b)
-    } catch {
-      // preferência só desta visita
-    }
-  }
-
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-8 md:px-8">
       <h1 className="mb-4 font-display text-2xl font-semibold">Detailed stats</h1>
@@ -86,26 +67,10 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
             <h2 id="body-title" className="font-display text-lg font-semibold">
               Body map
             </h2>
-            <div role="radiogroup" aria-label="Body figure" className="flex rounded-lg border border-hairline-strong p-0.5">
-              {(['male', 'female'] as const).map((b) => (
-                <button
-                  key={b}
-                  type="button"
-                  role="radio"
-                  aria-checked={body === b}
-                  onClick={() => chooseBody(b)}
-                  className={cn(
-                    'h-10 rounded-md px-3 text-sm font-semibold capitalize transition-colors',
-                    body === b ? 'bg-surface-3 text-ink' : 'text-ink-soft hover:text-ink',
-                  )}
-                >
-                  {b}
-                </button>
-              ))}
-            </div>
+            <p className="text-sm text-ink-soft">Profile body figure · {profile.bodyModel}</p>
           </header>
           <div className="flex flex-1 items-center justify-center pt-2 [--avatar-h:320px] sm:[--avatar-h:440px] xl:[--avatar-h:min(54vh,470px)]">
-            <BodyAvatar regions={regions} selected={selected} onSelect={select} gender={body} className="w-full" />
+            <BodyAvatar regions={regions} selected={selected} onSelect={select} gender={profile.bodyModel} className="w-full" />
           </div>
           <p className="text-center text-sm text-ink-soft">Select a region, or use Tab and Enter.</p>
         </section>
@@ -130,7 +95,7 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
             Today&apos;s measures
           </h2>
           <p className="mb-1 text-sm text-ink-soft">
-            {vitals.length} measures from {new Set(vitals.map((v) => v.source)).size} sources, in one place. Device feeds are
+            {vitals.filter(v => v.observed !== false).length} recorded measures from {new Set(vitals.map((v) => v.source)).size} sources, in one place. Device feeds are
             simulated in this demo.
           </p>
           <ul className="grid sm:grid-cols-2 sm:gap-x-6 xl:grid-cols-1">
@@ -150,7 +115,7 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
                   >
                     <span className="flex items-center justify-between gap-2">
                       <span className="text-sm text-ink-soft">{v.label}</span>
-                      <StatusBadge status={v.status} />
+                      <>{v.observed === false || v.comparable === false ? <span className="text-xs text-ink-soft">{v.observed === false ? 'No measurement recorded' : 'No personal baseline available'}</span> : <StatusBadge status={v.status} />}</>
                     </span>
                     <span className="font-mono text-[40px] leading-none text-ink">
                       {v.value}
@@ -171,6 +136,7 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
           </ul>
         </section>
       </div>
+      {selected && <PersonalRecords profile={profile} checkins={checkins} symptoms={symptoms} region={selected} truncated={truncated} historyLoaded={historyLoaded} />}
     </div>
   )
 }

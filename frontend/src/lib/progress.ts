@@ -18,20 +18,25 @@ export function lastSevenDays(today = new Date()) {
 /** Estado de cada dia do histórico, pela mesma regra de demonstração do app. */
 export function dayStatuses(v: Vital): Status[] {
   const cfg = vitalConfigs.find((c) => c.id === v.id) as VitalConfig
-  return (v.history ?? []).map((x) => evaluate(x - cfg.baseline, cfg.rule))
+  return (v.history ?? []).map((x) => evaluate(x - (v.baselineValue ?? cfg.baseline), cfg.rule))
 }
 
 /** "Below your baseline for 4 days in a row." — conta os dias seguidos, até hoje, fora da linha de base do mesmo lado. */
 export function trendSentence(v: Vital): string {
-  const cfg = vitalConfigs.find((c) => c.id === v.id) as VitalConfig
   const hist = v.history ?? []
+  if (!hist.length) return 'No measurements recorded in this window.'
+  if (!v.observed) return 'No measurement today. Earlier observations are shown by their recorded date.'
+  if (!Number.isFinite(v.baselineValue)) return 'No personal baseline is available for comparison.'
   const statuses = dayStatuses(v)
   if (statuses.every((s) => s === 'baseline')) return `Within your baseline for the last ${hist.length} days.`
   if (statuses[statuses.length - 1] === 'baseline') return 'Within your baseline today.'
-  const side = (x: number) => (x < cfg.baseline ? 'below' : 'above')
+  const side = (x: number) => (x < v.baselineValue! ? 'below' : 'above')
   const todaySide = side(hist[hist.length - 1])
   let n = 0
-  for (let i = hist.length - 1; i >= 0 && statuses[i] !== 'baseline' && side(hist[i]) === todaySide; i--) n++
+  for (let i = hist.length - 1; i >= 0 && statuses[i] !== 'baseline' && side(hist[i]) === todaySide; i--) {
+    if (v.historyDays && i < hist.length - 1 && Date.parse(v.historyDays[i + 1]) - Date.parse(v.historyDays[i]) !== 86400000) break
+    n++
+  }
   const what = todaySide === 'below' ? 'Below' : 'Above'
   return n === 1 ? `${what} your baseline today.` : `${what} your baseline for ${n} days in a row.`
 }
@@ -48,7 +53,7 @@ export interface HistoryRow {
 /** Check-ups salvos, do mais novo para o mais antigo. Só o primeiro de cada tipo no dia ganha pontos. */
 export function historyRows(checkIns: CheckIn[]): HistoryRow[] {
   const seen = new Set<string>()
-  const rows = checkIns.map((c, i) => {
+  const rows = checkIns.filter(c => c.sync !== 'rejected').flatMap(c => c.kind === 'combined' ? [{ ...c, kind: 'health' as const }, { ...c, kind: 'behavioral' as const }] : [c]).map((c, i) => {
     const key = `${c.at.slice(0, 10)}:${c.kind}`
     const first = !seen.has(key)
     seen.add(key)
@@ -82,7 +87,7 @@ export function crewBoard(game: GameSummary) {
     GAME.weekPointsBeforeToday +
     game.days.filter((d) => d.day >= weekStart.toISOString().slice(0, 10)).reduce((s, d) => s + d.total, 0)
   const rows: CrewRow[] = [
-    ...GAME.crew.map((c) => ({ ...c, you: false })),
+    ...GAME.crew.filter(c => c.id !== crew.id).map((c) => ({ ...c, you: false })),
     { id: crew.id, displayName: crew.displayName, weekPoints: myWeek, routineDoneToday: game.today.fullRoutine, you: true },
   ].sort((a, b) => b.weekPoints - a.weekPoints)
   const done = rows.filter((r) => r.routineDoneToday).length

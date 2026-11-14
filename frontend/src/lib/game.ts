@@ -51,9 +51,10 @@ function prevDay(day: string) {
 export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredPlan[] = []): DayPoints[] {
   const days = new Map<string, { health: boolean; behavioral: boolean }>()
   for (const c of checkIns) {
+    if (c.sync === 'rejected') continue
     const d = days.get(dayOf(c.at)) ?? { health: false, behavioral: false }
-    if (c.kind === 'health') d.health = true
-    else d.behavioral = true
+    if (Object.keys(c.vitals ?? {}).length) d.health = true
+    if (Object.keys(c.behavioral ?? {}).length) d.behavioral = true
     days.set(dayOf(c.at), d)
   }
   for (const [day, n] of Object.entries(water)) if (n > 0 && !days.has(day)) days.set(day, { health: false, behavioral: false })
@@ -115,7 +116,7 @@ export function achievements(days: DayPoints[], checkIns: CheckIn[], plansComple
     }
     return true
   })
-  const behavioralCount = checkIns.filter((c) => c.kind === 'behavioral').length
+  const behavioralCount = checkIns.filter((c) => c.sync !== 'rejected' && Object.keys(c.behavioral ?? {}).length > 0).length
   return [
     { id: 'first-routine', title: 'First full routine', description: 'Both check-ups and the water goal in one day.', earned: days.some((d) => d.fullRoutine) },
     { id: 'streak-7', title: '7-day streak', description: 'Both check-ups for 7 days in a row.', earned: days.some((d) => d.streak >= 7) },

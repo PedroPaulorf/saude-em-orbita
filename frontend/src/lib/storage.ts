@@ -1,121 +1,98 @@
-/*
-  Armazenamento local (decisão de 2026-11-14): tudo fica no localStorage, em JSON.
-  Sem servidor; funciona sem conexão. Os dados ficam só neste navegador.
-
-  v2 (plano do front-end v2, 7.2): o check-up de saúde e o check-in comportamental são
-  registros separados, com `kind`, na chave "health7:checkins:v2".
-  Na primeira leitura, o que houver em "health7:checkins:v1" (saúde e comportamento juntos)
-  é migrado: cada registro antigo vira dois. A chave v1 fica onde está, sem ser apagada.
-*/
 import { useSyncExternalStore } from 'react'
 import type { VitalId } from '@/types'
+import { getActiveCrewId, scopedStorageKey, subscribeActiveProfile } from './active-profile'
+import { createClientId } from './api'
 
-const KEY = 'health7:checkins:v2'
-const KEY_V1 = 'health7:checkins:v1'
-
-export type CheckInKind = 'health' | 'behavioral'
-
-export interface HealthCheckIn {
-  kind: 'health'
-  /** Horário ISO do envio. */
+export type CheckInKind = 'health' | 'behavioral' | 'combined'
+type Vitals = Partial<Record<VitalId, number>> & { bloodPressureDiastolic?: number }
+export interface CheckIn {
+  clientId: string
+  kind: CheckInKind
   at: string
-  vitals: Partial<Record<VitalId, number>> & { bloodPressureDiastolic?: number }
-}
-
-export interface BehavioralCheckIn {
-  kind: 'behavioral'
-  at: string
-  /** Autorrelato de 1 a 5, por pergunta. Sem pontuação somada. */
+  source: 'simulated'
+  vitals: Vitals
   behavioral: Record<string, number>
+  id?: string
+  crewId?: string
+  receivedAt?: string
+  sync?: 'pending' | 'saved' | 'rejected'
+  syncError?: string
 }
-
-export type CheckIn = HealthCheckIn | BehavioralCheckIn
-type OfKind<K extends CheckInKind> = Extract<CheckIn, { kind: K }>
-
-/** Formato v1: um registro com as duas partes. */
-interface CheckInV1 {
-  at: string
-  vitals?: HealthCheckIn['vitals']
-  behavioral?: Record<string, number>
+export type CheckInInput = Omit<CheckIn, 'clientId' | 'kind' | 'source' | 'vitals' | 'behavioral'> & {
+  clientId?: string; kind?: CheckInKind; source?: 'simulated'; vitals?: Vitals; behavioral?: Record<string, number>
 }
+export type HealthCheckIn = CheckInInput & { kind: 'health'; vitals: Vitals }
+export type BehavioralCheckIn = CheckInInput & { kind: 'behavioral'; behavioral: Record<string, number> }
 
-function read(key: string): unknown[] | null {
-  try {
-    const raw = localStorage.getItem(key)
-    if (raw == null) return null
-    const parsed: unknown = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
-
-// Avisa quem mostra dados derivados dos registros (cabeçalho, Home) quando algo é salvo.
+const key = (crewId?: string) => scopedStorageKey('health7:checkins:v2', crewId)
 let version = 0
 const listeners = new Set<() => void>()
+function changed() { version++; listeners.forEach(listener => listener()) }
+subscribeActiveProfile(changed)
 
-function write(list: CheckIn[]) {
+/** Backend records have no kind; derive it from the domains actually present. */
+export function normalizeCheckIn(record: CheckInInput): CheckIn {
+  const vitals = record.vitals ?? {}, behavioral = record.behavioral ?? {}
+  const health = Object.keys(vitals).length > 0, behavior = Object.keys(behavioral).length > 0
+  const kind = health && behavior ? 'combined' : health ? 'health' : behavior ? 'behavioral' : record.kind ?? 'health'
+  return { ...record, clientId: record.clientId ?? createClientId(), kind, source: record.source ?? 'simulated', vitals, behavioral }
+}
+export function loadCheckIns(crewId = getActiveCrewId()): CheckIn[] {
+  const storageKey = key(crewId)
+  if (!storageKey) return []
   try {
-    localStorage.setItem(KEY, JSON.stringify(list))
-  } catch {
-    // Sem espaço ou bloqueado: o app segue sem salvar.
-  }
-  version++
-  listeners.forEach((l) => l())
+    const parsed: unknown = JSON.parse(localStorage.getItem(storageKey) ?? '[]')
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((r): r is CheckInInput => !!r && typeof r === 'object' && typeof r.clientId === 'string' && typeof r.at === 'string')
+      .filter(r => !r.crewId || r.crewId === crewId)
+      .map(normalizeCheckIn).sort((a, b) => a.at.localeCompare(b.at))
+  } catch { return [] }
 }
-
-/** Número que muda a cada gravação; use para recalcular o que depende dos registros. */
+function write(crewId: string | undefined, records: CheckIn[]) {
+  const storageKey = key(crewId)
+  if (!storageKey) throw new Error('Sign in before saving a check-in.')
+  try { localStorage.setItem(storageKey, JSON.stringify(records)) }
+  catch { throw new Error('Could not save on this device. Free storage or allow browser storage, then try again.') }
+  changed()
+}
+export function saveCheckIn(record: CheckInInput): void
+export function saveCheckIn(crewId: string, record: CheckInInput): void
+export function saveCheckIn(ownerOrRecord: string | CheckInInput, input?: CheckInInput) {
+  const crewId = typeof ownerOrRecord === 'string' ? ownerOrRecord : getActiveCrewId()
+  const record = normalizeCheckIn(typeof ownerOrRecord === 'string' ? input! : ownerOrRecord)
+  if (record.crewId && record.crewId !== crewId) throw new Error('This check-in belongs to a different account.')
+  const all = loadCheckIns(crewId)
+  if (all.some(c => c.clientId === record.clientId)) return
+  write(crewId, [...all, { ...record, sync: 'pending' }])
+}
+export function replaceCheckIns(crewId: string, server: CheckInInput[]) {
+  const merged = new Map(loadCheckIns(crewId).map(c => [c.clientId, c]))
+  server.filter(c => !c.crewId || c.crewId === crewId).forEach(c => {
+    const normalized = normalizeCheckIn(c)
+    merged.set(normalized.clientId, { ...normalized, sync: 'saved' })
+  })
+  write(crewId, [...merged.values()].sort((a, b) => a.at.localeCompare(b.at)))
+}
+export function rejectCheckIn(crewId: string, clientId: string, syncError: string) {
+  write(crewId, loadCheckIns(crewId).map(c => c.clientId === clientId ? { ...c, sync: 'rejected', syncError } : c))
+}
+export function latestCheckIn(kind: 'health' | 'behavioral'): CheckIn | null {
+  return loadCheckIns().filter(c => c.sync !== 'rejected' && (c.kind === kind || c.kind === 'combined')).at(-1) ?? null
+}
+export function latestAny(crewId = getActiveCrewId()): CheckIn | null {
+  return loadCheckIns(crewId).filter(c => c.sync !== 'rejected').at(-1) ?? null
+}
+export function clearCheckIns(crewId = getActiveCrewId()) { write(crewId, []) }
+export function cacheCheckIns(crewId: string, server: CheckInInput[]) {
+  const pending = loadCheckIns(crewId).filter(c => c.sync !== 'saved')
+  const saved = server.filter(c => !c.crewId || c.crewId === crewId).map(c => ({ ...normalizeCheckIn(c), sync: 'saved' as const }))
+  const byId = new Map([...pending, ...saved].map(c => [c.clientId, c]))
+  write(crewId, [...byId.values()].sort((a, b) => a.at.localeCompare(b.at)))
+}
 export function useCheckInsVersion() {
-  return useSyncExternalStore(
-    (cb) => {
-      listeners.add(cb)
-      return () => listeners.delete(cb)
-    },
-    () => version,
-    () => 0,
-  )
-}
-
-/** Cada registro v1 vira um de saúde e um comportamental (só as partes preenchidas). */
-export function migrateV1(old: CheckInV1[]): CheckIn[] {
-  const out: CheckIn[] = []
-  for (const r of old) {
-    if (!r || typeof r.at !== 'string') continue
-    if (r.vitals && Object.keys(r.vitals).length) out.push({ kind: 'health', at: r.at, vitals: r.vitals })
-    if (r.behavioral && Object.keys(r.behavioral).length) out.push({ kind: 'behavioral', at: r.at, behavioral: r.behavioral })
-  }
-  return out
-}
-
-/** Todos os registros, do mais antigo para o mais novo. */
-export function loadCheckIns(): CheckIn[] {
-  const v2 = read(KEY)
-  if (v2) return v2.filter((r): r is CheckIn => !!r && typeof r === 'object' && 'kind' in r && 'at' in r)
-  const v1 = read(KEY_V1)
-  if (!v1?.length) return []
-  const migrated = migrateV1(v1 as CheckInV1[])
-  write(migrated)
-  return migrated
-}
-
-/** Último registro de um tipo. */
-export function latestCheckIn<K extends CheckInKind>(kind: K): OfKind<K> | null {
-  const all = loadCheckIns()
-  for (let i = all.length - 1; i >= 0; i--) if (all[i].kind === kind) return all[i] as OfKind<K>
-  return null
-}
-
-/** Último registro de qualquer tipo. */
-export function latestAny(): CheckIn | null {
-  const all = loadCheckIns()
-  return all.length ? all[all.length - 1] : null
-}
-
-export function saveCheckIn(checkIn: CheckIn) {
-  write([...loadCheckIns(), checkIn])
-}
-
-/** Apaga os registros. Grava uma lista vazia (e não remove a chave) para o v1 não ser migrado de novo. */
-export function clearCheckIns() {
-  write([])
+  return useSyncExternalStore(listener => {
+    listeners.add(listener)
+    if (typeof window !== 'undefined') window.addEventListener('storage', listener)
+    return () => { listeners.delete(listener); if (typeof window !== 'undefined') window.removeEventListener('storage', listener) }
+  }, () => version, () => 0)
 }

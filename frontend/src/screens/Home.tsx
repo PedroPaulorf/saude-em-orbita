@@ -9,7 +9,9 @@ import { indicators, useSpaceWeather } from '@/lib/donki'
 import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { buildNotes } from '@/lib/notes'
 import { useActivePlan, usePatterns } from '@/lib/usePrevention'
-import { latestCheckIn } from '@/lib/storage'
+import { latestCheckIn, type CheckIn } from '@/lib/storage'
+import type { Profile } from '@/lib/api'
+import { toast } from 'sonner'
 import { isTodayUtc, utcDay } from '@/lib/utils'
 import { addWater, WATER_GOAL } from '@/lib/water'
 import type { GameSummary } from '@/lib/game'
@@ -35,10 +37,10 @@ function todayStatus() {
   }
 }
 
-export function Home({ connection, game }: { connection: Connection; game: GameSummary }) {
-  const vitals = useMemo(() => getTodayVitals(), [])
+export function Home({ connection, game, profile, checkins }: { connection: Connection; game: GameSummary; profile: Profile; checkins: CheckIn[] }) {
+  const vitals = useMemo(() => getTodayVitals(profile, checkins), [profile, checkins])
   const regions = useMemo(() => getBodyRegions(vitals), [vitals])
-  const today = useMemo(() => todayStatus(), [])
+  const today = todayStatus()
   const weather = useSpaceWeather()
   const activePatterns = usePatterns().filter((p) => p.active)
   const plan = useActivePlan()
@@ -74,6 +76,7 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
       <h1 className="sr-only">Home</h1>
       <div className="grid gap-4 md:grid-cols-2 xl:gap-3.5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.75fr)_minmax(0,1fr)] xl:grid-rows-[repeat(6,auto)_auto]">
         <AvatarCard
+          bodyModel={profile.bodyModel}
           vitals={vitals}
           regions={regions}
           className="md:col-span-2 xl:col-span-1 xl:col-start-2 xl:row-span-6 xl:row-start-1"
@@ -82,7 +85,7 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
           ref={waterButton}
           today={game.today}
           plan={plan}
-          onWater={(d) => addWater(d)}
+          onWater={(d) => { try { addWater(profile.id, d) } catch (error) { toast.error((error as Error).message) } }}
           className="md:col-span-2 xl:col-span-1 xl:col-start-3 xl:row-span-2 xl:row-start-1"
         />
         <HealthCheckUpCard
