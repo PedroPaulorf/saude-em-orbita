@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { navigate, useRoute } from '@/lib/route'
 import { getTodayVitals } from '@/lib/health'
 import { healthLevel, type HealthLevel } from '@/lib/present'
-import { stateRank, type MonitorState } from '@/lib/monitor'
+import { signalText, stateRank, topSignals, type MonitorState } from '@/lib/monitor'
 import { useMonitor } from '@/lib/useMonitor'
 import { usePatterns } from '@/lib/usePrevention'
 import { companionLines } from '@/lib/companion'
@@ -92,7 +92,8 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
       headerExtra={<><RankChip game={game} /><Button variant="ghost" size="sm" onClick={() => { navigate('/'); void session.logout() }}>Log out</Button></>}
       companionOpen={companionOpen} companionLines={lines} onOpenDemoData={() => setDemoOpen(true)} onToggleCompanion={() => setCompanionOpen(o => !o)}
       companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
-      escalate={monitor?.state === 'ESCALATE' ? { date: monitor.date, day: monitor.day, reasons: monitor.reasons } : null}>
+      escalate={monitor?.state === 'ESCALATE' ? { crew: profile.nexus?.crewId ?? profile.displayName, crewId: profile.id, date: monitor.date, day: monitor.day,
+        reasons: monitor.reasons, signals: topSignals(monitor, 4).map(signalText), ruleVersion: monitor.ruleVersion } : null}>
       {(state.error || rejected > 0) && (
         <p role="alert" className="mx-auto max-w-[1360px] px-4 pt-3 text-sm font-semibold text-flag-ink md:px-8">
           {state.error}{state.error && rejected ? ' · ' : ''}{rejected ? `${rejected} rejected record${rejected === 1 ? '' : 's'} require review` : ''}

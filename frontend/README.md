@@ -140,6 +140,18 @@ Companheiro de conversa, não assistente médico. A personalidade e os limites f
 - O `context` inclui `prevention` (padrões ativos, plano em andamento, dose da missão simulada). O trecho de prompt para o nó AI Agent está na seção 9 do plano v3.
 - A conversa fica no `localStorage` (`health7:chat:v1`) e **não entra no relatório para o solo**.
 
+### Fluxos no n8n (pasta "health7")
+
+A regra do app (`monitor.ts`) decide o estado, o score e os sinais; os fluxos só escrevem em cima disso. Endereços em `.env.example`.
+
+| Fluxo | Variável | Recebe | Devolve | Proteções |
+|---|---|---|---|---|
+| `[H7] Assistente` | `VITE_N8N_CHAT_WEBHOOK_URL` (`/webhook/h7-assistente`) | `{ sessionId, message, context }`, com `context.prevention.monitor` (estado, score, sinais) e os padrões com o texto seguro | `{ reply }` | AI Agent (OpenAI) com memória por `sessionId`; prompt proíbe diagnóstico, probabilidade, remédio e números inventados; filtro troca a resposta se aparecer palavra proibida; em ESCALATE só aponta o protocolo e a faixa vermelha |
+| `[H7] Roteiro` | `VITE_N8N_ROADMAP_WEBHOOK_URL` (`/webhook/h7-roteiro`) | `{ mode, instructions, context }`, com `monitor` e `conditionSteps` | `{ headline, summary, phases }` | ESCALATE não passa pela IA (volta o protocolo fixo); palavra proibida devolve 422 e o app mantém o roteiro do aparelho; o `parseAiRoadmap` recusa formato errado |
+| `[H7] Alerta` | `VITE_N8N_ALERT_WEBHOOK_URL` (`/webhook/h7-alerta`) | `{ crew, crewId, date, day, state, reasons, signals, ruleVersion }` do botão "Notify ground" | `{ ok, recordedAt, delivery: "crew-only", message }` | Sem IA; só aceita ESCALATE; por enquanto não envia nada para fora (o registro é a execução no n8n). Sem endereço ou sem rede, o horário fica no aparelho |
+
+Os endereços não têm autenticação e ficam públicos no site: só dados fictícios.
+
 ## Credits
 
 - **Figura do corpo** (`src/data/body-paths.ts`): traçados SVG de [@mjcdev/react-body-highlighter](https://github.com/MichaelMjc/react-body-highlighter) 0.0.4, de MichaelMJC, adaptação para web do [react-native-body-highlighter](https://github.com/HichamELBSI/react-native-body-highlighter) de HichamELBSI. Licença MIT, Copyright (c) 2022 ELABBASSI Hicham. Os traçados foram copiados (o pacote não é dependência); o componente `BodyAvatar` é nosso.

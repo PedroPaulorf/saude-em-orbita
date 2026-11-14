@@ -383,3 +383,13 @@ Registrados durante a implementação (14/11).
 | 33 | IA do roteiro | Recebe estado e padrões | O contexto leva `monitor` e `conditionSteps`; as instruções proíbem mudar o estado, chamar o score de probabilidade e escrever passos em ESCALATE | "Regra decide, IA explica". O fluxo do n8n é da fase 5 |
 | 34 | Pontos dos passos | "marcar passos dá pontos" (fase 4) | Não mexido: os passos do roteiro continuam marcáveis, e os pontos seguem no plano de 5 dias | Depende da decisão 8 (um plano só), ainda em aberto |
 
+
+
+### Fase 5: n8n
+
+| # | Onde | O plano dizia | O que foi feito | Por quê |
+|---|---|---|---|---|
+| 35 | Fluxos | Assistente, Roteiro, Alerta ao solo e Relatório | Feitos e publicados os três primeiros, na pasta "health7": `[H7] Assistente`, `[H7] Roteiro`, `[H7] Alerta`. O Relatório (back-end, `AI_PROVIDER_URL`) ficou para depois | Os três aparecem no vídeo; o relatório não |
+| 36 | Alerta ao solo | Mensagem por Telegram ou e-mail | Decisão da equipe (14/11): **o alerta fica só com a tripulação**. O fluxo registra e confirma (`delivery: "crew-only"`), sem enviar nada para fora; a faixa mostra "Alert recorded at …" | Um canal para o solo pode sair do nó "Build Alert Record" depois |
+| 37 | Guardas da IA | Regra decide, IA explica | Prompt com as regras; filtro de palavras no chat (troca a resposta) e no roteiro (422, o app usa o roteiro do aparelho); ESCALATE não chega à IA do roteiro; o chat em ESCALATE só aponta o protocolo | Testado com NX-04 e NX-06: sem diagnóstico, remédio ou probabilidade; corrigidos números inventados (água em litros, diastólica) e a oferta de "avisar o solo", que a IA não pode fazer |
+| 38 | Modelo | — | OpenAI `gpt-5-mini`, esforço de raciocínio baixo, credencial "OpenAI account" que já existia | Rápido para o demo (chat em 6 a 10 s, roteiro em cerca de 15 s) |
