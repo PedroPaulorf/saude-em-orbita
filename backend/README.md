@@ -158,6 +158,10 @@ Invoke-RestMethod -Uri 'http://localhost:3001/api/v1/me' -WebSession $health7Ses
 No front, as requisições precisam de `credentials: 'include'`; as mutáveis também
 de `Content-Type: application/json` e `X-Requested-With: Health7`. Verifique o status
 HTTP antes de navegar ou marcar um registro como enviado. O cookie é gerido pelo navegador.
+O front integrado envia também `X-Health7-Crew` com o perfil que originou a operação.
+Se outra aba trocou o cookie para outra conta, o back rejeita a operação com 401,
+sem revogar a sessão legítima da outra conta. O cabeçalho é uma proteção contra
+trocas de sessão concorrentes; a identidade continua vindo da sessão no servidor.
 
 ## Rotas
 

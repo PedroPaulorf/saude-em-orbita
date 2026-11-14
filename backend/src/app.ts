@@ -40,7 +40,7 @@ export async function createApp(options: Options) {
   const origins = options.origins ?? ['http://localhost:5173']
   const cookieOptions = { path: '/api/v1', httpOnly: true, sameSite: 'strict' as const, secure: options.secureCookies ?? false }
   await app.register(cookie)
-  await app.register(cors, { origin: origins, credentials: true, methods: ['GET', 'POST'], allowedHeaders: ['Content-Type', 'X-Requested-With'] })
+  await app.register(cors, { origin: origins, credentials: true, methods: ['GET', 'POST'], allowedHeaders: ['Content-Type', 'X-Requested-With', 'X-Health7-Crew'] })
   await app.register(rateLimit, { global: false })
   app.addHook('onRequest', async (request) => {
     const origin = request.headers.origin
@@ -55,6 +55,11 @@ export async function createApp(options: Options) {
     if (!token || !/^[a-f0-9]{64}$/.test(token)) fail(401, 'Authentication required')
     const found = await db.query('SELECT crew_id FROM sessions WHERE token_hash=$1 AND expires_at > now()', [tokenHash(token)])
     if (!found.rowCount) fail(401, 'Session expired or revoked')
+    // Bind a queued/browser request to the profile that created it. A different
+    // tab may have changed the HttpOnly session cookie since the UI was loaded.
+    const expectedCrew = request.headers['x-health7-crew']
+    if (expectedCrew !== undefined && expectedCrew !== found.rows[0].crew_id)
+      fail(401, 'Account changed. Sign in again.')
     sessions.set(request, found.rows[0].crew_id)
   }
   app.get('/health', async () => ({ status: 'ok', service: 'Health 7 API' }))

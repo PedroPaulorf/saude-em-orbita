@@ -51,6 +51,8 @@ test('auth rejects bad credentials, cross-origin writes and missing CSRF; profil
   assert.equal((await post('/api/v1/me/checkins', payload, { ...a, origin: 'https://evil.invalid' })).statusCode, 403)
   assert.equal((await get('/api/v1/me', { ...a, origin: 'https://evil.invalid' })).statusCode, 403)
   assert.equal((await get('/api/v1/me')).json().id, 'crew-02')
+  assert.equal((await get('/api/v1/me', { ...a, 'x-health7-crew': 'crew-03' })).statusCode, 401)
+  assert.equal((await get('/api/v1/me', { ...a, 'x-health7-crew': 'crew-02' })).statusCode, 200)
   assert.equal((await get('/api/v1/me', b)).json().bodyModel, 'female')
   assert.equal((await get('/api/v1/crew/crew-03/checkins')).statusCode, 404)
 })
