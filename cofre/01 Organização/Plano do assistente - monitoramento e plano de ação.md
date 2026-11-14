@@ -346,3 +346,16 @@ Registrados durante a implementação (14/11).
 | 11 | `--reset` | — | Apaga os registros só das contas NEXUS (perfil `synthetic-nexus`); desliga a trava de "só acréscimo" dos eventos de sintoma dentro da transação | Gravar o vídeo em outro dia exige mover "hoje". Conta com o mesmo nome que não seja NEXUS não é tocada |
 | 12 | Perfil | `source: "synthetic-nexus"` | Igual; a altura vai para Pessoa e fica fora da linha de base das medidas | Altura muda em microgravidade (seção 7) |
 | 13 | Testes | — | Corrigido um teste antigo do back (`medical.test.ts`) que já falhava na main: o seed passou a ter SpO₂ na linha de base | Build e testes limpos |
+
+### Fase 2: motor
+
+| # | Onde | O plano dizia | O que foi feito | Por quê |
+|---|---|---|---|---|
+| 14 | Linha de base em voo | A de `baselines.ts` (mediana dos últimos 14 dias) | Mesma janela e mesma mediana, sem o valor da medida nos dias em que ela estava fora junto com outra medida ou com sintoma; uma mudança que dura 14 dias vira a nova linha de base | A mediana simples absorve a mudança enquanto ela dura: o sono da NX-03 deixaria de contar no dia 13. A tela do roteiro continua mostrando a mediana simples |
+| 15 | Medida sozinha | — | Medida fora sozinha, sem sintoma, entra na linha de base em voo | Sem isso a perda de massa esperada em voo (NX-02, −1,0 a −1,5 kg) ficaria em WATCH do dia 3 ao 16 |
+| 16 | Limiar de 5 bpm | Rever, porque marcaria o NX-02 | Mantido | Não marca: o NX-02 é comparado com a própria linha de base (52 bpm) e fica entre 51 e 54 |
+| 17 | Pesos do score | `a = 8, b = 6, c = 4`, ajustar na calibração | Mantidos | Correlação 0,89 com o score digitado, sem ajuste |
+| 18 | Febre | "SpO₂ sinalizada junto de febre" | Febre = temperatura **sinalizada** acima da linha de base pessoal (1 °C ou mais) | Mantém tudo relativo à pessoa, sem limiar clínico absoluto |
+| 19 | Concordância | Tabela no README | Em `dados/README.md`, junto do gabarito; o teste falha se a tabela mudar | 159 de 180 dias (88%); 19 dos 21 desacordos são o motor mais cauteloso. Os 2 restantes são os dias 13 e 15 do NX-06, que o gabarito marca ESCALATE sem red flag |
+| 20 | Versão da regra | Registrar em `medical_rules` | O servidor registra `health7-nexus-2026-11-14-v1` na subida, ao lado da versão antiga, que não muda | Testes no front conferem que limiares, pesos e versão batem com `medical.ts` |
+

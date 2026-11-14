@@ -106,6 +106,16 @@ O visual usa a paleta de [`../health7-design-system`](../health7-design-system) 
 
 São **regras de demonstração**, sem fonte clínica. Os limites ficam em `src/data/simulated.json` (`rule`: direção, desvio para atenção e para sinalizar). A meta de água (8 × 250 ml) também é de demonstração (`game.waterGoal`).
 
+## Motor de monitoramento (NEXUS-Med)
+
+`src/lib/monitor.ts` é a **regra que decide**; a IA, quando houver, só explica. Função pura, roda no aparelho. Recebe perfil, check-ups, sintomas, testes cognitivos e ambiente e devolve, para hoje e para cada dia anterior: um dos quatro estados da pesquisa (STABLE, WATCH, PERSISTENT CHANGE, ESCALATE), um score de 0 a 100, os sinais que formaram os dois e o texto da pesquisa para o estado (`05_Alert_Guide`, sem reescrever).
+
+- **Score é intensidade**, nunca probabilidade nem porcentagem: `min(100, 8 × pontos das medidas + 6 × sintomas + 4 × dias de persistência)`.
+- **Estado pela regra:** ESCALATE com red flag (pergunta de alerta do check-up, sintoma de alerta, SpO₂ ou desconforto no flanco com temperatura sinalizada, dor de cabeça forte); PERSISTENT CHANGE com duas ou mais medidas fora (ou uma e um sintoma) por 2 dias seguidos; WATCH com qualquer medida fora ou sintoma; dias 1 a 3 de voo não passam de WATCH, salvo red flag.
+- **Linhas de base:** pré-voo (perfil) e em voo (mediana de 14 dias, sem os dias de mudança em várias frentes). Limiares por medida iguais aos de `backend/src/medical.ts`, mais micções em 24 h (2 e 3 abaixo).
+- **Calibração** contra o gabarito da planilha em `monitor.test.ts`; a tabela de concordância e os desacordos explicados estão em `../dados/README.md`.
+- Versão `health7-nexus-2026-11-14-v1`, registrada pelo servidor em `medical_rules`. Mudou limiar ou peso, muda a versão.
+
 ## Clima espacial (NASA DONKI)
 
 Base `https://ccmc.gsfc.nasa.gov/DONKI-API/get/{recurso}`, só GET, sem chave, CORS liberado, até 60 dias por chamada.

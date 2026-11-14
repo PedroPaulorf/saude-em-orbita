@@ -30,7 +30,7 @@ const counts = async () => (await pool.query(`SELECT (SELECT count(*) FROM check
 
 before(async () => {
   await admin.query('CREATE SCHEMA ' + schema)
-  await importNexus({ databaseUrl: scoped.toString(), password, now, only: ['NX-04', 'NX-06'] })
+  await importNexus({ databaseUrl: scoped.toString(), password, now, only: ['NX-02', 'NX-04', 'NX-06'] })
   app = await createApp({ databaseUrl: scoped.toString() })
 })
 after(async () => { await app?.close(); await pool.end(); await admin.query('DROP SCHEMA IF EXISTS ' + schema + ' CASCADE'); await admin.end() })
@@ -95,4 +95,14 @@ test('an account with the same username that is not a NEXUS synthetic account is
   await createDemoUser(pool, 'nx01', 'another-password')
   await assert.rejects(importNexus({ databaseUrl: scoped.toString(), password, now, only: ['NX-01'], reset: true }), /not a NEXUS synthetic account/)
   assert.equal((await pool.query("SELECT count(*)::int n FROM checkins c JOIN crew u ON u.id=c.crew_id WHERE u.username='nx01'")).rows[0].n, 0)
+})
+
+test('the monitor rule is registered as its own version, next to the unchanged per-measure rule', async () => {
+  const headers = await login('nx02')
+  const rules = (await app.inject({ url: '/api/v1/rules', headers })).json().items
+  assert.deepEqual(rules.map((r: any) => r.version), ['health7-demo-2026-11-14-v1', 'health7-nexus-2026-11-14-v1'])
+  const monitor = rules[1]
+  assert.equal(monitor.clinicalSource, null); assert.equal(monitor.runsOn, 'device')
+  assert.deepEqual(monitor.rules.heartRate, rules[0].rules.heartRate)
+  assert.deepEqual(monitor.rules.urinations24h, { unit: 'per day', attention: 2, flagged: 3, direction: 'below' })
 })

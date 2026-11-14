@@ -5,8 +5,11 @@ export interface Profile {
   displayName: string
   missionDay: number
   bodyModel: 'male' | 'female'
-  source: 'simulated'
-  baseline: Partial<Record<VitalId, number>> & { bloodPressureDiastolic: number }
+  /** 'synthetic-nexus': tripulante fictício da pesquisa NEXUS-Med (npm run import:nexus). */
+  source: 'simulated' | 'synthetic-nexus'
+  baseline: Partial<Record<VitalId, number>> & { bloodPressureDiastolic: number; urinations24h?: number }
+  scenario?: string
+  nexus?: { crewId: string; role: string; anchorDate: string; todayDay: number; notice: string }
 }
 export interface SymptomEvent { id: string; at: string; receivedAt: string; type: 'start' | 'evolution' | 'resolution'; severity?: number; note?: string }
 export interface Symptom {
