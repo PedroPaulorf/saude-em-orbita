@@ -1,21 +1,33 @@
-import { DatabaseSync } from 'node:sqlite'
-import { mkdirSync } from 'node:fs'
-import { dirname } from 'node:path'
+import pg from 'pg'
+import { readFile, readdir } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+import { createHash } from 'node:crypto'
 
-export function openDatabase(path: string) {
-  if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true })
-  const db = new DatabaseSync(path)
-  db.exec(`PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;
-    CREATE TABLE IF NOT EXISTS crew (id TEXT PRIMARY KEY, profile TEXT NOT NULL);
-    CREATE TABLE IF NOT EXISTS checkins (
-      id TEXT PRIMARY KEY, crew_id TEXT NOT NULL REFERENCES crew(id), client_id TEXT NOT NULL,
-      at TEXT NOT NULL, received_at TEXT NOT NULL, payload TEXT NOT NULL,
-      UNIQUE(crew_id, client_id)
-    );
-    CREATE INDEX IF NOT EXISTS checkins_crew_time ON checkins(crew_id, at);`)
-  db.prepare('INSERT OR IGNORE INTO crew(id, profile) VALUES (?, ?)').run('crew-02', JSON.stringify({
-    id: 'crew-02', displayName: 'Crew member 02', missionDay: 47, source: 'simulated',
-    baseline: { heartRate: 62, bloodPressure: 116, bloodPressureDiastolic: 74, sleep: 7.2, temperature: 36.6 },
-  }))
-  return db
+export function openDatabase(databaseUrl: string) {
+  if (!databaseUrl) throw new Error('DATABASE_URL is required')
+  return new pg.Pool({ connectionString: databaseUrl, max: 10, connectionTimeoutMillis: 5000, statement_timeout: 10000 })
+}
+
+/** Transactional, schema-scoped lock serializes concurrent application starts. */
+export async function migrate(pool: pg.Pool) {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    await client.query("SELECT pg_advisory_xact_lock(hashtextextended(current_database() || ':' || current_schema() || ':health7-migrations', 0))")
+    await client.query('CREATE TABLE IF NOT EXISTS schema_migrations(version text PRIMARY KEY, checksum text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now())')
+    const directory = fileURLToPath(new URL('../migrations/', import.meta.url))
+    for (const version of (await readdir(directory)).filter(name => /^\d+.*\.sql$/.test(name)).sort()) {
+      const sql = await readFile(directory + '/' + version, 'utf8')
+      const checksum = createHash('sha256').update(sql).digest('hex')
+      const existing = await client.query('SELECT checksum FROM schema_migrations WHERE version = $1', [version])
+      if (existing.rowCount) {
+        if (existing.rows[0].checksum !== checksum) throw new Error('Applied migration changed: ' + version)
+        continue
+      }
+      await client.query(sql)
+      await client.query('INSERT INTO schema_migrations(version, checksum) VALUES ($1, $2)', [version, checksum])
+    }
+    await client.query('COMMIT')
+  } catch (error) { await client.query('ROLLBACK'); throw error }
+  finally { client.release() }
 }

@@ -1,82 +1,194 @@
-import { test } from 'node:test'
+import { after, before, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, rmSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { DatabaseSync } from 'node:sqlite'
+import { randomUUID } from 'node:crypto'
+import { createServer } from 'node:http'
+import pg from 'pg'
 import { createApp } from '../src/app.js'
+import { seedDemo } from '../src/seed.js'
 
-const token = 'health7-test-token'
-const headers = { 'x-api-key': token }
-const url = '/api/v1/crew/crew-02/checkins'
-const payload = {
-  clientId: 'tablet-1-checkin-1', at: '2026-11-14T14:00:00Z', source: 'simulated',
-  vitals: { heartRate: 71, bloodPressure: 118, bloodPressureDiastolic: 76, sleep: 0, temperature: 36.7 },
-  behavioral: { mood: 4, stress: 3, rest: 2 },
+const databaseUrl = process.env.TEST_DATABASE_URL
+if (!databaseUrl) throw new Error('TEST_DATABASE_URL must point to a real PostgreSQL test database; tests do not skip')
+const schema = 'health7_test_' + randomUUID().replaceAll('-', '')
+const admin = new pg.Pool({ connectionString: databaseUrl })
+const scoped = new URL(databaseUrl)
+scoped.searchParams.set('options', '-c search_path=' + schema)
+const pool = new pg.Pool({ connectionString: scoped.toString() })
+const password = 'test-only-password-39'
+let app: Awaited<ReturnType<typeof createApp>>
+let a: Record<string, string>, b: Record<string, string>
+const at = '2026-11-14T14:00:00Z'
+const payload = { clientId: 'check-1', at, source: 'simulated', vitals: { sleep: 0, heartRate: 71 }, behavioral: { mood: 4 } }
+const csrf = { 'x-requested-with': 'Health7' }
+async function login(username = 'crew02') {
+  const response = await app.inject({ method: 'POST', url: '/api/v1/auth/login', headers: csrf, payload: { username, password } })
+  assert.equal(response.statusCode, 200, response.body)
+  const cookie = String(response.headers['set-cookie']).split(';')[0]
+  assert.match(String(response.headers['set-cookie']), /HttpOnly/)
+  return { ...csrf, cookie }
 }
-
-test('stores once, survives restart and separates crews', async () => {
-  const dir = mkdtempSync(join(tmpdir(), 'health7-'))
-  const databasePath = join(dir, 'test.sqlite')
-  let app = createApp({ databasePath, apiKey: token })
-  try {
-    assert.equal((await app.inject('/health')).statusCode, 200)
-    assert.equal((await app.inject(url)).statusCode, 401)
-    assert.equal((await app.inject({ url: '/api/v1/crew/crew-02', headers })).json().id, 'crew-02')
-    const post = () => app.inject({ method: 'POST', url, headers, payload })
-    const created = await post()
-    assert.equal(created.statusCode, 201)
-    assert.ok(created.json().receivedAt)
-    assert.equal((await post()).statusCode, 200)
-    assert.equal((await app.inject({ method: 'POST', url, headers, payload: { ...payload, vitals: { sleep: 6 } } })).statusCode, 409)
-    await app.close()
-    app = createApp({ databasePath, apiKey: token })
-    const list = (await app.inject({ url, headers })).json()
-    assert.equal(list.items.length, 1)
-    assert.equal(list.items[0].id, created.json().id)
-    assert.equal(list.items[0].vitals.sleep, 0)
-    const fixture = new DatabaseSync(databasePath)
-    fixture.prepare('INSERT INTO crew(id, profile) VALUES (?, ?)').run('crew-03', JSON.stringify({ id: 'crew-03' }))
-    fixture.close()
-    const otherUrl = '/api/v1/crew/crew-03/checkins'
-    assert.equal((await app.inject({ url: otherUrl, headers })).json().items.length, 0)
-    assert.equal((await app.inject({ method: 'POST', url: otherUrl, headers, payload })).statusCode, 201)
-    assert.equal((await app.inject({ url, headers })).json().items.length, 1)
-    assert.equal((await app.inject({ url: '/api/v1/crew/missing/checkins', headers })).statusCode, 404)
-    assert.equal((await app.inject({ url: url + '?from=2026-11-15T00:00:00Z', headers })).json().items.length, 0)
-  } finally { await app.close(); rmSync(dir, { recursive: true, force: true }) }
+const post = (url: string, data: unknown, headers = a) => app.inject({ method: 'POST', url, headers, payload: data as any })
+const get = (url: string, headers = a) => app.inject({
+  url: /^\/api\/v1\/me\/(checkins|symptoms)$/.test(url)
+    ? url + '?from=2026-11-14T00:00:00Z&to=2026-11-15T00:00:00Z' : url,
+  headers,
+})
+before(async () => {
+  await admin.query('CREATE SCHEMA ' + schema)
+  app = await createApp({ databaseUrl: scoped.toString(), origins: ['http://tablet.local'] })
+  await seedDemo(pool, password)
+  a = await login(); b = await login('crew03')
+})
+after(async () => {
+  await app?.close(); await pool.end()
+  await admin.query('DROP SCHEMA IF EXISTS ' + schema + ' CASCADE'); await admin.end()
 })
 
-test('rejects invalid data and supports partial physical or behavioral check-ins', async () => {
-  const app = createApp({ databasePath: ':memory:', apiKey: token })
-  try {
-    for (const invalid of [
-      { ...payload, at: 'yesterday' }, { ...payload, behavioral: { stress: 6 } },
-      { ...payload, at: '2026-11-14T23:59:60Z' },
-      { ...payload, behavioral: { mood: 2.5 } }, { ...payload, vitals: { heartRate: -1 } },
-      { ...payload, vitals: { bloodPressure: 118 } }, { ...payload, vitals: {}, behavioral: {} },
-      { ...payload, source: 'live' }, { ...payload, extra: 'unknown' },
-    ]) assert.equal((await app.inject({ method: 'POST', url, headers, payload: invalid })).statusCode, 400)
-    assert.equal((await app.inject({ method: 'POST', url, headers, payload: {
-      clientId: 'behavioral-only', at: payload.at, source: 'simulated', vitals: {}, behavioral: { mood: 4 },
-    } })).statusCode, 201)
-    assert.equal((await app.inject({ url: url + '?limit=1000', headers })).statusCode, 400)
-    assert.equal((await app.inject({ url: url + '?from=2026-11-14T23:59:60Z', headers })).statusCode, 400)
-    assert.equal((await app.inject({ url: url + '?from=2026-11-15T00:00:00Z&to=2026-11-14T00:00:00Z', headers })).statusCode, 400)
-  } finally { await app.close() }
+test('auth rejects bad credentials, cross-origin writes and missing CSRF; profiles are own only', async () => {
+  assert.equal((await get('/api/v1/me', {})).statusCode, 401)
+  assert.equal((await post('/api/v1/auth/login', { username: 'crew02', password: 'wrong' }, csrf)).statusCode, 401)
+  assert.equal((await post('/api/v1/auth/login', { username: 'absent', password: 'wrong' }, csrf)).statusCode, 401)
+  assert.equal((await post('/api/v1/me/checkins', payload, { cookie: a.cookie })).statusCode, 403)
+  assert.equal((await post('/api/v1/me/checkins', payload, { ...a, origin: 'https://evil.invalid' })).statusCode, 403)
+  assert.equal((await get('/api/v1/me', { ...a, origin: 'https://evil.invalid' })).statusCode, 403)
+  assert.equal((await get('/api/v1/me')).json().id, 'crew-02')
+  assert.equal((await get('/api/v1/me', b)).json().bodyModel, 'female')
+  assert.equal((await get('/api/v1/crew/crew-03/checkins')).statusCode, 404)
 })
 
-test('serves real HTTP and allows only configured browser origins', async () => {
-  const app = createApp({ databasePath: ':memory:', apiKey: token, origins: ['http://tablet.local:5173'] })
+test('checkins survive restart, handle concurrent retries and separate known crew accounts', async () => {
+  const responses = await Promise.all([post('/api/v1/me/checkins', payload), post('/api/v1/me/checkins', payload)])
+  assert.deepEqual(responses.map(r => r.statusCode).sort(), [200, 201])
+  assert.equal(responses[0].json().id, responses[1].json().id)
+  assert.equal((await post('/api/v1/me/checkins', { ...payload, vitals: { sleep: 6 } })).statusCode, 409)
+  assert.equal((await get('/api/v1/me/checkins', b)).json().items.length, 0)
+  assert.equal((await post('/api/v1/me/checkins', payload, b)).statusCode, 201)
+  await app.close()
+  app = await createApp({ databaseUrl: scoped.toString(), origins: ['http://tablet.local'] })
+  const list = (await get('/api/v1/me/checkins')).json()
+  assert.equal(list.items.length, 1); assert.equal(list.items[0].vitals.sleep, 0)
+})
+
+test('rejects impossible dates, reversed intervals, oversized limits and invalid checkins', async () => {
+  for (const invalid of [
+    { ...payload, at: '2026-02-30T00:00:00Z' }, { ...payload, at: '2026-11-14T23:59:60Z' },
+    { ...payload, at: 'yesterday' }, { ...payload, vitals: {}, behavioral: {} },
+    { ...payload, vitals: { bloodPressure: 110 } }, { ...payload, behavioral: { mood: 6 } },
+    { ...payload, source: 'live' }, { ...payload, crewId: 'crew-03' },
+  ]) assert.equal((await post('/api/v1/me/checkins', invalid)).statusCode, 400)
+  for (const path of ['/api/v1/me/checkins?limit=1000', '/api/v1/me/context?from=2026-02-30T00:00:00Z',
+    '/api/v1/me/checkins?from=2026-11-15T00:00:00Z&to=2026-11-14T00:00:00Z'])
+    assert.equal((await get(path)).statusCode, 400)
+})
+
+test('symptoms keep authored append-only start, evolution and resolution with scoped identifiers', async () => {
+  const input = { clientId: 'symptom-1', at, label: 'Dor leve', bodyPart: 'head', severity: 2, note: 'Relato fictício' }
+  const start = await post('/api/v1/me/symptoms', input)
+  assert.equal(start.statusCode, 201, start.body)
+  const id = start.json().id
+  assert.equal((await post('/api/v1/me/symptoms', input)).json().id, id)
+  assert.equal((await post('/api/v1/me/symptoms', { ...input, severity: 3 })).statusCode, 409)
+  const event = { clientId: 'event-1', at: '2026-11-14T15:00:00Z', type: 'evolution', severity: 1 }
+  assert.equal((await post(`/api/v1/me/symptoms/${id}/events`, event, b)).statusCode, 404)
+  assert.equal((await post('/api/v1/me/symptoms/not-a-uuid/events', event)).statusCode, 400)
+  assert.equal((await post(`/api/v1/me/symptoms/${id}/events`, { ...event, at: '2026-11-13T15:00:00Z' })).statusCode, 400)
+  assert.equal((await post(`/api/v1/me/symptoms/${id}/events`, event)).statusCode, 201)
+  assert.equal((await post(`/api/v1/me/symptoms/${id}/events`, event)).statusCode, 200)
+  assert.equal((await get('/api/v1/me/symptoms')).json().items[0].status, 'active')
+  assert.equal((await post(`/api/v1/me/symptoms/${id}/events`, { clientId: 'event-2', at: '2026-11-14T16:00:00Z', type: 'resolution' })).statusCode, 201)
+  const symptom = (await get('/api/v1/me/symptoms')).json().items[0]
+  assert.equal(symptom.status, 'resolved'); assert.equal(symptom.events.length, 3)
+  assert.equal(symptom.events[0].authorCrewId, 'crew-02')
+  assert.equal((await get('/api/v1/me/symptoms', b)).json().items.length, 0)
+})
+
+test('context scopes records and persisted deterministic analyses keep trustworthy provenance', async () => {
+  const context = (await get('/api/v1/me/context?from=2026-11-14T00:00:00Z&to=2026-11-15T00:00:00Z')).json()
+  assert.equal(context.profile.id, 'crew-02'); assert.equal(context.checkins.length, 1)
+  assert.ok(context.sources.length >= 4)
+  assert.ok(context.sources.every((source: any) => source.crewId === 'crew-02'))
+  const result = await post('/api/v1/me/analyses', { from: '2026-11-14T00:00:00Z', to: '2026-11-15T00:00:00Z', method: 'deterministic' })
+  assert.equal(result.statusCode, 201, result.body)
+  const analysis = result.json()
+  assert.equal(analysis.isAi, false); assert.equal(analysis.methodVersion, 'health7-summary-v1')
+  assert.match(analysis.summary, /não utiliza IA/)
+  assert.deepEqual(analysis.sources, context.sources)
+  assert.equal((await get('/api/v1/me/analyses')).json().items[0].id, analysis.id)
+  assert.equal((await get('/api/v1/me/analyses', b)).json().items.length, 0)
+})
+
+test('optional AI HTTP adapter sends only own bounded context and ignores provider source claims', async () => {
+  let transmitted: any
+  const stub = createServer((req, res) => {
+    let body = ''; req.on('data', chunk => body += chunk); req.on('end', () => {
+      transmitted = JSON.parse(body)
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ summary: 'Organize os relatos para a equipe de saúde.', sources: [{ id: 'fabricated' }] }))
+    })
+  })
+  await new Promise<void>(resolve => stub.listen(0, '127.0.0.1', resolve))
+  const port = (stub.address() as any).port
+  const aiApp = await createApp({ databaseUrl: scoped.toString(), aiProvider: { url: `http://127.0.0.1:${port}`, name: 'local-test', modelVersion: 'fixture-v1', timeoutMs: 500 } })
   try {
-    const address = await app.listen({ host: '127.0.0.1', port: 0 })
-    assert.equal((await fetch(address + '/health')).status, 200)
-    const allowed = await app.inject({ method: 'OPTIONS', url, headers: {
-      origin: 'http://tablet.local:5173', 'access-control-request-method': 'POST',
-      'access-control-request-headers': 'content-type,x-api-key',
-    } })
-    assert.equal(allowed.headers['access-control-allow-origin'], 'http://tablet.local:5173')
-    const denied = await app.inject({ url, headers: { ...headers, origin: 'http://unknown.local' } })
-    assert.equal(denied.headers['access-control-allow-origin'], undefined)
-  } finally { await app.close() }
+    const result = await aiApp.inject({ method: 'POST', url: '/api/v1/me/analyses', headers: a,
+      payload: { from: '2026-11-14T00:00:00Z', to: '2026-11-15T00:00:00Z', method: 'ai' } })
+    assert.equal(result.statusCode, 201, result.body)
+    assert.equal(result.json().isAi, true); assert.equal(result.json().provider.modelVersion, 'fixture-v1')
+    assert.ok(result.json().sources.every((source: any) => source.id !== 'fabricated' && source.crewId === 'crew-02'))
+    assert.equal(transmitted.context.checkins.length, 1)
+    assert.equal(transmitted.context.profile.id, 'crew-02')
+    assert.equal(JSON.stringify(transmitted).includes('password'), false)
+  } finally { await aiApp.close(); await new Promise<void>(resolve => stub.close(() => resolve())) }
+})
+
+test('AI failure modes reject timeouts, oversized responses and diagnostic claims without persisting them', async () => {
+  const before = Number((await pool.query('SELECT count(*) FROM analyses')).rows[0].count)
+  const stub = createServer((req, res) => {
+    req.resume()
+    if (req.url === '/timeout') return
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({ summary: req.url === '/large' ? 'x'.repeat(17000) : 'Diagnosis: the patient will develop disease.' }))
+  })
+  await new Promise<void>(resolve => stub.listen(0, '127.0.0.1', resolve))
+  const port = (stub.address() as any).port
+  try {
+    for (const path of ['/timeout', '/large', '/diagnosis']) {
+      const aiApp = await createApp({ databaseUrl: scoped.toString(), aiProvider: { url: `http://127.0.0.1:${port}${path}`, name: 'local-test', modelVersion: 'fixture-v1', timeoutMs: 100 } })
+      try {
+        const response = await aiApp.inject({ method: 'POST', url: '/api/v1/me/analyses', headers: a,
+          payload: { from: '2026-11-14T00:00:00Z', to: '2026-11-15T00:00:00Z', method: 'ai' } })
+        assert.equal(response.statusCode, 502, path + ': ' + response.body)
+      } finally { await aiApp.close() }
+    }
+    assert.equal(Number((await pool.query('SELECT count(*) FROM analyses')).rows[0].count), before)
+    assert.equal((await post('/api/v1/me/analyses', { from: '2026-11-14T00:00:00Z', to: '2026-11-15T00:00:00Z', method: 'ai' })).statusCode, 503)
+  } finally { stub.closeAllConnections(); await new Promise<void>(resolve => stub.close(() => resolve())) }
+})
+
+test('historical windows retain prior active symptoms and exclude episodes resolved before the window', async () => {
+  const prior = { clientId: 'prior-active', at: '2026-10-01T00:00:00Z', onsetAt: '2026-09-30T00:00:00Z', label: 'Relato anterior', bodyPart: 'back', severity: 1 }
+  const active = await post('/api/v1/me/symptoms', prior)
+  assert.equal(active.statusCode, 201)
+  const done = await post('/api/v1/me/symptoms', { ...prior, clientId: 'prior-resolved' })
+  assert.equal((await post(`/api/v1/me/symptoms/${done.json().id}/events`, { clientId: 'prior-resolve', at: '2026-10-02T00:00:00Z', type: 'resolution' })).statusCode, 201)
+  const context = (await get('/api/v1/me/context?from=2026-11-14T00:00:00Z&to=2026-11-15T00:00:00Z')).json()
+  assert.equal(context.symptoms.some((item: any) => item.id === active.json().id), true)
+  assert.equal(context.symptoms.some((item: any) => item.id === done.json().id), false)
+  assert.equal(context.symptoms.find((item: any) => item.id === active.json().id).status, 'active')
+  const limited = (await get('/api/v1/me/context?from=2026-11-14T00:00:00Z&to=2026-11-15T00:00:00Z&limit=1')).json()
+  assert.equal(limited.truncated.symptoms, true)
+})
+
+test('database protects event history and stores only hashed opaque sessions', async () => {
+  const sessionRows = (await pool.query('SELECT token_hash FROM sessions')).rows
+  assert.ok(sessionRows.every(row => row.token_hash !== a.cookie.split('=')[1]))
+  await assert.rejects(pool.query("UPDATE symptom_events SET type='resolution' WHERE crew_id='crew-02'"), /append-only/)
+})
+
+test('logout revokes the cookie and expired sessions are rejected', async () => {
+  const headers = await login()
+  assert.equal((await post('/api/v1/auth/logout', {}, headers)).statusCode, 204)
+  assert.equal((await get('/api/v1/me', headers)).statusCode, 401)
+  const expired = await login()
+  await pool.query("UPDATE sessions SET expires_at = now() - interval '1 second' WHERE crew_id = 'crew-02'")
+  assert.equal((await get('/api/v1/me', expired)).statusCode, 401)
 })

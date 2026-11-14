@@ -1,15 +1,22 @@
 import { createApp } from './app.js'
-
-const apiKey = process.env.API_KEY
-if (!apiKey || apiKey.length < 16) throw new Error('Set API_KEY with at least 16 characters before starting')
+const databaseUrl = process.env.DATABASE_URL
+if (!databaseUrl) throw new Error('DATABASE_URL is required')
 const port = Number(process.env.PORT ?? 3001)
 if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid PORT')
-const app = createApp({
-  apiKey, databasePath: process.env.DATABASE_PATH ?? './data/health7.sqlite', logger: true,
-  origins: (process.env.CORS_ORIGINS ?? 'http://localhost:5173').split(',').map((value) => value.trim()).filter(Boolean),
-})
-for (const signal of ['SIGINT', 'SIGTERM'] as const) {
-  process.once(signal, () => { app.close().catch((error) => { app.log.error(error); process.exitCode = 1 }) })
+const secureCookies = process.env.COOKIE_SECURE === 'true'
+if (process.env.NODE_ENV === 'production' && !secureCookies) throw new Error('Production requires COOKIE_SECURE=true and HTTPS')
+const aiUrl = process.env.AI_PROVIDER_URL
+if (aiUrl) {
+  if (!process.env.AI_MODEL_VERSION) throw new Error('AI_MODEL_VERSION is required for provider provenance')
+  const parsed = new URL(aiUrl)
+  if (!['http:', 'https:'].includes(parsed.protocol) || (process.env.NODE_ENV === 'production' && parsed.protocol !== 'https:')) throw new Error('AI provider requires HTTP(S), HTTPS in production')
 }
+const timeoutMs = Number(process.env.AI_PROVIDER_TIMEOUT_MS ?? 5000)
+if (!Number.isInteger(timeoutMs) || timeoutMs < 100 || timeoutMs > 30000) throw new Error('AI provider timeout must be 100..30000 milliseconds')
+const app = await createApp({ databaseUrl, logger: true, secureCookies,
+  origins: (process.env.CORS_ORIGINS ?? 'http://localhost:5173').split(',').map(v => v.trim()).filter(Boolean),
+  aiProvider: aiUrl ? { url: aiUrl, name: process.env.AI_PROVIDER_NAME ?? 'configured-http-provider', modelVersion: process.env.AI_MODEL_VERSION!, apiKey: process.env.AI_PROVIDER_KEY, timeoutMs } : undefined,
+})
+for (const signal of ['SIGINT', 'SIGTERM'] as const) process.once(signal, () => { app.close().catch(error => { app.log.error(error); process.exitCode = 1 }) })
 try { await app.listen({ host: process.env.HOST ?? '127.0.0.1', port }) }
 catch (error) { app.log.error(error); await app.close(); process.exitCode = 1 }
