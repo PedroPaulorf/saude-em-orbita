@@ -18,6 +18,7 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 
 - [[Equipe]] — escolha dos responsáveis
 - [[Desafio e escopo]] — contexto recebido e limites atuais
+- [[Escopo do protótipo]] — o que a reunião decidiu, avaliação crítica e escopo proposto
 - [[Quadro de tarefas]] — próximos passos
 - [[Pesquisa e saúde]]
 - [[Experiência e design]]
