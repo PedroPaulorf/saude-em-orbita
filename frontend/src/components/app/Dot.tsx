@@ -9,7 +9,7 @@ export function Dot({ className }: { className?: string }) {
   return (
     <span
       aria-hidden
-      className={cn('mx-2 inline-block size-[3px] translate-y-[-0.2em] rounded-full bg-current align-middle opacity-70', className)}
+      className={cn('mx-2 inline-block size-[3px] rounded-full bg-current align-middle opacity-70', className)}
     />
   )
 }

@@ -77,7 +77,7 @@ function toVital(c: VitalConfig, today: number, history: number[], todayDiastoli
 
 /** Medidas de hoje: o último check-up salvo, ou os dados simulados se ainda não houver. */
 export function getTodayVitals(): Vital[] {
-  const saved = latestCheckIn()
+  const saved = latestCheckIn('health')
   return vitalConfigs.map((c) => {
     const savedValue = saved?.vitals[c.id]
     if (savedValue == null) {

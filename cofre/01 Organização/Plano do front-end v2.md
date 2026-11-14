@@ -473,3 +473,12 @@ Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11
 - **Armadilha para a equipe**: não use a classe `text-link` como marcador de link. Ela é um utilitário de cor do Tailwind ligado ao `--link` da v1, que é o amarelo; os links da Home saíram amarelos até eu trocar por `underline`.
 - O `Dashboard` antigo foi apagado (a Home o substitui). Os componentes `h7/` continuam porque o check-in antigo ainda os usa; saem na fase 8.
 - Com a página toda em 1440×900, a faixa Health notes termina em 925 px: fica visível na dobra, menos a borda de baixo.
+
+**Fase 3**
+- A migração do v1 roda na primeira leitura, quando ainda não existe `health7:checkins:v2`, e **não apaga** a chave v1. `clearCheckIns` grava uma lista vazia em vez de remover a chave, para o v1 não voltar por migração.
+- `latestCheckIn` exige o tipo (`'health'` ou `'behavioral'`); `latestAny()` serve à conexão do cabeçalho.
+- O campo de medida não tem placeholder com número: mostrar a linha de base dentro do campo poderia induzir a pessoa a digitar esse valor. A frase de apoio "Your baseline is 62 bpm." continua, como na v1.
+- O armazenamento avisa quando grava (`useCheckInsVersion`), para o cabeçalho trocar para "Report queued" já na tela de confirmação.
+- A confirmação tem o botão "Back to Home" (amarelo, a ação da tela); não volta sozinha para a Home, para dar tempo de ler o resumo.
+- Os componentes de `src/components/h7/` já não são usados por nenhuma tela; ficam até a fase 8, como o plano pede.
+

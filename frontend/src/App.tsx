@@ -1,9 +1,10 @@
 import { toast } from 'sonner'
 import { AppShell } from '@/components/app/AppShell'
 import { crew } from '@/lib/health'
-import { navigate, useRoute } from '@/lib/route'
-import { latestCheckIn } from '@/lib/storage'
-import { CheckIn } from '@/screens/CheckIn'
+import { useRoute } from '@/lib/route'
+import { latestAny, useCheckInsVersion } from '@/lib/storage'
+import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
+import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { Home } from '@/screens/Home'
 import { Placeholder } from '@/screens/Placeholder'
 import { isTodayUtc } from '@/lib/utils'
@@ -11,10 +12,12 @@ import type { Connection } from '@/types'
 
 export default function App() {
   const route = useRoute()
+  // Re-renderiza quando um check-up é salvo, para o cabeçalho mostrar "Report queued" na hora.
+  useCheckInsVersion()
 
   // Sem servidor: o relatório fica guardado para envio quando houver contato com o solo.
   // Recalculado a cada troca de rota, então reflete um check-up recém-salvo.
-  const connection: Connection = isTodayUtc(latestCheckIn()?.at) ? 'queued' : 'offline'
+  const connection: Connection = isTodayUtc(latestAny()?.at) ? 'queued' : 'offline'
 
   let screen
   switch (route.path) {
@@ -25,13 +28,10 @@ export default function App() {
       screen = <Placeholder title="Detailed stats" text="Your body map and today's measures will appear here." />
       break
     case '/check/health':
+      screen = <HealthCheckUp />
+      break
     case '/check/behavioral':
-      // Fase 1: o fluxo antigo, saúde e comportamento juntos. Separado na fase 3.
-      screen = (
-        <div className="h7 bg-transparent max-md:[&_.h7-screen]:px-4">
-          <CheckIn onCancel={() => navigate('/')} onDone={() => navigate('/')} />
-        </div>
-      )
+      screen = <BehavioralCheckIn />
       break
     default:
       screen = <Home connection={connection} />

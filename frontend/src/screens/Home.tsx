@@ -8,7 +8,7 @@ import { SpaceWeatherCompact, SpaceWeatherDialog } from '@/components/app/SpaceW
 import { indicators, useSpaceWeather } from '@/lib/donki'
 import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { buildNotes } from '@/lib/notes'
-import { loadCheckIns } from '@/lib/storage'
+import { latestCheckIn } from '@/lib/storage'
 import { isTodayUtc, utcDay } from '@/lib/utils'
 import { addWater, useWaterLog, utcDayKey, WATER_GOAL } from '@/lib/water'
 import type { Connection } from '@/types'
@@ -22,11 +22,10 @@ import type { Connection } from '@/types'
   então as colunas fecham na mesma altura.
 */
 
-/** Último check-up de hoje com cada parte preenchida (armazenamento v1: saúde e comportamento juntos). */
+/** Estado de hoje de cada check-up, a partir do último registro de cada tipo. */
 function todayStatus() {
-  const all = loadCheckIns()
-  const health = [...all].reverse().find((c) => Object.keys(c.vitals ?? {}).length > 0)
-  const behavioral = [...all].reverse().find((c) => Object.keys(c.behavioral ?? {}).length > 0)
+  const health = latestCheckIn('health')
+  const behavioral = latestCheckIn('behavioral')
   return {
     healthDoneAt: isTodayUtc(health?.at) ? health!.at : undefined,
     behavioralDoneAt: isTodayUtc(behavioral?.at) ? behavioral!.at : undefined,
