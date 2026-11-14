@@ -1,0 +1,230 @@
+{
+  "_source": "NASA CCMC DONKI API, https://ccmc.gsfc.nasa.gov/DONKI-API",
+  "live": {
+    "window": {
+      "startDate": "2026-11-08",
+      "endDate": "2026-11-14"
+    },
+    "fetchedAt": "2026-11-14T14:13:22.161Z",
+    "sep": [],
+    "flr": [
+      {
+        "id": "2026-11-08T07:33:00-FLR-001",
+        "classType": "M1.7",
+        "peakTime": "2026-11-08T07:46Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/49453/-1"
+      },
+      {
+        "id": "2026-11-08T15:29:00-FLR-001",
+        "classType": "M1.1",
+        "peakTime": "2026-11-08T15:37Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/49456/-1"
+      },
+      {
+        "id": "2026-11-08T18:15:00-FLR-001",
+        "classType": "M1.1",
+        "peakTime": "2026-11-08T18:27Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/49461/-1"
+      },
+      {
+        "id": "2026-11-11T21:06:00-FLR-001",
+        "classType": "M1.7",
+        "peakTime": "2026-11-11T21:21Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/49504/-1"
+      }
+    ],
+    "gst": []
+  },
+  "history": {
+    "window": {
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-10"
+    },
+    "fetchedAt": "2026-11-14T14:13:22.418Z",
+    "sep": [
+      {
+        "id": "2026-09-05T15:45:00-SEP-001",
+        "time": "2026-09-05T15:45Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48551/-1",
+        "instruments": [
+          "GOES-P: SEISS >100 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ],
+        "alert": {
+          "id": "20260905-AL-004",
+          "issued": "2026-09-05T15:54Z",
+          "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/Alert/48552/1",
+          "summary": "Solar energetic particle event detected by GOES. The flux of > 100 MeV protons exceeds 1 pfu starting at 2026-09-05T15:45Z. NASA Spacecraft at MEO, GEO and other high-altitude orbits and high-inclination LEO can be impacted. Activity ID: 2026-09-05T15:45:00-SEP-001."
+        }
+      },
+      {
+        "id": "2026-09-05T16:15:00-SEP-001",
+        "time": "2026-09-05T16:15Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48558/-1",
+        "instruments": [
+          "GOES-P: SEISS >10 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ],
+        "alert": {
+          "id": "20260905-AL-006",
+          "issued": "2026-09-05T16:24Z",
+          "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/Alert/48559/1",
+          "summary": "Solar energetic particle event detected by GOES. The flux of > 10 MeV protons exceeds 10 pfu starting at 2026-09-05T16:15Z. NASA spacecraft at MEO, GEO and other high-altitude orbits and high-inclination LEO can be impacted. Activity ID: 2026-09-05T16:15:00-SEP-001."
+        }
+      },
+      {
+        "id": "2026-09-05T16:18:00-SEP-001",
+        "time": "2026-09-05T16:18Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48562/-1",
+        "instruments": [
+          "SOHO: COSTEP 15.8-39.8 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ]
+      },
+      {
+        "id": "2026-09-05T16:18:00-SEP-002",
+        "time": "2026-09-05T16:18Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48564/-1",
+        "instruments": [
+          "SOHO: COSTEP 28.2-50.1 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ],
+        "alert": {
+          "id": "20260905-AL-008",
+          "issued": "2026-09-05T16:43Z",
+          "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/Alert/48566/1",
+          "summary": "Solar energetic particle event detected by SOHO. The flux of one or more of the >15.8 MeV and >28.2 MeV protons channels exceed 10^(-1) pfu/MeV starting at 2026-09-05T16:18Z. NASA spacecraft at L1 and near-Earth orbits can be impacted. Activity ID: 2026-09-05T16:18:00-SEP-002."
+        }
+      },
+      {
+        "id": "2026-09-05T16:30:00-SEP-001",
+        "time": "2026-09-05T16:30Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48554/-1",
+        "instruments": [
+          "MODEL: REleASE:ACE/EPAM 15.8-39.8 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ]
+      },
+      {
+        "id": "2026-09-05T16:30:00-SEP-002",
+        "time": "2026-09-05T16:30Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48555/-1",
+        "instruments": [
+          "MODEL: REleASE:SOHO/EPHIN 15.8-39.8 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ]
+      },
+      {
+        "id": "2026-09-05T16:30:00-SEP-003",
+        "time": "2026-09-05T16:30Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48556/-1",
+        "instruments": [
+          "MODEL: REleASE:SOHO/EPHIN 28.2-50.1 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ]
+      },
+      {
+        "id": "2026-09-05T16:30:00-SEP-004",
+        "time": "2026-09-05T16:30Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48557/-1",
+        "instruments": [
+          "MODEL: REleASE:ACE/EPAM 28.2-50.1 MeV"
+        ],
+        "linked": [
+          "FLR",
+          "CME"
+        ]
+      }
+    ],
+    "flr": [
+      {
+        "id": "2026-09-01T21:04:00-FLR-001",
+        "classType": "C5.7",
+        "peakTime": "2026-09-01T21:10Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48456/-1"
+      },
+      {
+        "id": "2026-09-02T18:57:00-FLR-001",
+        "classType": "M3.0",
+        "peakTime": "2026-09-02T19:20Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48472/-1"
+      },
+      {
+        "id": "2026-09-03T09:35:00-FLR-001",
+        "classType": "C2.2",
+        "peakTime": "2026-09-03T09:42Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48495/-1"
+      },
+      {
+        "id": "2026-09-04T07:45:00-FLR-001",
+        "classType": "M1.2",
+        "peakTime": "2026-09-04T07:53Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48516/-1"
+      },
+      {
+        "id": "2026-09-04T19:02:00-FLR-001",
+        "classType": "C6.7",
+        "peakTime": "2026-09-04T19:30Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48533/-1"
+      },
+      {
+        "id": "2026-09-05T10:24:00-FLR-001",
+        "classType": "C6.4",
+        "peakTime": "2026-09-05T10:45Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48544/-1"
+      },
+      {
+        "id": "2026-09-05T15:04:00-FLR-001",
+        "classType": "M1.0",
+        "peakTime": "2026-09-05T15:18Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48550/-1"
+      },
+      {
+        "id": "2026-09-05T17:32:00-FLR-001",
+        "classType": "C8.5",
+        "peakTime": "2026-09-05T17:46Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48576/-1"
+      },
+      {
+        "id": "2026-09-06T10:31:00-FLR-001",
+        "classType": "C5.0",
+        "peakTime": "2026-09-06T10:42Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48593/-1"
+      },
+      {
+        "id": "2026-09-08T12:19:00-FLR-001",
+        "classType": "C2.4",
+        "peakTime": "2026-09-08T12:24Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48618/-1"
+      },
+      {
+        "id": "2026-09-09T08:48:00-FLR-001",
+        "classType": "C3.4",
+        "peakTime": "2026-09-09T09:08Z",
+        "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/48629/-1"
+      }
+    ],
+    "gst": []
+  }
+}

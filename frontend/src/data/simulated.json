@@ -1,0 +1,61 @@
+{
+  "_note": "SIMULATED DATA. Fictional values for the demo; not real health data. Rules are demonstration rules with no clinical source.",
+  "crew": {
+    "id": "crew-02",
+    "displayName": "Crew member 02",
+    "missionDay": 47
+  },
+  "vitals": [
+    {
+      "id": "heartRate",
+      "label": "Heart rate",
+      "question": "What is your resting heart rate?",
+      "fieldLabel": "Resting heart rate",
+      "unit": "bpm",
+      "decimals": 0,
+      "baseline": 62,
+      "history": [62, 63, 61, 64, 66, 68, 71],
+      "rule": { "direction": "both", "attention": 5, "flagged": 15 }
+    },
+    {
+      "id": "bloodPressure",
+      "label": "Blood pressure",
+      "question": "What is your blood pressure?",
+      "fieldLabel": "Blood pressure (systolic/diastolic)",
+      "unit": "mmHg",
+      "decimals": 0,
+      "baseline": 116,
+      "baselineDiastolic": 74,
+      "history": [115, 117, 116, 118, 117, 119, 118],
+      "todayDiastolic": 76,
+      "rule": { "direction": "both", "attention": 10, "flagged": 20 }
+    },
+    {
+      "id": "sleep",
+      "label": "Sleep",
+      "question": "How many hours did you sleep last night?",
+      "fieldLabel": "Sleep",
+      "unit": "h",
+      "decimals": 1,
+      "baseline": 7.2,
+      "history": [7.1, 7.0, 6.4, 5.9, 5.6, 5.4, 5.1],
+      "rule": { "direction": "below", "attention": 1, "flagged": 2 }
+    },
+    {
+      "id": "temperature",
+      "label": "Temperature",
+      "question": "What is your body temperature?",
+      "fieldLabel": "Body temperature",
+      "unit": "°C",
+      "decimals": 1,
+      "baseline": 36.6,
+      "history": [36.6, 36.5, 36.7, 36.6, 36.6, 36.8, 36.7],
+      "rule": { "direction": "both", "attention": 0.5, "flagged": 1 }
+    }
+  ],
+  "behavioral": [
+    { "id": "mood", "question": "How is your mood right now?", "low": "Very low", "high": "Very good" },
+    { "id": "stress", "question": "How stressed do you feel right now?", "low": "Not at all", "high": "Extremely" },
+    { "id": "rest", "question": "How rested do you feel today?", "low": "Not at all", "high": "Fully rested" }
+  ]
+}
