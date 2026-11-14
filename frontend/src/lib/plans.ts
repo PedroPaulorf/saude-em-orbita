@@ -10,7 +10,7 @@
 */
 import { useSyncExternalStore } from 'react'
 import { scopedStorageKey } from '@/lib/active-profile'
-import type { CheckIn } from '@/lib/storage'
+import { hasHealthAnswers, type CheckIn } from '@/lib/storage'
 import { PATTERNS, type PatternDef, type PlanStepDef } from '@/lib/prevention'
 import { utcDayKey, type WaterLog } from '@/lib/water'
 
@@ -114,7 +114,7 @@ export function stepDone(step: PlanStepDef, plan: StoredPlan, day: string, ctx: 
   if (step.rule === 'waterGoal') return (ctx.water[day] ?? 0) >= ctx.waterGoal
   if (step.rule === 'bothCheckUps') {
     const records = ctx.checkIns.filter((c) => c.sync !== 'rejected' && c.at.slice(0, 10) === day)
-    return records.some(c => Object.keys(c.vitals ?? {}).length) && records.some(c => Object.keys(c.behavioral ?? {}).length)
+    return records.some(hasHealthAnswers) && records.some(c => Object.keys(c.behavioral ?? {}).length)
   }
   return false
 }

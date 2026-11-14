@@ -6,6 +6,7 @@ import { randomBytes, randomUUID } from 'node:crypto'
 import type { FastifyRequest } from 'fastify'
 import { openDatabase, migrate } from './database.js'
 import { hashPassword, tokenHash, verifyPassword } from './auth.js'
+import { registerDomainRoutes, personFor, healthFor, environmentFor } from './domains.js'
 import { canonical, strictDate, checkInSchema, historySchema, symptomSchema, eventSchema, analysisSchema, type CheckInInput } from './contracts.js'
 
 export interface AiProvider { url: string; name: string; modelVersion: string; apiKey?: string; timeoutMs?: number }
@@ -78,6 +79,7 @@ export async function createApp(options: Options) {
   })
   app.register(async api => {
     api.addHook('onRequest', authenticate)
+    registerDomainRoutes(api, db, crew, windowOf)
     api.post('/auth/logout', async (request, reply) => {
       await db.query('DELETE FROM sessions WHERE token_hash=$1 AND crew_id=$2', [tokenHash(request.cookies.health7_session!), crew(request)])
       reply.clearCookie('health7_session', cookieOptions)
@@ -86,7 +88,7 @@ export async function createApp(options: Options) {
     api.get('/me', async request => (await db.query('SELECT profile FROM crew WHERE id=$1', [crew(request)])).rows[0].profile)
     api.post<{ Body: CheckInInput }>('/me/checkins', { schema: { body: checkInSchema } }, async (request, reply) => {
       const input = normalizeAt(request.body)
-      if (!Object.keys(input.vitals).length && !Object.keys(input.behavioral).length) fail(400, 'Provide at least one answer')
+      if (!Object.keys(input.vitals).length && !Object.keys(input.behavioral).length && !Object.keys(input.healthDetails ?? {}).length) fail(400, 'Provide at least one answer')
       const id = randomUUID(), crewId = crew(request)
       const added = await db.query('INSERT INTO checkins(id,crew_id,client_id,at,payload) VALUES($1,$2,$3,$4,$5) ON CONFLICT(crew_id,client_id) DO NOTHING RETURNING *',
         [id, crewId, input.clientId, input.at, input])
@@ -169,7 +171,13 @@ export async function createApp(options: Options) {
       const checks = await db.query('SELECT * FROM checkins WHERE crew_id=$1 AND at >= $2 AND at <= $3 ORDER BY at DESC,id DESC LIMIT $4', [crewId, window.from, window.to, window.limit + 1])
       const symptoms = await symptomsFor(crewId, window)
       const checkins = checks.rows.slice(0, window.limit).map(checkinOutput)
+      const [person, health, environment] = await Promise.all([
+        personFor(db, crewId), healthFor(db, crewId, window), environmentFor(db, crewId, window),
+      ])
       const sources: Row[] = [ { type: 'profile', id: crewId, crewId } ]
+      sources.push({ type: 'person', id: crewId, crewId, updatedAt: person.updatedAt, source: person.source })
+      for (const item of health.items) sources.push({ type: 'health', id: item.id, crewId, at: item.at, source: item.source })
+      for (const item of environment.items) sources.push({ type: 'environment', id: item.id, crewId, at: item.at, source: item.source })
       for (const item of checkins) sources.push({ type: 'checkin', id: item.id, crewId, at: item.at, source: item.source })
       for (const item of symptoms.items) {
         sources.push({ type: 'symptom', id: item.id, crewId, at: item.at, source: 'self-report' })
@@ -177,8 +185,8 @@ export async function createApp(options: Options) {
         if (item.lastObservation) referenced.set(item.lastObservation.id, item.lastObservation)
         for (const event of referenced.values()) sources.push({ type: 'symptom_event', id: event.id, crewId, at: event.at, source: 'self-report' })
       }
-      return { profile, window, checkins, symptoms: symptoms.items, sources,
-        truncated: { checkins: checks.rows.length > window.limit, symptoms: symptoms.truncated, symptomEvents: symptoms.eventsTruncated },
+      return { profile, person, health: health.items, environment: environment.items, window, checkins, symptoms: symptoms.items, sources,
+        truncated: { checkins: checks.rows.length > window.limit, health: health.truncated, environment: environment.truncated, symptoms: symptoms.truncated, symptomEvents: symptoms.eventsTruncated },
         limitation: 'Registros descritivos e possivelmente incompletos. Ausência de relato não indica resolução.' }
     }
     api.get<{ Querystring: WindowInput }>('/me/context', { schema: { querystring: historySchema } }, async request => contextFor(crew(request), windowOf(request.query)))

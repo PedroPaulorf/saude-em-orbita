@@ -29,8 +29,14 @@ apenas backend. Front permanece inalterado; README explica contrato para futura 
 - [x] Implementar migrações, auth, perfis, checkins, sintomas e análises.
 - [x] README completo: banco, setup, rotas, exemplos, migração SQLite e limites.
 - [x] Instalação limpa, compilação, testes em PostgreSQL real e revisão independente.
-Entrega: commit somente do backend e push da branch própria (sem merge em main).
+Entrega inicial em branch de backend; integração com login e avatar já incorporada à main no commit `15cce8c`.
 
 Verificação: npm ci e build; testes contra PostgreSQL18 em schema temporário;
 inicialização de dist em porta isolada, migração reaplicada e login feminino real.
 Revisão independente sem bloqueios. IA usa apenas fixture HTTP local nos testes.
+
+## Pessoa, Saúde e Ambiente
+
+Evolução em `feat/person-health-environment`, conforme imagem e decisão do responsável: peso em Pessoa; urina e fezes em Saúde. Migração `002` cria três tabelas tipadas sem apagar o histórico original. Gatilhos criam Pessoa para novas contas e projetam check-ups na tabela Saúde dentro da mesma transação. Peso legado só atualiza Pessoa se for mais recente que sua última alteração, incluindo remoção explícita.
+
+APIs autenticadas de Pessoa e Ambiente, consulta tipada de Saúde e contexto de análise com os três domínios. Cliente do frontend preserva os relatos opcionais na fila, sem adicionar novas telas. Campos e exemplos em `DATABASE.md`.
