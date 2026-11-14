@@ -1,4 +1,5 @@
-import { CircleCheck, CircleDashed, HeartPulse, Smile } from 'lucide-react'
+import { Brain, CircleCheck, CircleDashed, HeartPulse } from 'lucide-react'
+import { compareReaction, useCognitive } from '@/lib/cognitive'
 import { Button } from '@/components/ui/button'
 import { behavioralQuestions } from '@/lib/health'
 import { href } from '@/lib/route'
@@ -80,6 +81,16 @@ export function HealthCheckUpCard({
   )
 }
 
+/** Uma linha do cartão: rótulo à esquerda, valor à direita. */
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <li className="flex items-center justify-between gap-3 border-t border-hairline py-1.5 first:border-t-0">
+      <span className="text-sm text-ink-soft">{label}</span>
+      <span className="text-right">{children}</span>
+    </li>
+  )
+}
+
 export function BehavioralCheckInCard({
   answers,
   doneAt,
@@ -92,37 +103,63 @@ export function BehavioralCheckInCard({
   primary: boolean
   className?: string
 }) {
-  const LABELS: Record<string, string> = { mood: 'Mood', stress: 'Stress', rest: 'Rest' }
+  // Último resultado dos testes (guardado neste aparelho) e a mediana das sessões anteriores.
+  const tests = useCognitive()
+  const last = tests.at(-1)
+  const reaction = last?.reaction ? compareReaction(tests.slice(0, -1), last.reaction.median) : null
+  const none = <span className="text-sm text-ink-soft">—</span>
   return (
     <Panel aria-labelledby="behavioral-checkin" className={className}>
       <PanelHeader
         id="behavioral-checkin"
-        icon={<Smile />}
+        icon={<Brain />}
         tone="blue"
         title="Behavioral check-in"
         subtitle={<TodayState doneAt={doneAt} />}
       />
-      <ul className="grid" aria-label="Latest answers">
-        {behavioralQuestions.map((q) => {
-          const v = answers?.[q.id]
-          return (
-            <li key={q.id} className="flex items-center justify-between gap-3 border-t border-hairline py-1.5 first:border-t-0">
-              <span className="text-sm text-ink-soft">{LABELS[q.id] ?? q.id}</span>
-              <span className="text-right">
-                {v != null ? (
-                  <>
-                    <span className="font-mono text-[17px] text-ink">{v}</span>
-                    <span className="font-mono text-[13px] text-ink-soft"> / 5</span>
-                    {/* Só repete a palavra da escala nas pontas; não interpreta os valores do meio. */}
-                    {(v === 1 || v === 5) && <span className="ml-2 text-xs text-ink-soft">{v === 1 ? q.low : q.high}</span>}
-                  </>
-                ) : (
-                  <span className="text-sm text-ink-soft">No answer yet</span>
-                )}
-              </span>
-            </li>
-          )
-        })}
+      <ul className="grid" aria-label="Latest results">
+        <Row label="Reflexes">
+          {reaction ? (
+            <>
+              <span className="font-mono text-[17px] text-ink">{reaction.value}</span>
+              <span className="font-mono text-[13px] text-ink-soft"> ms</span>
+              {reaction.baseline != null && (
+                <span className="ml-2 font-mono text-xs text-ink-soft">
+                  {reaction.value - reaction.baseline > 0 ? '+' : ''}
+                  {reaction.value - reaction.baseline}
+                </span>
+              )}
+            </>
+          ) : (
+            none
+          )}
+        </Row>
+        <Row label="Memory">
+          {last?.memory ? (
+            <>
+              <span className="font-mono text-[17px] text-ink">{last.memory.span || 0}</span>
+              <span className="font-mono text-[13px] text-ink-soft"> numbers</span>
+            </>
+          ) : (
+            none
+          )}
+        </Row>
+        <Row label="Attention">
+          {last?.stroop ? (
+            <span className="font-mono text-[17px] text-ink">
+              {last.stroop.correct}/{last.stroop.total}
+            </span>
+          ) : (
+            none
+          )}
+        </Row>
+        <Row label="Mood · stress · rest">
+          {behavioralQuestions.some((q) => answers?.[q.id] != null) ? (
+            <span className="font-mono text-[17px] text-ink">{behavioralQuestions.map((q) => answers?.[q.id] ?? '—').join(' · ')}</span>
+          ) : (
+            none
+          )}
+        </Row>
       </ul>
       <div className="mt-auto">
         <StartButton done={!!doneAt} primary={primary} to={href('/check/behavioral')} label="behavioral check-in" />

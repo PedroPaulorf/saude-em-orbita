@@ -198,7 +198,8 @@ export function AppShell({
           </ul>
         </nav>
 
-        <CompanionButton ref={companionButton} expanded={companionOpen} lines={companionLines} onClick={onToggleCompanion} />
+        {/* Nos check-ups a barra some: não cobre a grade de memória nem distrai os testes. */}
+        {!path.startsWith('/check') && <CompanionButton ref={companionButton} expanded={companionOpen} lines={companionLines} onClick={onToggleCompanion} />}
         {companionOpen && companionPanel}
         <Toaster position="top-center" offset={{ top: 76 }} mobileOffset={{ top: 76 }} />
       </div>
