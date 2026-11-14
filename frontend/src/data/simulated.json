@@ -54,9 +54,25 @@
     }
   ],
   "game": {
-    "_note": "Rotina diária. waterGoal é uma META DE DEMONSTRAÇÃO, sem fonte: troque por um valor com fonte quando houver.",
+    "_note": "Rotina diária e pontos. waterGoal é uma META DE DEMONSTRAÇÃO, sem fonte: troque por um valor com fonte quando houver. Pontos premiam o que a pessoa faz, nunca o valor medido. startingPoints e crew são SIMULADOS.",
     "waterServingMl": 250,
-    "waterGoal": 8
+    "waterGoal": 8,
+    "points": {
+      "healthCheckUp": 20,
+      "behavioralCheckIn": 20,
+      "waterServing": 5,
+      "fullRoutineBonus": 20,
+      "streakPerDay": 5,
+      "streakMaxPerDay": 25
+    },
+    "startingPoints": 2940,
+    "ranks": [
+      { "name": "Cadet", "min": 0 },
+      { "name": "Specialist", "min": 500 },
+      { "name": "Flight Engineer", "min": 1500 },
+      { "name": "Pilot", "min": 3000 },
+      { "name": "Commander", "min": 5000 }
+    ]
   },
   "behavioral": [
     { "id": "mood", "question": "How is your mood right now?", "low": "Very low", "high": "Very good" },

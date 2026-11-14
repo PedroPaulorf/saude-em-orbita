@@ -68,7 +68,7 @@ export function AppShell({
   who: string
   missionDay: number
   connection: Connection
-  /** Chip de rank e pontos (fase 4). */
+  /** Chip de rank e pontos. */
   headerExtra?: ReactNode
   onOpenCompanion?: () => void
   children: ReactNode
@@ -119,22 +119,26 @@ export function AppShell({
             </nav>
 
             <div className="ml-auto flex min-w-0 items-center gap-3 md:gap-5">
-              <span className="hidden truncate text-sm text-ink-soft lg:inline">
+              <span className="hidden truncate text-sm text-ink-soft xl:inline">
                 {who}
                 <Dot />
                 Mission day <span className="font-mono text-ink">{missionDay}</span>
               </span>
-              {headerExtra}
+              {headerExtra && <span className="hidden lg:inline-flex">{headerExtra}</span>}
               <SimulatedChip />
               <ConnectionStatus state={connection} />
             </div>
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1360px] px-4 pt-3 text-sm text-ink-soft md:px-8 lg:hidden">
-          {who}
-                <Dot />
-                Mission day <span className="font-mono text-ink">{missionDay}</span>
+        {/* Abaixo de 1280 px: tripulante (e, abaixo de 1024 px, o chip de rank) numa segunda linha */}
+        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-2 px-4 pt-3 text-sm text-ink-soft md:px-8 xl:hidden">
+          <span>
+            {who}
+            <Dot />
+            Mission day <span className="font-mono text-ink">{missionDay}</span>
+          </span>
+          {headerExtra && <span className="lg:hidden">{headerExtra}</span>}
         </div>
 
         <main id="main" tabIndex={-1} className="outline-none">
@@ -166,7 +170,7 @@ export function AppShell({
         </nav>
 
         <CompanionButton onClick={onOpenCompanion} />
-        <Toaster position="top-center" />
+        <Toaster position="top-center" offset={{ top: 76 }} mobileOffset={{ top: 76 }} />
       </div>
     </TooltipProvider>
   )

@@ -10,7 +10,8 @@ import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { buildNotes } from '@/lib/notes'
 import { latestCheckIn } from '@/lib/storage'
 import { isTodayUtc, utcDay } from '@/lib/utils'
-import { addWater, useWaterLog, utcDayKey, WATER_GOAL } from '@/lib/water'
+import { addWater, WATER_GOAL } from '@/lib/water'
+import type { GameSummary } from '@/lib/game'
 import type { Connection } from '@/types'
 
 /*
@@ -33,12 +34,12 @@ function todayStatus() {
   }
 }
 
-export function Home({ connection }: { connection: Connection }) {
+export function Home({ connection, game }: { connection: Connection; game: GameSummary }) {
   const vitals = useMemo(() => getTodayVitals(), [])
   const regions = useMemo(() => getBodyRegions(vitals), [vitals])
   const today = useMemo(() => todayStatus(), [])
   const weather = useSpaceWeather()
-  const water = useWaterLog()[utcDayKey()] ?? 0
+  const water = game.today.water
   const [weatherOpen, setWeatherOpen] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
   const waterButton = useRef<HTMLButtonElement>(null)
@@ -74,9 +75,7 @@ export function Home({ connection }: { connection: Connection }) {
         />
         <RoutineCard
           ref={waterButton}
-          healthDone={healthDone}
-          behavioralDone={behavioralDone}
-          water={water}
+          today={game.today}
           onWater={(d) => addWater(d)}
           className="md:col-span-2 xl:col-span-1 xl:col-start-3 xl:row-span-2 xl:row-start-1"
         />

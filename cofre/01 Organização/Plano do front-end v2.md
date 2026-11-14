@@ -482,3 +482,12 @@ Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11
 - A confirmação tem o botão "Back to Home" (amarelo, a ação da tela); não volta sozinha para a Home, para dar tempo de ler o resumo.
 - Os componentes de `src/components/h7/` já não são usados por nenhuma tela; ficam até a fase 8, como o plano pede.
 
+**Fase 4**
+- A sequência conta só a partir dos registros salvos: no primeiro dia de demo ela é 1 (+5), não os "4 dias" do exemplo do contrato do chat. Não criei um "startingStreak" simulado porque o plano não pede; se a equipe quiser a sequência maior no vídeo, é uma chave a mais em `game`.
+- A sequência atual mostrada é a de hoje ou, se hoje ainda não tem os dois check-ups, a de ontem (para não "zerar" de manhã).
+- Desfazer uma porção de água tira os 5 pontos dela: é correção de registro, não perda de ponto por medida. Acima da meta, desfazer não muda nada.
+- O aviso "+N points" mostra só o ganho do dia (não aparece ao desfazer). O diálogo de rank aparece quando o patamar sobe durante o uso, não ao abrir o app já num rank novo.
+- O chip de rank fica no cabeçalho a partir de 1024 px; abaixo disso vai para a linha do tripulante, embaixo do cabeçalho. O texto do tripulante sai do cabeçalho abaixo de 1280 px, para caber.
+- Pontos formatados no padrão do inglês ("2,940 pts"), já que a interface é em inglês; o plano escreve "2 940".
+- `game.crew` (colegas simulados) fica para a fase 7, junto com a tela Progress.
+
