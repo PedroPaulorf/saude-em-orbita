@@ -4,11 +4,21 @@ import { MessageCircleHeart } from 'lucide-react'
  * Botão da IA, fixo no canto inferior direito em todas as telas (o círculo "AI · fixed button" do quadro).
  * No celular fica acima da barra de abas. Não é amarelo: a cor de ação fica para o botão principal da tela.
  */
-export function CompanionButton({ onClick }: { onClick?: () => void }) {
+export function CompanionButton({
+  onClick,
+  expanded,
+  ref,
+}: {
+  onClick?: () => void
+  expanded?: boolean
+  ref?: React.Ref<HTMLButtonElement>
+}) {
   return (
     <button
+      ref={ref}
       type="button"
-      aria-label="Open companion"
+      aria-label={expanded ? 'Close companion' : 'Open companion'}
+      aria-expanded={expanded}
       onClick={onClick}
       className="fixed right-4 bottom-20 z-40 flex size-14 flex-col items-center justify-center gap-0.5 rounded-full border border-hairline-strong bg-surface-2 text-ink shadow-float transition-colors hover:bg-surface-3 md:right-6 md:bottom-6"
     >

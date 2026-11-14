@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { ChartLine, House, PersonStanding, type LucideIcon } from 'lucide-react'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -61,7 +61,9 @@ export function AppShell({
   missionDay,
   connection,
   headerExtra,
-  onOpenCompanion,
+  companionOpen,
+  onToggleCompanion,
+  companionPanel,
   children,
 }: {
   path: Path
@@ -70,10 +72,20 @@ export function AppShell({
   connection: Connection
   /** Chip de rank e pontos. */
   headerExtra?: ReactNode
-  onOpenCompanion?: () => void
+  /** Painel do companheiro aberto? O painel é desenhado pelo App, aqui só o botão e o foco. */
+  companionOpen?: boolean
+  onToggleCompanion?: () => void
+  companionPanel?: ReactNode
   children: ReactNode
 }) {
   const active = activeTab(path)
+  const companionButton = useRef<HTMLButtonElement>(null)
+  const wasOpen = useRef(false)
+  // Ao fechar o painel, o foco volta para o botão.
+  useEffect(() => {
+    if (wasOpen.current && !companionOpen) companionButton.current?.focus()
+    wasOpen.current = !!companionOpen
+  }, [companionOpen])
 
   return (
     <TooltipProvider>
@@ -169,7 +181,8 @@ export function AppShell({
           </ul>
         </nav>
 
-        <CompanionButton onClick={onOpenCompanion} />
+        <CompanionButton ref={companionButton} expanded={companionOpen} onClick={onToggleCompanion} />
+        {companionOpen && companionPanel}
         <Toaster position="top-center" offset={{ top: 76 }} mobileOffset={{ top: 76 }} />
       </div>
     </TooltipProvider>

@@ -501,3 +501,12 @@ Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11
 - Em coluna estreita o selo de estado do rótulo do avatar quebra em duas linhas, para não invadir o cartão vizinho.
 - Home: "Report for ground" virou "Report", com o subtítulo "For your flight surgeon", e o botão "Open report" foi para o cabeçalho do cartão, como o "Details" do clima espacial. Com a rotina maior da fase 4, a Home tem 934 px em 1440×900.
 
+**Fase 6**
+- No celular o painel ocupa a tela inteira, mas é o mesmo componente do desktop, não o `sheet` do shadcn: um só código, com o mesmo foco (vai para o campo ao abrir), Esc para fechar e foco de volta no botão.
+- O webhook real ainda não foi configurado. O caminho com webhook foi testado contra um servidor local que imita o n8n (CORS liberado, resposta `[{"output": "..."}]`, texto puro, erro 500, resposta lenta e sem resposta). O pedido saiu no formato do contrato, com o mesmo `sessionId` em toda a conversa. Falta o teste com o fluxo de verdade: preencher `VITE_N8N_CHAT_WEBHOOK_URL` em `frontend/.env.local` (modelo em `frontend/.env.example`).
+- O leitor da resposta também aceita o item do n8n no formato `{ "json": { "output": ... } }`, além do que o plano lista.
+- Falha de rede (fetch rejeita, inclusive por CORS bloqueado) mostra a frase de "sem conexão" do plano, com "Try again". Tempo esgotado (45 s) e erro HTTP têm frases próprias.
+- O modo de demonstração responde com frases prontas e sem orientação médica. Pergunta com palavra de saúde (dor, remédio, sintoma...) recebe o encaminhamento ao cirurgião de voo; frase de sofrimento intenso recebe a resposta de cuidado que encaminha para a tripulação e o cirurgião de voo. No n8n, isso fica no prompt do anexo.
+- `context.behavioral` só vai preenchido se o check-in comportamental for de hoje; senão vai `null`.
+- O painel usa o `useSpaceWeather` quando abre, para mandar o resumo do clima espacial. Isso pode disparar uma consulta ao DONKI a mais.
+

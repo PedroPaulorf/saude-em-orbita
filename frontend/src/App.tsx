@@ -1,5 +1,6 @@
-import { toast } from 'sonner'
+import { useState } from 'react'
 import { AppShell } from '@/components/app/AppShell'
+import { ChatPanel } from '@/components/app/ChatPanel'
 import { GameEvents, RankChip } from '@/components/app/GameBits'
 import { crew } from '@/lib/health'
 import { useRoute } from '@/lib/route'
@@ -18,6 +19,7 @@ export default function App() {
   // Re-renderiza quando um check-up é salvo, para o cabeçalho mostrar "Report queued" na hora.
   useCheckInsVersion()
   const game = useGame()
+  const [companionOpen, setCompanionOpen] = useState(false)
 
   // Sem servidor: o relatório fica guardado para envio quando houver contato com o solo.
   // Recalculado a cada troca de rota, então reflete um check-up recém-salvo.
@@ -48,7 +50,9 @@ export default function App() {
       missionDay={crew.missionDay}
       connection={connection}
       headerExtra={<RankChip game={game} />}
-      onOpenCompanion={() => toast('Your companion is not connected yet.')}
+      companionOpen={companionOpen}
+      onToggleCompanion={() => setCompanionOpen((o) => !o)}
+      companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
     >
       {screen}
       <GameEvents game={game} />
