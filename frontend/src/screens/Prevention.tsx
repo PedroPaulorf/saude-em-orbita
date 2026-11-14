@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ShieldCheck } from 'lucide-react'
+import { Disclosure } from '@/components/app/Disclosure'
 import { Dot } from '@/components/app/Dot'
 import { PatternCard } from '@/components/app/PatternCard'
 import { RadiationCard } from '@/components/app/RadiationCard'
@@ -89,38 +90,52 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
           <div className="order-1 grid gap-4">
           {active.length === 0 ? (
             <section aria-labelledby="no-pattern" className="flex flex-col gap-3 rounded-xl border border-hairline bg-surface-1 p-5 md:p-6">
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="size-6 text-interactive" aria-hidden />
-                <h2 id="no-pattern" className="font-display text-xl font-semibold">
-                  No early-sign pattern today. {patterns.length} patterns checked.
-                </h2>
-              </div>
-              <ul className="grid gap-2">
+              <header className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-lg bg-surface-2 text-interactive">
+                    <ShieldCheck className="size-5" />
+                  </span>
+                  <div>
+                    <h2 id="no-pattern" className="font-display text-lg leading-tight font-semibold">
+                      No early-sign pattern today
+                    </h2>
+                    <p className="mt-1 text-sm text-ink-soft">
+                      <span className="font-mono text-ink">{patterns.length}</span> patterns checked. Open one to see what it looks at.
+                    </p>
+                  </div>
+                </div>
+                <DemoTag />
+              </header>
+              <ul className="grid divide-y divide-hairline">
                 {patterns.map((p) => (
-                  <li key={p.def.id} className="rounded-lg border border-hairline px-3 py-2.5">
-                    <p className="font-semibold">{p.def.title}</p>
-                    <p className="text-sm text-ink-soft">Looks at: {p.def.signs.map((s) => s.label.replace(/ for \d+ days or more$/, '').toLowerCase()).join('; ')}.</p>
+                  <li key={p.def.id}>
+                    <Disclosure summary={<span className="font-normal text-ink">{p.def.title}</span>} className="py-1">
+                      <p className="text-sm text-ink-soft">
+                        Looks at: {p.def.signs.map((s) => s.label.replace(/ for \d+ days or more$/, '').toLowerCase()).join('; ')}.
+                      </p>
+                    </Disclosure>
                   </li>
                 ))}
               </ul>
-              <DemoTag className="self-start" />
             </section>
           ) : (
             active.map((r) => <PatternCard key={r.def.id} result={r} />)
           )}
 
           {active.length > 0 && inactive.length > 0 && (
-            <section aria-label="Other patterns" className="rounded-xl border border-hairline bg-surface-1 px-5 py-4">
-              <p className="text-ink">
-                {inactive.length} other {inactive.length === 1 ? 'pattern' : 'patterns'} checked, not active:
-              </p>
-              <ul className="mt-1 grid gap-0.5 text-sm text-ink-soft">
+            <section aria-labelledby="other-patterns" className="rounded-xl border border-hairline bg-surface-1 px-5 py-4">
+              <h2 id="other-patterns" className="text-sm font-semibold text-ink-soft">
+                {inactive.length} other {inactive.length === 1 ? 'pattern' : 'patterns'} checked, not active
+              </h2>
+              <ul className="mt-2 grid divide-y divide-hairline text-sm">
                 {inactive.map((p) => (
-                  <li key={p.def.id}>
-                    {p.def.title}
-                    <Dot />
-                    <span className="font-mono">{p.present}</span> of <span className="font-mono">{p.total}</span> signs, needs{' '}
-                    <span className="font-mono">{p.def.minSigns}</span>
+                  <li key={p.def.id} className="flex flex-col gap-0.5 py-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                    <span className="min-w-0 text-ink">{p.def.title}</span>
+                    <span className="shrink-0 font-mono text-[13px] whitespace-nowrap text-ink-soft">
+                      {p.present}/{p.total} signs
+                      <span className="sr-only">, needs {p.def.minSigns}</span>
+                      <span aria-hidden> · needs {p.def.minSigns}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -160,16 +175,15 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
               </ul>
             </section>
           )}
-          <section aria-labelledby="how-title" className="order-5 flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
-            <h2 id="how-title" className="font-display text-lg font-semibold">
-              How this works
-            </h2>
-            <ul className="grid list-disc gap-1.5 pl-5 text-sm text-ink-soft">
+          <section aria-label="How this works" className="order-5 rounded-xl border border-hairline bg-surface-1 px-5 py-2">
+            <Disclosure summary={<span className="font-display text-base text-ink">How this works</span>}>
+            <ul className="grid list-disc gap-1.5 pb-2 pl-5 text-sm text-ink-soft">
               <li>The monitoring rule compares each measure with your pre-flight baseline and the median of your recent days in flight.</li>
               <li>The state comes from the rule: how many measures are off and for how many days. The score, from 0 to 100, shows how large the change is. It is not a probability.</li>
               <li>The patterns are the six conditions of the NEXUS-Med research, in the research&apos;s own wording. A pattern never changes the state on its own.</li>
               <li>It is not a diagnosis. Your flight surgeon reviews every active pattern. Demonstration rule, values anchored in published spaceflight data.</li>
             </ul>
+            </Disclosure>
           </section>
         </div>
       </div>

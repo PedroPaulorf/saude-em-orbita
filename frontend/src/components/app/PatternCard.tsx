@@ -4,8 +4,7 @@ import { VITAL_REGION } from '@/lib/notes'
 import type { PatternResult, SignResult } from '@/lib/prevention'
 import { href } from '@/lib/route'
 import { cn } from '@/lib/utils'
-import { Clamped } from './Clamped'
-import { Dot } from './Dot'
+import { NasaAdvice } from './NasaAdvice'
 import { DemoTag } from './SourceTag'
 import { StatusBadge } from './StatusBadge'
 
@@ -78,7 +77,7 @@ export function PatternCard({ result, children }: { result: PatternResult; child
         </div>
       </header>
       <p className="text-sm text-ink-soft">
-        {def.summary} This is not a diagnosis. The pattern goes to your flight surgeon with your report.
+        {def.summary} Not a diagnosis: it goes to your flight surgeon with your report.
       </p>
       <ul className="grid gap-2" aria-label="Signs">
         {result.signs.map((s) => (
@@ -86,19 +85,7 @@ export function PatternCard({ result, children }: { result: PatternResult; child
         ))}
       </ul>
       {children}
-      {risk && (
-        <div className="grid gap-1 border-t border-hairline pt-4">
-          <p className="text-sm font-semibold text-ink-soft">
-            What can be done
-            <Dot />
-            NASA Human Research Program
-          </p>
-          <Clamped text={risk.whatCanBeDone} lines={3} />
-          <a href={risk.url} target="_blank" rel="noreferrer" className="self-start text-sm text-interactive underline underline-offset-3">
-            Source: {risk.title}
-          </a>
-        </div>
-      )}
+      {risk && <NasaAdvice risk={risk} />}
     </section>
   )
 }

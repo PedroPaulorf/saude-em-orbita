@@ -24,6 +24,7 @@ export function RoadmapStepItem({
   done,
   onToggle,
   compact,
+  hideWhy,
   links = true,
 }: {
   step: RoadmapStep
@@ -31,6 +32,8 @@ export function RoadmapStepItem({
   done?: boolean
   onToggle?: () => void
   compact?: boolean
+  /** Esconde o porquê quando ele repete o de um passo anterior. */
+  hideWhy?: boolean
   /** Mostra o botão de água e o link do risco da NASA. */
   links?: boolean
 }) {
@@ -62,7 +65,7 @@ export function RoadmapStepItem({
           {step.kind !== 'do' && <span className={cn('mr-1.5 font-bold', kind.className)}>{kind.label}:</span>}
           {step.text}
         </p>
-        {!compact && step.why && <p className="font-mono text-[12px] leading-snug text-ink-soft">{step.why}</p>}
+        {!compact && !hideWhy && step.why && <p className="font-mono text-[12px] leading-snug text-ink-soft">{step.why}</p>}
         {!compact && links && (risk || step.action === 'water') && (
           <div className="flex flex-wrap items-center gap-2 pt-0.5">
             {step.action === 'water' && (

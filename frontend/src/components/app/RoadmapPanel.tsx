@@ -31,7 +31,10 @@ function StateLine({ m }: { m: MonitorResult }) {
         <span>
           Day <span className="font-mono">{m.day}</span>
         </span>
-        <DemoTag className="ml-3 h-auto min-h-6 py-0.5 whitespace-normal">{m.notice}</DemoTag>
+        <span className="ml-auto" title={m.notice}>
+          <DemoTag />
+          <span className="sr-only">: {m.notice}</span>
+        </span>
       </p>
       <p className="text-sm text-ink-soft">
         {m.observed ? m.wording : 'No check-up today yet. The state uses what you recorded today.'}
@@ -49,6 +52,15 @@ function StateLine({ m }: { m: MonitorResult }) {
 export function RoadmapPanel({ input, monitor, className }: { input: RoadmapInput; monitor?: MonitorResult | null; className?: string }) {
   const { roadmap, loading, regenerate } = useRoadmap(input)
   const { done, toggle } = useDoneSteps()
+  // O mesmo porquê (ex.: os sinais do motor) aparece em vários passos: mostra só na primeira vez.
+  const repeatedWhy = new Set<string>()
+  const seenWhy = new Set<string>()
+  for (const phase of roadmap.phases) {
+    for (const s of phase.steps) {
+      if (s.why && seenWhy.has(s.why)) repeatedWhy.add(s.id)
+      seenWhy.add(s.why)
+    }
+  }
   if (monitor?.state === 'ESCALATE') {
     return (
       <Panel aria-labelledby="roadmap-title" accent="flagged" className={cn('gap-4 md:p-6', className)}>
@@ -88,7 +100,7 @@ export function RoadmapPanel({ input, monitor, className }: { input: RoadmapInpu
             {phase.steps.length ? (
               <ul className="grid gap-4">
                 {phase.steps.map((s) => (
-                  <RoadmapStepItem key={s.id} step={s} checkable={phase.id === 'today'} links={phase.id === 'today'} done={done.includes(s.id)} onToggle={() => toggle(s.id)} />
+                  <RoadmapStepItem key={s.id} step={s} checkable={phase.id === 'today'} links={phase.id === 'today'} done={done.includes(s.id)} onToggle={() => toggle(s.id)} hideWhy={repeatedWhy.has(s.id)} />
                 ))}
               </ul>
             ) : (
