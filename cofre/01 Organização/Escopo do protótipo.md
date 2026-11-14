@@ -20,13 +20,13 @@ Resumo da reunião de brainstorming, avaliação crítica das ideias e proposta 
 
 A equipe fechou cinco itens no fim da reunião:
 
-| # | Função | Situação na reunião |
-|---|---|---|
-| 1 | Auxiliar o astronauta que está na nave | Obrigatória |
-| 2 | Check-up diário de saúde | Obrigatória |
-| 3 | Check-up de saúde mental, **separado** do de saúde, com cerca de quatro perguntas, deixando claro que não substitui o psicólogo | Obrigatória |
-| 4 | IA rodando localmente para ajudar em problemas médicos | Opcional |
-| 5 | Modelo 3D do corpo, masculino e feminino | Opcional |
+| #   | Função                                                                                                                          | Situação na reunião |
+| --- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| 1   | Check-up de saúde física                                                                                                        | Obrigatória         |
+| 2   | Check-up de bem-estar psicológico                                                                                               | Obrigatória         |
+| 3   | Check-up de saúde mental, **separado** do de saúde, com cerca de quatro perguntas, deixando claro que não substitui o psicólogo | Obrigatória         |
+| 4   | IA rodando localmente para ajudar em problemas médicos                                                                          | Opcional            |
+| 5   | Modelo 2d visando 3d do corpo, masculino e feminino                                                                             | Obrigatótrio        |
 
 Também foi citado um item que a transcrição registra como "Terfáceito auditivo" [14:34]. **Interpretação:** pode ser "interface auditiva" (alertas ou comandos por voz). Confirmar com a equipe. Gamificação foi tratada como subtópico, não como função própria [14:34].
 
@@ -167,3 +167,28 @@ Horários são sugestão; ajustar ao horário do evento local.
 - [ ] O que era o quinto item ("Terfáceito auditivo").
 - [ ] IA: adiar e, se entrar, só para resumo.
 - [ ] Responsável por cada item até domingo.
+
+## Escopo em cinco temas — atualização da conversa
+
+Proposta baseada na [[Transcrição da reunião]], especialmente no fechamento entre 14:01 e 16:01. Esta seção registra o escopo solicitado na conversa; as avaliações e propostas anteriores permanecem como histórico para discussão.
+
+**Objetivo:** facilitar o check-up e a compreensão da própria condição durante a missão, conectando os registros ao corpo interativo e à consulta offline.
+
+| Tema | Ideia discutida | Como explorar no protótipo |
+|---|---|---|
+| **1. Check-up de saúde física** | Registrar diariamente a condição do astronauta. | Formulário curto sobre sintomas e condições físicas, com histórico individual. |
+| **2. Check-up de bem-estar psicológico** | Fazer uma avaliação separada da saúde física, com perguntas básicas. | Registro de humor, estresse e percepção de bem-estar, sem substituir acompanhamento psicológico. |
+| **3. Corpo humano em 3D** | Disponibilizar modelos masculino e feminino. | Selecionar regiões para registrar desconfortos e visualizar informações relacionadas ao próprio check-up. |
+| **4. IA local para auxiliar na consulta médica** | Executar a IA localmente para ajudar com dúvidas e problemas durante a missão. | Consultar uma base de documentos selecionados, mostrando as fontes e reconhecendo quando não houver informação suficiente. |
+| **5. Interface intuitiva — interpretação a confirmar** | Facilitar o entendimento dos dados, com inspiração na apresentação de informações em jogos. | Apresentar os registros no corpo e usar linguagem simples, com poucos passos para concluir cada tarefa. |
+
+### Ressalva sobre o quinto tema
+
+No fechamento da gravação, a equipe esquece qual era o quinto item. O trecho correspondente ficou pouco claro na transcrição automática. **Interface intuitiva é uma interpretação proposta na conversa, não uma decisão confirmada da reunião.** Gamificação aparece depois e é tratada como subtópico. Confirmar o quinto item com a equipe.
+
+### Limites desta proposta
+
+- Check-up físico e check-up psicológico são dois temas distintos; saúde mental e bem-estar psicológico não constituem dois módulos separados nesta proposta.
+- A IA local e o modelo 3D foram apresentados como possibilidades opcionais em parte da conversa. A prioridade de implementação ainda precisa ser confirmada.
+- Painel da missão não integra os cinco temas desta atualização: o participante apontou que esse recurso já existe.
+- As funcionalidades da terceira coluna são propostas para explorar as ideias, não falas literais nem decisões adicionais da reunião.
