@@ -114,6 +114,16 @@ O front usa `VITE_API_URL` e o cookie de sessão existente. Não é necessária 
 
 ## Contas de demonstração
 
+Para criar uma conta de teste adicional, execute **no backend conectado ao banco da aplicação**, com `DATABASE_URL` já configurada:
+
+```powershell
+$env:NEW_USER_PASSWORD = '<senha escolhida>'
+npm run user:create -- nome-do-usuario
+Remove-Item Env:NEW_USER_PASSWORD
+```
+
+O comando grava somente o hash da senha, cria um perfil fictício com histórico vazio e não altera uma conta que já tenha o mesmo nome. A criação é uma ação explícita do operador; não ocorre automaticamente ao iniciar a API. As senhas das contas existentes e as exigências do seed permanecem inalteradas.
+
 O seed cria dois perfis fictícios:
 
 | Login | Astronauta | Modelo do corpo |
