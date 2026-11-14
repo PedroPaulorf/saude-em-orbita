@@ -1,11 +1,11 @@
 /*
   Rota por hash, sem biblioteca: funciona no GitHub Pages com base './' e com o botão voltar.
-  #/  ·  #/progress  ·  #/stats?region=head  ·  #/check/health  ·  #/check/behavioral
+  #/  ·  #/prevention  ·  #/progress  ·  #/stats?region=head  ·  #/check/health  ·  #/check/behavioral
 */
 import { useSyncExternalStore } from 'react'
 
-export type Path = '/' | '/progress' | '/stats' | '/check/health' | '/check/behavioral'
-const PATHS: Path[] = ['/', '/progress', '/stats', '/check/health', '/check/behavioral']
+export type Path = '/' | '/prevention' | '/progress' | '/stats' | '/check/health' | '/check/behavioral'
+const PATHS: Path[] = ['/', '/prevention', '/progress', '/stats', '/check/health', '/check/behavioral']
 
 export interface Route {
   path: Path

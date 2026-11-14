@@ -5,7 +5,7 @@
 */
 import type { BodyRegionId, Status, Vital, VitalId } from '@/types'
 
-export type NoteKind = 'pending' | 'measure' | 'space' | 'water' | 'calm'
+export type NoteKind = 'pending' | 'pattern' | 'measure' | 'space' | 'water' | 'calm'
 
 export type NoteAction =
   | { kind: 'href'; href: string; label: string }
@@ -46,11 +46,13 @@ export interface NotesInput {
   /** "05 Sep" já formatado. */
   sepDay?: string
   water: { servings: number; goal: number }
+  /** Padrões de sinais precoces ATIVOS, do mais grave para o menos. */
+  patterns?: { id: string; title: string; present: number; total: number; status: Status }[]
 }
 
 const SEVERITY: Record<Status, number> = { baseline: 0, attention: 1, flagged: 2 }
 
-export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water }: NotesInput, max = 3): Note[] {
+export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, patterns = [] }: NotesInput, max = 3): Note[] {
   const notes: Note[] = []
 
   if (!healthDoneToday) {
@@ -59,6 +61,18 @@ export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water }: 
       kind: 'pending',
       text: "Today's health check-up is pending.",
       action: { kind: 'href', href: '#/check/health', label: 'Start check-up' },
+    })
+  }
+
+  // Padrão ativo: logo depois do check-up pendente. Diz o fato, não prevê nada.
+  const pattern = patterns[0]
+  if (pattern) {
+    notes.push({
+      id: `pattern-${pattern.id}`,
+      kind: 'pattern',
+      status: pattern.status,
+      text: `Early signs of ${pattern.title.toLowerCase()}: ${pattern.present} of ${pattern.total} present.`,
+      action: { kind: 'href', href: '#/prevention', label: 'Open Prevention' },
     })
   }
 

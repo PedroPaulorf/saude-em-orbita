@@ -47,7 +47,8 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
 
   // Chegou de outra tela já com região ou risco: mostra o painel.
   useEffect(() => {
-    if (focus) revealPanel()
+    // depois do "volta ao topo" que o App faz ao trocar de tela
+    if (focus) requestAnimationFrame(() => requestAnimationFrame(revealPanel))
     // só na primeira montagem
     // oxlint-disable-next-line react/exhaustive-deps
   }, [])

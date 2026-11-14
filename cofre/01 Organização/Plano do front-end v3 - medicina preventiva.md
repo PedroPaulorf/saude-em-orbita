@@ -283,3 +283,12 @@ Registrado pelo agente de código (Claude Opus), em 14/11.
 - Sinal de medida: "presente" quando a medida está fora da linha de base, do lado pedido, pela regra dela, por `days` dias seguidos até hoje. O texto do sinal mostra quantos dias seguidos, quando passa de um ("Sleep 5.1 h · 2.1 h below baseline · 4 days").
 - Sinal de água: "desconhecido" se algum dos dias completos pedidos não tem registro (chave ausente no `health7:water:v1`). Um dia com registro 0 conta como meta não atingida.
 - Ordem dos padrões: ativos primeiro, sinalizados antes de atenção, depois por número de sinais presentes.
+
+**Fase 2**
+- Padrões inativos: o plano sugere "2 other patterns checked: no signs.", mas com os dados simulados cada um deles tem 1 sinal presente (frequência cardíaca), então "no signs" seria falso. A linha ficou "2 other patterns checked, not active:" com "1 of 3 signs, needs 2" para cada um.
+- Cada sinal mostra ícone e palavra ("Present", "Not present", "No data today"). O sinal desconhecido leva ao que falta: check-in comportamental de hoje ou registro de água na Home. O sinal de medida leva à região no Detailed stats.
+- O cartão do padrão diz, em uma frase, que não é diagnóstico e que vai para o cirurgião de voo. Na coluna da direita entrou um quadro "How this works" (quatro frases), até as fases 3 e 4 ocuparem o espaço com o plano e a radiação.
+- Relatório para o solo: a seção "Early-sign patterns" entra no diálogo e o cartão compacto da Home cita o padrão ativo. A seção do plano entra na fase 3.
+- Ícone da aba: escudo com cruz (`ShieldPlus`). Em 390 px as quatro abas ficam com 98 px cada.
+- Correção que apareceu aqui: ao trocar de tela, o app mantinha a rolagem da tela anterior (tocar a nota no fim da Home abria Prevention já rolada). Agora toda troca de rota volta ao topo; o Detailed stats continua rolando até o painel da região quando chega com uma região escolhida, e o painel para abaixo do cabeçalho fixo.
+

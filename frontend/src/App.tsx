@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { AppShell } from '@/components/app/AppShell'
 import { ChatPanel } from '@/components/app/ChatPanel'
 import { ScreenBoundary, ScreenSkeleton } from '@/components/app/ScreenStates'
@@ -11,6 +11,7 @@ import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
+import { Prevention } from '@/screens/Prevention'
 import { isTodayUtc } from '@/lib/utils'
 import type { Connection } from '@/types'
 
@@ -24,12 +25,20 @@ export default function App() {
   const game = useGame()
   const [companionOpen, setCompanionOpen] = useState(false)
 
+  // Tela nova começa do topo (o Detailed stats rola sozinho até o painel quando precisa).
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [route.path])
+
   // Sem servidor: o relatório fica guardado para envio quando houver contato com o solo.
   // Recalculado a cada troca de rota, então reflete um check-up recém-salvo.
   const connection: Connection = isTodayUtc(latestAny()?.at) ? 'queued' : 'offline'
 
   let screen
   switch (route.path) {
+    case '/prevention':
+      screen = <Prevention />
+      break
     case '/progress':
       screen = (
         <Suspense fallback={<ScreenSkeleton label="Loading progress" />}>

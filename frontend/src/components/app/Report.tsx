@@ -1,6 +1,7 @@
 import { CloudOff, Radio, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { PatternResult } from '@/lib/prevention'
 import { reportItems, sendState } from '@/lib/present'
 import { cn } from '@/lib/utils'
 import type { Connection, Vital } from '@/types'
@@ -11,11 +12,14 @@ import { StatusBadge } from './StatusBadge'
 
 export function ReportCompact({
   vitals,
+  patterns = [],
   connection,
   onOpen,
   className,
 }: {
   vitals: Vital[]
+  /** Padrões ativos: entram no relatório. */
+  patterns?: PatternResult[]
   connection: Connection
   onOpen: () => void
   className?: string
@@ -50,6 +54,11 @@ export function ReportCompact({
             )}
           </>
         )}
+        {patterns.length > 0 && (
+          <span className="block text-sm text-ink-soft">
+            {patterns.map((p) => p.def.title).join(', ')}: early-sign pattern
+          </span>
+        )}
       </p>
       <span className="mt-auto inline-flex items-center gap-2 text-sm text-ink-soft">
         <CloudOff className="size-4" aria-hidden />
@@ -63,11 +72,13 @@ export function ReportDialog({
   open,
   onOpenChange,
   vitals,
+  patterns = [],
   connection,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   vitals: Vital[]
+  patterns?: PatternResult[]
   connection: Connection
 }) {
   const items = reportItems(vitals)
@@ -106,8 +117,36 @@ export function ReportDialog({
           </ul>
         )}
 
+        {patterns.length > 0 && (
+          <section aria-labelledby="report-patterns" className="grid gap-2 border-t border-hairline pt-4">
+            <h3 id="report-patterns" className="font-display text-lg font-semibold">
+              Early-sign patterns
+            </h3>
+            {patterns.map((p) => (
+              <div key={p.def.id} className="grid gap-1.5 rounded-lg bg-surface-2/60 p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-semibold">
+                    {p.def.title} · <span className="font-mono">{p.present}</span> of <span className="font-mono">{p.total}</span> signs
+                  </span>
+                  <StatusBadge status={p.status} />
+                </div>
+                <ul className="grid gap-1 text-sm text-ink-soft">
+                  {p.signs
+                    .filter((s) => s.state === 'present')
+                    .map((s) => (
+                      <li key={s.def.id}>
+                        <span className="text-ink">{s.def.label}.</span> {s.detail}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+            <p className="text-xs text-ink-soft">A pattern is not a diagnosis. Listed for flight surgeon review.</p>
+          </section>
+        )}
+
         <div className="flex flex-wrap items-center gap-2 border-t border-hairline pt-4">
-          {items.length > 0 && <DemoTag />}
+          {(items.length > 0 || patterns.length > 0) && <DemoTag />}
           <span className="text-xs text-ink-soft">Simulated data. Demonstration rules, no clinical source.</span>
         </div>
       </DialogContent>

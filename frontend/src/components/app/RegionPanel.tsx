@@ -6,28 +6,12 @@ import { VITAL_REGION } from '@/lib/notes'
 import { REGION_NAMES, summarySentence } from '@/lib/present'
 import { cn } from '@/lib/utils'
 import type { BodyRegion, BodyRegionId, Vital } from '@/types'
+import { Clamped } from './Clamped'
 import { DemoTag, LiveTag } from './SourceTag'
 import { StatusBadge } from './StatusBadge'
 
 const RISKS = new Map(hrp.risks.map((r) => [r.id, r]))
 
-/** Texto longo recortado em poucas linhas, com "Show more". */
-function Clamped({ text, lines = 4 }: { text: string; lines?: number }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div>
-      <p className={cn('text-[15px] leading-relaxed text-ink', !open && (lines === 3 ? 'line-clamp-3' : 'line-clamp-4'))}>{text}</p>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="mt-1 inline-flex h-8 cursor-pointer items-center text-sm font-semibold text-interactive underline underline-offset-3"
-      >
-        {open ? 'Show less' : 'Show more'}
-      </button>
-    </div>
-  )
-}
 
 /** Riscos do NASA HRP ligados à região, texto original em inglês com link para a fonte. */
 function RiskSection({ group }: { group: RiskGroup }) {
@@ -137,7 +121,7 @@ export function RegionPanel({
   radiation: RiskGroup
   className?: string
 }) {
-  const wrap = cn('flex min-w-0 flex-col gap-5 rounded-xl border border-hairline bg-surface-1 p-5 md:p-6', className)
+  const wrap = cn('flex min-w-0 scroll-mt-20 flex-col gap-5 rounded-xl border border-hairline bg-surface-1 p-5 md:p-6', className)
 
   if (focus === 'radiation') {
     return (

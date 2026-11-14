@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { ChartLine, House, PersonStanding, type LucideIcon } from 'lucide-react'
+import { ChartLine, House, PersonStanding, ShieldPlus, type LucideIcon } from 'lucide-react'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { href, type Path } from '@/lib/route'
@@ -10,6 +10,7 @@ import { Dot } from './Dot'
 
 const TABS: { path: Path; label: string; short: string; Icon: LucideIcon }[] = [
   { path: '/', label: 'Home', short: 'Home', Icon: House },
+  { path: '/prevention', label: 'Prevention', short: 'Prevention', Icon: ShieldPlus },
   { path: '/progress', label: 'Progress', short: 'Progress', Icon: ChartLine },
   { path: '/stats', label: 'Detailed stats', short: 'Stats', Icon: PersonStanding },
 ]
@@ -162,7 +163,7 @@ export function AppShell({
           aria-label="Main"
           className="fixed inset-x-0 bottom-0 z-30 border-t border-hairline bg-ground/95 backdrop-blur-md md:hidden"
         >
-          <ul className="mx-auto grid h-16 max-w-md grid-cols-3">
+          <ul className="mx-auto grid h-16 max-w-md grid-cols-4">
             {TABS.map((t) => (
               <li key={t.path} className="flex">
                 <a
