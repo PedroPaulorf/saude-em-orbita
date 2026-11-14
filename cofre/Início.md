@@ -26,6 +26,7 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 - [[Integração e apresentação]]
 - [[Recursos oficiais]] — materiais ainda aguardados
 - [[Riscos NASA HRP]] — 17 riscos do voo espacial humano, uma nota por risco
+- [[Padrões de projetos vencedores do Space Apps]] — critérios, prazos e o que projetos premiados têm em comum
 - [[Decisões]]
 - [[Modelo de reunião]]
 
