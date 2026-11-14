@@ -20,13 +20,14 @@ Resumo da reunião de brainstorming, avaliação crítica das ideias e proposta 
 
 A equipe fechou cinco itens no fim da reunião:
 
-| #   | Função                                                                                                                          | Situação na reunião |
-| --- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| 1   | Check-up de saúde física                                                                                                        | Obrigatória         |
-| 2   | Check-up de bem-estar psicológico                                                                                               | Obrigatória         |
-| 3   | Check-up de saúde mental, **separado** do de saúde, com cerca de quatro perguntas, deixando claro que não substitui o psicólogo | Obrigatória         |
-| 4   | IA rodando localmente para ajudar em problemas médicos                                                                          | Opcional            |
-| 5   | Modelo 2d visando 3d do corpo, masculino e feminino                                                                             | Obrigatótrio        |
+| #   | Função                                                 | Situação na reunião |
+| --- | ------------------------------------------------------ | ------------------- |
+| 1   | Check-up de saúde física                               | Obrigatória         |
+| 2   | Check-up de bem-estar psicológico                      | Obrigatória         |
+| 3   | Interface intuitiva                                    | Obrigatória         |
+| 4   | IA rodando localmente para ajudar em problemas médicos | Opcional            |
+| 5   | Modelo 2d visando 3d do corpo, masculino e feminino    | Obrigatótrio        |
+|     |                                                        |                     |
 
 Também foi citado um item que a transcrição registra como "Terfáceito auditivo" [14:34]. **Interpretação:** pode ser "interface auditiva" (alertas ou comandos por voz). Confirmar com a equipe. Gamificação foi tratada como subtópico, não como função própria [14:34].
 
