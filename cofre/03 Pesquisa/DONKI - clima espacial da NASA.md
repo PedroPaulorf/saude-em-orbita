@@ -44,6 +44,8 @@ Episódios de SEP em 2026, consultados em janelas de 60 dias: 18–19/01, 25/05,
 
 ## Como acessar
 
+Referência completa dos endpoints, parâmetros e campos em [[DONKI - documentação da API]].
+
 | Endereço | Chave | CORS (chamar do navegador) | Observação em 2026-11-14 |
 |---|---|---|---|
 | `https://ccmc.gsfc.nasa.gov/DONKI-API/get/{TIPO}?startDate=AAAA-MM-DD&endDate=AAAA-MM-DD` | Não precisa | Liberado | **Recomendado.** Todos os tipos responderam. Intervalo máximo de 60 dias por chamada |

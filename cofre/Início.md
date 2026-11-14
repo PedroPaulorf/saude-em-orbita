@@ -2,6 +2,8 @@
 
 Cofre de organização do hackathon — equipe de cinco pessoas.
 
+**Nome do sistema: Health 7** (decisão de 2026-11-14, ver [[Decisões]]).
+
 ## Papéis dos 5 membros
 
 | Pessoa        | Papel                                       | Responsabilidades                                                                     | Área de trabalho              |
@@ -28,6 +30,8 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 - [[Recursos oficiais]] — materiais ainda aguardados
 - [[Riscos NASA HRP]] — 17 riscos do voo espacial humano, uma nota por risco
 - [[Padrões de projetos vencedores do Space Apps]] — critérios, prazos e o que projetos premiados têm em comum
+- [[DONKI - documentação da API]] — endpoints, parâmetros e formato das respostas
+- [[Guia de submissão do projeto]] — regras, campos, demo e prazo de envio (domingo 15/11, 23h59)
 - [[Decisões]]
 - [[Modelo de reunião]]
 

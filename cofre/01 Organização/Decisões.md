@@ -4,6 +4,7 @@
 |---|---|---|---|---|---|
 | 2026-11-05 | Organização inicial | Cinco áreas e documentação em português | Preparar distribuição | Proposta inicial | Primeiro encontro |
 | 2026-11-05 | Nome | Saúde em Órbita, provisório | Identificar pasta e cofre | Proposta inicial | Equipe escolher nome |
+| 2026-11-14 | Nome do sistema | O sistema se chamará **Health 7** (Saúde em Órbita fica só como nome da pasta e do cofre) | Equipe definiu o nome do produto | Equipe | Se a identidade visual pedir ajuste |
 | 2026-11-05 | Visibilidade | Repositório privado | Preferência do participante | Participante | Se a equipe solicitar |
 | 2026-11-14 | Stack | Front-end em React + TypeScript + Tailwind + shadcn/ui, **sem servidor próprio**; publicado como site estático (GitHub Pages ou Vercel) | Os juízes avaliam o demo e a interface, não o back-end; cabe no prazo de domingo. Ver [[Escopo do protótipo]] | Equipe | Se o demo exigir dois aparelhos sincronizados |
 | 2026-11-14 | Armazenamento | Dados do app salvos no **localStorage** do navegador, em JSON; dados simulados de exemplo carregados de um arquivo JSON do repositório na primeira abertura | Garante que os check-ups ficam salvos sem servidor; funciona sem conexão. Limitação: os dados ficam só naquele navegador | Equipe | Se o volume ou as consultas pedirem IndexedDB |
