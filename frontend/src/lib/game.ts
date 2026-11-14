@@ -9,6 +9,7 @@
 */
 import simulated from '@/data/simulated.json'
 import type { CheckIn } from '@/lib/storage'
+import { planPointsByDay, viewPlan, type StoredPlan } from '@/lib/plans'
 import type { WaterLog } from '@/lib/water'
 
 export const GAME = simulated.game
@@ -27,7 +28,10 @@ export interface DayPoints {
   /** Dias seguidos com os dois check-ups, terminando neste dia (0 se o dia não tem os dois). */
   streak: number
   fullRoutine: boolean
-  points: { health: number; behavioral: number; water: number; bonus: number; streak: number }
+  points: { health: number; behavioral: number; water: number; bonus: number; streak: number; plan: number }
+  /** Pontos da rotina (check-ups, água, bônus, sequência): é o que o anel de 125 mostra. */
+  routineTotal: number
+  /** Rotina + plano. */
   total: number
 }
 
@@ -44,7 +48,7 @@ function prevDay(day: string) {
 }
 
 /** Pontos dia a dia, em ordem de data. Cada check-up conta uma vez por dia, a água até a meta. */
-export function dailyPoints(checkIns: CheckIn[], water: WaterLog): DayPoints[] {
+export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredPlan[] = []): DayPoints[] {
   const days = new Map<string, { health: boolean; behavioral: boolean }>()
   for (const c of checkIns) {
     const d = days.get(dayOf(c.at)) ?? { health: false, behavioral: false }
@@ -53,6 +57,8 @@ export function dailyPoints(checkIns: CheckIn[], water: WaterLog): DayPoints[] {
     days.set(dayOf(c.at), d)
   }
   for (const [day, n] of Object.entries(water)) if (n > 0 && !days.has(day)) days.set(day, { health: false, behavioral: false })
+  const planPts = planPointsByDay(plans, { checkIns, water, waterGoal: GAME.waterGoal }, P)
+  for (const day of planPts.keys()) if (!days.has(day)) days.set(day, { health: false, behavioral: false })
 
   const sorted = [...days.keys()].sort()
   const both = new Set(sorted.filter((d) => days.get(d)!.health && days.get(d)!.behavioral))
@@ -72,9 +78,14 @@ export function dailyPoints(checkIns: CheckIn[], water: WaterLog): DayPoints[] {
       water: Math.min(servings, GAME.waterGoal) * P.waterServing,
       bonus: fullRoutine ? P.fullRoutineBonus : 0,
       streak: Math.min(streak * P.streakPerDay, P.streakMaxPerDay),
+      plan: (() => {
+        const pp = planPts.get(day)
+        return pp ? pp.steps + pp.dayBonus + pp.completion : 0
+      })(),
     }
-    const total = points.health + points.behavioral + points.water + points.bonus + points.streak
-    return { day, healthDone: health, behavioralDone: behavioral, water: servings, streak, fullRoutine, points, total }
+    const routineTotal = points.health + points.behavioral + points.water + points.bonus + points.streak
+    const total = routineTotal + points.plan
+    return { day, healthDone: health, behavioralDone: behavioral, water: servings, streak, fullRoutine, points, routineTotal, total }
   })
 }
 
@@ -93,8 +104,8 @@ export interface Achievement {
   earned: boolean
 }
 
-/** As quatro conquistas do plano. */
-export function achievements(days: DayPoints[], checkIns: CheckIn[]): Achievement[] {
+/** As conquistas: as quatro do plano v2 e "First plan completed" do v3. */
+export function achievements(days: DayPoints[], checkIns: CheckIn[], plansCompleted = 0): Achievement[] {
   const byDay = new Map(days.map((d) => [d.day, d]))
   const waterRun = days.some((d) => {
     let day = d.day
@@ -110,6 +121,7 @@ export function achievements(days: DayPoints[], checkIns: CheckIn[]): Achievemen
     { id: 'streak-7', title: '7-day streak', description: 'Both check-ups for 7 days in a row.', earned: days.some((d) => d.streak >= 7) },
     { id: 'water-3', title: 'Water goal, 3 days', description: 'Water goal met 3 days in a row.', earned: waterRun },
     { id: 'behavioral-10', title: '10 behavioral check-ins', description: `${Math.min(behavioralCount, 10)} of 10 done.`, earned: behavioralCount >= 10 },
+    { id: 'first-plan', title: 'First plan completed', description: 'Every step of the last day of a back-to-baseline plan.', earned: plansCompleted > 0 },
   ]
 }
 
@@ -124,8 +136,13 @@ export interface GameSummary {
   achievements: Achievement[]
 }
 
-export function summarize(checkIns: CheckIn[], water: WaterLog, todayKey = new Date().toISOString().slice(0, 10)): GameSummary {
-  const days = dailyPoints(checkIns, water)
+export function summarize(
+  checkIns: CheckIn[],
+  water: WaterLog,
+  todayKey = new Date().toISOString().slice(0, 10),
+  plans: StoredPlan[] = [],
+): GameSummary {
+  const days = dailyPoints(checkIns, water, plans)
   const empty: DayPoints = {
     day: todayKey,
     healthDone: false,
@@ -133,7 +150,8 @@ export function summarize(checkIns: CheckIn[], water: WaterLog, todayKey = new D
     water: 0,
     streak: 0,
     fullRoutine: false,
-    points: { health: 0, behavioral: 0, water: 0, bonus: 0, streak: 0 },
+    points: { health: 0, behavioral: 0, water: 0, bonus: 0, streak: 0, plan: 0 },
+    routineTotal: 0,
     total: 0,
   }
   const today = days.find((d) => d.day === todayKey) ?? empty
@@ -146,7 +164,11 @@ export function summarize(checkIns: CheckIn[], water: WaterLog, todayKey = new D
     rank: rankFor(totalPoints),
     next: nextRank(totalPoints),
     streakDays: today.streak || yesterday?.streak || 0,
-    achievements: achievements(days, checkIns),
+    achievements: achievements(
+      days,
+      checkIns,
+      plans.filter((p) => viewPlan(p, { checkIns, water, waterGoal: GAME.waterGoal }, todayKey)?.completed).length,
+    ),
   }
 }
 

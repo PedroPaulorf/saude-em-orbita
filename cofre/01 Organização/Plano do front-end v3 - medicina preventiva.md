@@ -292,3 +292,14 @@ Registrado pelo agente de código (Claude Opus), em 14/11.
 - Ícone da aba: escudo com cruz (`ShieldPlus`). Em 390 px as quatro abas ficam com 98 px cada.
 - Correção que apareceu aqui: ao trocar de tela, o app mantinha a rolagem da tela anterior (tocar a nota no fim da Home abria Prevention já rolada). Agora toda troca de rota volta ao topo; o Detailed stats continua rolando até o painel da região quando chega com uma região escolhida, e o painel para abaixo do cabeçalho fixo.
 
+**Fase 3**
+- "Passos de hoje" contam todos os passos do dia, automáticos e manuais: "Sleep debt" tem 4 por dia ("1 of 4 steps"), não 3 como no exemplo do plano.
+- O dia só ganha o bônus de 10 quando os passos automáticos também estão feitos (os dois check-ups, ou a meta de água), porque "todos os passos do dia" inclui eles. Os passos automáticos continuam sem ponto próprio.
+- O anel da rotina mostra só os pontos da rotina (máximo 125); os do plano entram no total e aparecem em "plan +N today" no cartão do plano e na linha "Plan · day 1 of 5" da rotina. `DayPoints` ganhou `routineTotal` e `points.plan`.
+- O resultado do plano é calculado quando ele fecha (último dia completo ou prazo vencido) pelo estado do padrão naquele momento, e fica guardado no registro (`outcome`, `endedDay`). Sem isso, "Past plans" mudaria de resultado conforme as medidas de hoje.
+- "End plan" pede confirmação ("End this plan? You keep the points you earned."). O plano encerrado antes vai direto para "Past plans" e a sugestão volta, para a pessoa poder recomeçar.
+- O plano continua mesmo se o padrão ficar inativo no meio (ex.: o sono voltou a só "Attention" e os outros sinais sumiram). A aba mostra "No early-sign pattern today" à esquerda e o plano em andamento à direita.
+- Se dois padrões estiverem ativos e um plano em andamento, o segundo aparece como sugestão com "Finish your current plan first", sem o botão.
+- Entraram também, por serem baratos com os dados prontos: a lista "Past plans" (item 4 da seção 6), a nota da Home com plano ativo, a linha do plano no Today's routine, a seção "Back-to-baseline plan" do relatório e a conquista "First plan completed".
+- O diálogo de novo rank aparece quando os pontos do plano levam o tripulante a Pilot, como acontece com a rotina.
+

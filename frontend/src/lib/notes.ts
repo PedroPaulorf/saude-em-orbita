@@ -48,11 +48,13 @@ export interface NotesInput {
   water: { servings: number; goal: number }
   /** Padrões de sinais precoces ATIVOS, do mais grave para o menos. */
   patterns?: { id: string; title: string; present: number; total: number; status: Status }[]
+  /** Plano em andamento: troca a nota do padrão. */
+  plan?: { day: number; days: number; stepsDone: number; steps: number }
 }
 
 const SEVERITY: Record<Status, number> = { baseline: 0, attention: 1, flagged: 2 }
 
-export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, patterns = [] }: NotesInput, max = 3): Note[] {
+export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, patterns = [], plan }: NotesInput, max = 3): Note[] {
   const notes: Note[] = []
 
   if (!healthDoneToday) {
@@ -66,7 +68,15 @@ export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, pa
 
   // Padrão ativo: logo depois do check-up pendente. Diz o fato, não prevê nada.
   const pattern = patterns[0]
-  if (pattern) {
+  if (plan) {
+    notes.push({
+      id: 'plan',
+      kind: 'pattern',
+      status: 'attention',
+      text: `Back-to-baseline plan: day ${plan.day} of ${plan.days}, ${plan.stepsDone} of ${plan.steps} steps done today.`,
+      action: { kind: 'href', href: '#/prevention', label: 'Open plan' },
+    })
+  } else if (pattern) {
     notes.push({
       id: `pattern-${pattern.id}`,
       kind: 'pattern',

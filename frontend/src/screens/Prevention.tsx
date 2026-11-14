@@ -1,18 +1,58 @@
+import { useEffect, useMemo, useState } from 'react'
 import { ShieldCheck } from 'lucide-react'
 import { Dot } from '@/components/app/Dot'
 import { PatternCard } from '@/components/app/PatternCard'
+import { PlanActive, PlanFinished, PlanSuggestion } from '@/components/app/PlanCard'
+import { ReportDialog } from '@/components/app/Report'
 import { DemoTag } from '@/components/app/SourceTag'
-import { usePatterns } from '@/lib/usePrevention'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { GameSummary } from '@/lib/game'
+import { getTodayVitals } from '@/lib/health'
+import { closePlan, OUTCOME_TEXT, type PlanOutcome } from '@/lib/plans'
+import { useActivePlan, usePatterns, usePlanViews } from '@/lib/usePrevention'
+import { utcDay } from '@/lib/utils'
+import { utcDayKey } from '@/lib/water'
+import type { Connection } from '@/types'
 
 /*
   Prevention (plano v3, seção 6): a tese do projeto. Junta as medidas, compara com padrões de sinais
   precoces e, quando um padrão está ativo, mostra quais sinais estão presentes e qual regra gerou cada um.
   Padrão não é diagnóstico: vai para o relatório do cirurgião de voo.
 */
-export function Prevention() {
+export function Prevention({ game, connection }: { game: GameSummary; connection: Connection }) {
   const patterns = usePatterns()
   const active = patterns.filter((p) => p.active)
   const inactive = patterns.filter((p) => !p.active)
+  const running = useActivePlan()
+  const views = usePlanViews()
+  const vitals = useMemo(() => getTodayVitals(), [])
+  const [confirmEnd, setConfirmEnd] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
+  const today = utcDayKey()
+
+  // Plano que fechou (último dia completo ou prazo vencido) e ainda não tem resultado: guarda o resultado
+  // de agora, para "Past plans" continuar dizendo o que aconteceu.
+  useEffect(() => {
+    for (const v of views) {
+      if (!v.finished || v.plan.outcome) continue
+      const stillActive = patterns.some((p) => p.def.id === v.pattern.id && p.active)
+      const outcome: PlanOutcome = stillActive ? 'signs-still-present' : 'back-to-baseline'
+      closePlan(v.plan.id, outcome, v.completed && today <= v.lastDay ? today : v.lastDay)
+    }
+  }, [views, patterns, today])
+
+  // Plano que fechou hoje com resultado (não o encerrado antes, que vai direto para "Past plans").
+  const justFinished = !running
+    ? views.filter((v) => v.finished && v.plan.endedDay === today && v.plan.outcome !== 'ended-early').at(-1)
+    : undefined
+  const past = views.filter((v) => v.finished && v !== justFinished)
+  const suggestion = active.find((p) => p.def.id !== running?.pattern.id && !(justFinished && p.def.id === justFinished.pattern.id))
+
+  function endPlan() {
+    if (running) closePlan(running.plan.id, 'ended-early', today)
+    setConfirmEnd(false)
+  }
 
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-8 md:px-8">
@@ -68,6 +108,30 @@ export function Prevention() {
         </div>
 
         <aside className="grid gap-4">
+          {running && <PlanActive view={running} todayPoints={game.today.points.plan} onEnd={() => setConfirmEnd(true)} />}
+          {justFinished && (
+            <PlanFinished view={justFinished} outcome={justFinished.plan.outcome ?? 'back-to-baseline'} onOpenReport={() => setReportOpen(true)} />
+          )}
+          {suggestion && <PlanSuggestion pattern={suggestion} blockedBy={running?.pattern.title} />}
+          {past.length > 0 && (
+            <section aria-labelledby="past-plans" className="flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
+              <h2 id="past-plans" className="font-display text-lg font-semibold">
+                Past plans
+              </h2>
+              <ul className="grid">
+                {past.map((v) => (
+                  <li key={v.plan.id} className="grid gap-0.5 border-t border-hairline py-2.5 first:border-t-0">
+                    <span className="font-semibold">{v.pattern.title}</span>
+                    <span className="font-mono text-[13px] text-ink-soft">
+                      {utcDay(`${v.plan.startedDay}T00:00:00Z`)} to {utcDay(`${v.plan.endedDay ?? v.lastDay}T00:00:00Z`)} ·{' '}
+                      {v.days.filter((d) => d.complete).length} of {v.plan.days} days complete
+                    </span>
+                    {v.plan.outcome && <span className="text-sm text-ink-soft">{OUTCOME_TEXT[v.plan.outcome]}</span>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <section aria-labelledby="how-title" className="flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
             <h2 id="how-title" className="font-display text-lg font-semibold">
               How this works
@@ -81,6 +145,31 @@ export function Prevention() {
           </section>
         </aside>
       </div>
+
+      <Dialog open={confirmEnd} onOpenChange={setConfirmEnd}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-display text-xl font-semibold">End this plan?</DialogTitle>
+            <DialogDescription className="text-ink-soft">You keep the points you earned. You can start a new plan while a pattern is active.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:justify-start">
+            <Button variant="secondary" onClick={endPlan}>
+              End plan
+            </Button>
+            <Button variant="ghost" onClick={() => setConfirmEnd(false)}>
+              Keep going
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <ReportDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        vitals={vitals}
+        patterns={active}
+        plan={running ?? justFinished ?? undefined}
+        connection={connection}
+      />
     </div>
   )
 }

@@ -8,7 +8,7 @@ import { SpaceWeatherCompact, SpaceWeatherDialog } from '@/components/app/SpaceW
 import { indicators, useSpaceWeather } from '@/lib/donki'
 import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { buildNotes } from '@/lib/notes'
-import { usePatterns } from '@/lib/usePrevention'
+import { useActivePlan, usePatterns } from '@/lib/usePrevention'
 import { latestCheckIn } from '@/lib/storage'
 import { isTodayUtc, utcDay } from '@/lib/utils'
 import { addWater, WATER_GOAL } from '@/lib/water'
@@ -41,6 +41,7 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
   const today = useMemo(() => todayStatus(), [])
   const weather = useSpaceWeather()
   const activePatterns = usePatterns().filter((p) => p.active)
+  const plan = useActivePlan()
   const water = game.today.water
   const [weatherOpen, setWeatherOpen] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
@@ -58,6 +59,7 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
     sepTime: sep?.time,
     sepDay: sep ? utcDay(sep.time) : undefined,
     water: { servings: water, goal: WATER_GOAL },
+    plan: plan?.today ? { day: plan.dayNumber, days: plan.plan.days, stepsDone: plan.today.doneCount, steps: plan.today.steps.length } : undefined,
     patterns: activePatterns.map((p) => ({ id: p.def.id, title: p.def.title, present: p.present, total: p.total, status: p.status })),
   })
 
@@ -79,6 +81,7 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
         <RoutineCard
           ref={waterButton}
           today={game.today}
+          plan={plan}
           onWater={(d) => addWater(d)}
           className="md:col-span-2 xl:col-span-1 xl:col-start-3 xl:row-span-2 xl:row-start-1"
         />
@@ -122,7 +125,14 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
         onModeChange={weather.setMode}
         onRetry={weather.refresh}
       />
-      <ReportDialog open={reportOpen} onOpenChange={setReportOpen} vitals={vitals} patterns={activePatterns} connection={connection} />
+      <ReportDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        vitals={vitals}
+        patterns={activePatterns}
+        plan={plan ?? undefined}
+        connection={connection}
+      />
     </div>
   )
 }

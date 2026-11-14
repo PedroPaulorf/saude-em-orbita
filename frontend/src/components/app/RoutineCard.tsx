@@ -1,7 +1,9 @@
 import { forwardRef } from 'react'
-import { CircleCheck, CircleDashed, Droplet, ListChecks, Minus, Plus } from 'lucide-react'
+import { ArrowRight, CircleCheck, CircleDashed, Droplet, ListChecks, Minus, Plus, Route } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { GAME, MAX_DAY_POINTS, type DayPoints } from '@/lib/game'
+import type { PlanView } from '@/lib/plans'
+import { href } from '@/lib/route'
 import { WATER_GOAL, WATER_SERVING_ML } from '@/lib/water'
 import { cn } from '@/lib/utils'
 import { Dot, Dotted } from './Dot'
@@ -32,8 +34,8 @@ function Task({ done, label, points }: { done: boolean; label: string; points: n
 
 export const RoutineCard = forwardRef<
   HTMLButtonElement,
-  { today: DayPoints; onWater: (delta: number) => void; className?: string }
->(function RoutineCard({ today, onWater, className }, addRef) {
+  { today: DayPoints; plan?: PlanView | null; onWater: (delta: number) => void; className?: string }
+>(function RoutineCard({ today, plan, onWater, className }, addRef) {
   const water = today.water
   const waterDone = water >= WATER_GOAL
   const bonusText = [
@@ -49,7 +51,7 @@ export const RoutineCard = forwardRef<
         id="routine-title"
         icon={<ListChecks />}
         title="Today's routine"
-        aside={<Ring value={today.total} max={MAX_DAY_POINTS} label={`${today.total} of ${MAX_DAY_POINTS} points today`} />}
+        aside={<Ring value={today.routineTotal} max={MAX_DAY_POINTS} label={`${today.routineTotal} of ${MAX_DAY_POINTS} routine points today`} />}
       />
       <ul className="grid gap-2">
         <Task done={today.healthDone} label="Health check-up" points={GAME.points.healthCheckUp} />
@@ -100,6 +102,19 @@ export const RoutineCard = forwardRef<
           </span>
         </div>
       </div>
+      {plan?.today && (
+        <a
+          href={href('/prevention')}
+          className="flex items-center gap-2.5 rounded-lg border border-hairline-strong px-3 py-2 text-[15px] text-ink no-underline hover:bg-surface-2"
+        >
+          <Route className="size-4.5 shrink-0 text-interactive" aria-hidden />
+          <span className="flex-1">
+            <Dotted text={`Plan · day ${plan.dayNumber} of ${plan.plan.days} · ${plan.today.doneCount} of ${plan.today.steps.length} steps`} />
+          </span>
+          {today.points.plan > 0 && <span className="font-mono text-sm">+{today.points.plan}</span>}
+          <ArrowRight className="size-4 text-ink-soft" aria-hidden />
+        </a>
+      )}
       <p className="text-xs text-ink-soft">
         <Dotted text={bonusText.join(' · ')} />
       </p>

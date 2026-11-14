@@ -1,6 +1,7 @@
 import { CloudOff, Radio, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { PlanView } from '@/lib/plans'
 import type { PatternResult } from '@/lib/prevention'
 import { reportItems, sendState } from '@/lib/present'
 import { cn } from '@/lib/utils'
@@ -73,12 +74,15 @@ export function ReportDialog({
   onOpenChange,
   vitals,
   patterns = [],
+  plan,
   connection,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   vitals: Vital[]
   patterns?: PatternResult[]
+  /** Plano em andamento (ou que acabou de fechar): entra no relatório para revisão. */
+  plan?: PlanView
   connection: Connection
 }) {
   const items = reportItems(vitals)
@@ -142,6 +146,29 @@ export function ReportDialog({
               </div>
             ))}
             <p className="text-xs text-ink-soft">A pattern is not a diagnosis. Listed for flight surgeon review.</p>
+          </section>
+        )}
+
+        {plan && (
+          <section aria-labelledby="report-plan" className="grid gap-2 border-t border-hairline pt-4">
+            <h3 id="report-plan" className="font-display text-lg font-semibold">
+              Back-to-baseline plan
+            </h3>
+            <p className="text-sm text-ink">
+              {plan.pattern.title} · day <span className="font-mono">{plan.dayNumber}</span> of{' '}
+              <span className="font-mono">{plan.plan.days}</span>
+            </p>
+            <ul className="grid gap-0.5 font-mono text-[13px] text-ink-soft">
+              {plan.days
+                .filter((d) => d.state !== 'upcoming')
+                .map((d) => (
+                  <li key={d.day}>
+                    Day {d.index}: {d.doneCount} of {d.steps.length} steps
+                    {d.steps.some((s) => s.done) && ` (${d.steps.filter((s) => s.done).map((s) => s.def.label.toLowerCase()).join(', ')})`}
+                  </li>
+                ))}
+            </ul>
+            <p className="text-xs font-semibold text-ink-soft">Suggested plan, awaiting flight surgeon review.</p>
           </section>
         )}
 

@@ -100,7 +100,10 @@
       "waterServing": 5,
       "fullRoutineBonus": 20,
       "streakPerDay": 5,
-      "streakMaxPerDay": 25
+      "streakMaxPerDay": 25,
+      "planStep": 5,
+      "planDayComplete": 10,
+      "planCompleted": 50
     },
     "startingPoints": 2940,
     "ranks": [

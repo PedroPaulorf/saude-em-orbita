@@ -37,7 +37,7 @@ export default function App() {
   let screen
   switch (route.path) {
     case '/prevention':
-      screen = <Prevention />
+      screen = <Prevention game={game} connection={connection} />
       break
     case '/progress':
       screen = (
