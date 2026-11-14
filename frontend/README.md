@@ -1,6 +1,6 @@
 # Health7 — front-end
 
-React + TypeScript + Vite + Tailwind CSS v4, com shadcn/ui configurado. Sem servidor: os dados ficam no `localStorage` do navegador.
+React + TypeScript + Vite + Tailwind CSS v4 + shadcn/ui. Sem servidor: os dados ficam no `localStorage` do navegador. O plano desta versão está em `cofre/01 Organização/Plano do front-end v2.md`.
 
 ## Rodar
 
@@ -14,57 +14,89 @@ npm run data:risks # regenera src/data/hrp-risks.json a partir das notas do cofr
 npm run data:donki # atualiza a cópia local do DONKI (src/data/donki-snapshot.json)
 ```
 
-## Design system
+Chat do companheiro: copie `.env.example` para `.env.local` e preencha `VITE_N8N_CHAT_WEBHOOK_URL` (ver "Chat de IA" abaixo). Sem isso o chat roda em modo de demonstração.
 
-O visual vem de [`../health7-design-system`](../health7-design-system). **Não copie nem edite os tokens aqui**: `src/index.css` importa `tokens.css` e `components/bundle.css` direto de lá.
+## Telas e rotas
 
-- Componentes React em `src/components/h7/`, um por componente do design system, usando as classes `h7-`. Importe de `@/components/h7`.
-- Tailwind para layout. As cores dos tokens viram utilitários: `bg-ground`, `text-ink`, `text-ink-muted`, `border-line`, `bg-accent`, `text-on-accent`, `bg-panel`...
-- As classes `h7-` ficam na camada `components`, então um utilitário do Tailwind pode sobrescrevê-las (ex.: `h7-card p-6`).
-- Tema: `data-theme="deep"` (padrão) ou `"white"` no `<html>`.
-- shadcn/ui: `npx shadcn@latest add dialog` funciona; as variáveis do shadcn já apontam para os tokens (tabela no README do design system).
+Rota por hash, sem biblioteca (`src/lib/route.ts`): funciona no GitHub Pages com `base: './'` e com o botão voltar.
 
-Regras do design system que valem para o código: uma ação `primary` por tela; todo valor de saúde simulado com `<SourceBadge source="simulated" />`; toda sinalização com a regra por escrito e `<SourceBadge source="demo" />`; estado sempre com ícone e palavra (`<StatusBadge />`).
+| Rota | Tela | O quê |
+| --- | --- | --- |
+| `#/` | `screens/Home.tsx` | Check-ups, avatar, rotina do dia, clima espacial, relatório e Health notes |
+| `#/check/health` | `screens/HealthCheckUp.tsx` | Check-up de saúde, uma medida por etapa |
+| `#/check/behavioral` | `screens/BehavioralCheckIn.tsx` | Check-in comportamental, escala de 1 a 5, sem soma |
+| `#/stats?region=head` | `screens/DetailedStats.tsx` | Avatar em foco, medidas e riscos do NASA HRP da região. `?risk=radiation` abre o risco de radiação |
+| `#/progress` | `screens/Progress.tsx` | Rank, tendências de 7 dias, tripulação, conquistas e histórico. Carrega sob demanda (Recharts) |
+
+Em todas: cabeçalho (abas, tripulante, rank, chip "Simulated data", conexão) e o botão fixo do companheiro de IA.
 
 ## Estrutura
 
-| Pasta | O quê |
+| Pasta ou arquivo | O quê |
 | --- | --- |
-| `src/screens/` | Telas: `Dashboard` (opção A do design system) e `CheckIn` (uma pergunta por etapa). |
-| `src/components/h7/` | Componentes do design system. |
-| `src/data/simulated.json` | Tripulante, linha de base, histórico e limites das regras. **Dados fictícios.** |
-| `src/data/hrp-risks.json` | Os 17 riscos do NASA HRP, texto original em inglês. Gerado por `npm run data:risks`. |
-| `src/data/regions.ts` | Quais riscos cada região da figura do corpo abre. |
-| `src/lib/health.ts` | Junta dados simulados e último check-up; calcula o estado contra a linha de base. |
-| `src/lib/storage.ts` | Check-ups no `localStorage`. |
-| `src/lib/donki/api.ts` | Cliente tipado de todos os endpoints do DONKI (nota "DONKI - documentação da API" do cofre). |
-| `src/lib/donki/snapshot.ts` | Os quatro endpoints que o app usa e os indicadores calculados a partir deles. |
-| `src/lib/donki/index.ts` | Hook `useSpaceWeather`: consulta ao vivo, cópia local e modo histórico. |
-| `src/data/donki-snapshot.json` | Cópia local do DONKI: últimos 7 dias e o SEP de 05/09/2026 (modo histórico). |
+| `src/components/ui/` | Componentes do shadcn/ui (gerados; `button` e `dialog` ajustados para 44 px e para o tema) |
+| `src/components/app/` | Componentes do Health7: `AppShell`, `BodyAvatar`, `StatusBadge`, cartões da Home, `CheckFlow`, `RegionPanel`, `TrendChart`, `ChatPanel`... |
+| `src/screens/` | Uma tela por rota |
+| `src/styles/theme.css` | Tokens v2 (superfícies, linha fina, texto de apoio, cores de estado), com o contraste anotado |
+| `src/lib/health.ts` | Junta dados simulados e último check-up; aplica as regras de demonstração (`evaluate`, `ruleText`) |
+| `src/lib/storage.ts` | Check-ups em `health7:checkins:v2`, com `kind: 'health' \| 'behavioral'`; migra o v1 |
+| `src/lib/water.ts` | Registro de água por dia UTC (`health7:water:v1`) |
+| `src/lib/game.ts` | Pontos, rank, sequência e conquistas, recalculados dos registros (nada guardado) |
+| `src/lib/notes.ts` | Health notes por regra de demonstração |
+| `src/lib/chat.ts` | Conversa, contexto enviado ao n8n, leitura da resposta e modo de demonstração |
+| `src/lib/progress.ts` | Frases de tendência, histórico com pontos, tripulação |
+| `src/lib/present.ts` | Textos compartilhados (estados, resumo, idade do dado do DONKI) |
+| `src/lib/donki/` | Cliente do DONKI, cópia local e modo histórico (`useSpaceWeather`) |
+| `src/data/simulated.json` | Tripulante, linha de base, histórico, limites das regras e `game` (pontos, ranks, tripulação). **Dados fictícios.** |
+| `src/data/hrp-risks.json` | Os 17 riscos do NASA HRP, texto original em inglês |
+| `src/data/regions.ts` | Quais riscos cada região do corpo abre |
+| `src/data/body-paths.ts` | Traçados SVG do corpo (ver Credits) |
+
+O visual usa a paleta de [`../health7-design-system`](../health7-design-system) (`tokens.css`, importado em `src/index.css`), com as regras de forma da v2: cartão em `--surface-1` com borda fina, cor reservada para estado e ação, um amarelo sólido por tela. As classes `h7-` da v1 não são mais usadas.
+
+### Cuidados com o Tailwind e o shadcn
+
+- `bg-accent` é o hover sutil do shadcn (aponta para `--surface-2`). O amarelo é `bg-brand` / `bg-primary`. A variável CSS `--accent` continua sendo o Neon Yellow.
+- Não existe utilitário `text-link`: na v1 ele era amarelo. Link de texto é `text-interactive underline`.
+- Ao rodar `npx shadcn add`, confira os imports: o gerador já trouxe `cn` de um pacote npm chamado `cn` em vez de `@/lib/utils`.
+
+## Regras que o código segue
+
+- O app informa e encaminha; não diagnostica. Estado sempre com ícone e palavra (`StatusBadge`): "Within baseline", "Attention", "Flagged for ground".
+- Dado simulado identificado uma vez por tela (chip "Simulated data" no cabeçalho). Toda sinalização com a regra por escrito e "Demonstration rule". Dado da NASA com "Live NASA data" e link.
+- Pontos premiam o que a pessoa faz (check-up, água), nunca o valor medido. Ninguém perde ponto por uma medida.
+- Alvo de toque de 44 px, foco visível, `prefers-reduced-motion` respeitado.
 
 ## Regras de alerta
 
-São **regras de demonstração**, sem fonte clínica. Os limites ficam em `src/data/simulated.json` (`rule`: direção, desvio para atenção e para sinalizar). Quem cuida de dados e regras pode mudar ali sem mexer no código.
+São **regras de demonstração**, sem fonte clínica. Os limites ficam em `src/data/simulated.json` (`rule`: direção, desvio para atenção e para sinalizar). A meta de água (8 × 250 ml) também é de demonstração (`game.waterGoal`).
 
 ## Clima espacial (NASA DONKI)
 
-Base `https://ccmc.gsfc.nasa.gov/DONKI-API/get/{recurso}`, só GET, sem chave, CORS liberado, até 60 dias por chamada (contando os dois extremos; acima disso a API responde HTTP 400).
+Base `https://ccmc.gsfc.nasa.gov/DONKI-API/get/{recurso}`, só GET, sem chave, CORS liberado, até 60 dias por chamada.
 
-`donki` em `src/lib/donki/api.ts` tem todos os endpoints documentados: `notifications`, `sep`, `flr`, `gst`, `rbe`, `cme`, `cmeAnalysis`, `cmeAnalysisText`, `cmeUrl`, `mpc`, `ips`, `hss`, `wsaEnlilSimulations`.
-
-| Indicador no cartão | Endpoint | Como aparece |
+| Indicador | Endpoint | Como aparece |
 | --- | --- | --- |
-| Partículas solares (principal, ligado à radiação) | `SEP` | Primeira detecção do episódio mais recente; detecções e previsões de modelo contadas à parte; eventos ligados (FLR + CME) |
-| Alerta original | `notifications?type=SEP` | Só a seção "Summary" e o link. Só é pedido quando há SEP |
-| Erupções | `FLR?class=ALL` | Maior classe e quantas são M ou X. Não use `class=M`: devolve só M e deixa as X de fora |
+| Partículas solares (principal, ligado à radiação) | `SEP` | Linha principal do cartão; detecções e previsões de modelo contadas à parte |
+| Alerta original | `notifications?type=SEP` | Resumo e link, no diálogo de detalhes |
+| Erupções | `FLR?class=ALL` | Maior classe e quantas são M ou X |
 | Tempestades geomagnéticas | `GST` | Kp máximo |
 
-Sem conexão, o cartão usa a cópia mais nova entre o `localStorage` e `donki-snapshot.json`, mostrando a data dela. Rode `npm run data:donki` antes do demo para a cópia do repositório ficar recente. O botão "Show past event" mostra o SEP de 05/09/2026, marcado como evento passado.
+O cartão não promete "agora": mostra a idade e a origem do dado ("Live · synced 2 min ago", "Last ground sync", "Stored copy", "Past event"). Sem conexão, usa a cópia mais nova entre o `localStorage` e `donki-snapshot.json`. Rode `npm run data:donki` antes do demo. "Show past event" mostra o SEP de 05/09/2026.
 
-Limites que aparecem na tela: o DONKI informa eventos, não a dose recebida; é dado experimental de pesquisa (a fonte oficial de previsão é o NOAA SWPC); a janela de 7 dias é regra de demonstração.
+## Chat de IA (n8n)
+
+Companheiro de conversa, não assistente médico. A personalidade e os limites ficam no nó AI Agent do n8n (prompt sugerido no plano); o site só envia a mensagem com o contexto do dia.
+
+- `POST` em `VITE_N8N_CHAT_WEBHOOK_URL` com `{ sessionId, message, context }`; resposta `{ "reply": "..." }`. O leitor aceita `reply`, `output`, `text` ou `message`, num objeto ou lista, e texto puro.
+- No n8n: Webhook em `POST` com resposta pelo nó "Respond to Webhook", **Allowed Origins (CORS)** liberando a origem do site, endereço de **produção** e memória do agente com chave `sessionId`.
+- O endereço entra no pacote do site, então é público: nenhum segredo no front.
+- Estados: sem conexão (campo desativado), esperando (desiste em 45 s), erro com "Try again", e modo de demonstração quando o endereço está vazio.
+- A conversa fica no `localStorage` (`health7:chat:v1`) e **não entra no relatório para o solo**.
 
 ## Credits
 
 - **Figura do corpo** (`src/data/body-paths.ts`): traçados SVG de [@mjcdev/react-body-highlighter](https://github.com/MichaelMjc/react-body-highlighter) 0.0.4, de MichaelMJC, adaptação para web do [react-native-body-highlighter](https://github.com/HichamELBSI/react-native-body-highlighter) de HichamELBSI. Licença MIT, Copyright (c) 2022 ELABBASSI Hicham. Os traçados foram copiados (o pacote não é dependência); o componente `BodyAvatar` é nosso.
-- **Componentes de interface**: [shadcn/ui](https://ui.shadcn.com) (MIT), sobre [Radix UI](https://www.radix-ui.com) (MIT). Ícones: [Lucide](https://lucide.dev) (ISC). Avisos: [Sonner](https://sonner.emilkowal.ski) (MIT).
+- **Componentes de interface**: [shadcn/ui](https://ui.shadcn.com) (MIT), sobre [Radix UI](https://www.radix-ui.com) (MIT). Gráficos: [Recharts](https://recharts.org) (MIT). Ícones: [Lucide](https://lucide.dev) (ISC). Avisos: [Sonner](https://sonner.emilkowal.ski) (MIT).
 - **Fontes** servidas localmente via [Fontsource](https://fontsource.org): Fira Sans, Fira Code e Overpass (SIL Open Font License 1.1).
+- **Dados**: NASA DONKI (Space Weather Database Of Notifications, Knowledge, Information) e textos do NASA Human Research Program.

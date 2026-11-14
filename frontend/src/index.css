@@ -3,16 +3,14 @@
 
   Ordem:
   1. Tailwind (utilitários).
-  2. Tokens do design system v1 (paleta, espaço, fontes) e tokens v2 (src/styles/theme.css).
-  3. Classes h7- da v1, na camada "components", enquanto houver tela antiga usando.
-     Sai na fase 8 do plano, quando nenhuma classe h7- restar em src/.
+  2. Paleta do design system (../health7-design-system/tokens.css) e tokens v2 (src/styles/theme.css).
+  As classes h7- da v1 não são mais usadas: o visual vem do Tailwind com os tokens abaixo.
 
   As fontes são servidas localmente (@fontsource, importadas em main.tsx): o app não depende do Google Fonts.
 */
 @import "tailwindcss";
 @import "../../health7-design-system/tokens.css";
 @import "./styles/theme.css";
-@import "../../health7-design-system/components/bundle.css" layer(components);
 
 /* Tema: troque com data-theme="deep" | "white" no <html>. Só o Deep Blue é conferido no demo. */
 @custom-variant dark (&:where([data-theme="deep"], [data-theme="deep"] *));
@@ -20,8 +18,8 @@
 /*
   Variáveis que o shadcn/ui espera.
   Atenção à colisão de nomes: no shadcn, "accent" é um fundo sutil de hover; aqui a variável CSS
-  --accent é o Neon Yellow e continua assim (as classes h7- dependem dela). A troca é feita no
-  @theme abaixo: o utilitário bg-accent aponta para --surface-2, e o amarelo vira bg-brand.
+  --accent é o Neon Yellow (vem do tokens.css do design system). A troca é feita no @theme abaixo:
+  o utilitário bg-accent aponta para --surface-2, e o amarelo vira bg-brand.
 */
 :root,
 [data-theme] {
@@ -56,7 +54,7 @@
   --color-line: var(--line);
   --color-line-subtle: var(--line-subtle);
   --color-on-accent: var(--on-accent);
-  --color-link: var(--link);
+  /* Sem --color-link: na v1 ele é o amarelo, e "text-link" pintava links de amarelo sem querer. */
   --color-inverse: var(--inverse);
   --color-on-inverse: var(--on-inverse);
   --color-alert: var(--alert);
@@ -139,13 +137,6 @@
   :focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 2px;
-  }
-
-  /* O reset do Tailwind tira o sublinhado; links de texto ficam sublinhados. */
-  .h7 a,
-  .h7-link {
-    text-decoration-line: underline;
-    text-underline-offset: 3px;
   }
 
   /* Regiões da figura do corpo: foco de teclado e seleção com contorno branco */

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import { AppShell } from '@/components/app/AppShell'
 import { ChatPanel } from '@/components/app/ChatPanel'
+import { ScreenBoundary, ScreenSkeleton } from '@/components/app/ScreenStates'
 import { GameEvents, RankChip } from '@/components/app/GameBits'
 import { crew } from '@/lib/health'
 import { useRoute } from '@/lib/route'
@@ -31,7 +32,7 @@ export default function App() {
   switch (route.path) {
     case '/progress':
       screen = (
-        <Suspense fallback={<p className="mx-auto max-w-[1360px] px-4 py-8 text-ink-soft md:px-8">Loading progress…</p>}>
+        <Suspense fallback={<ScreenSkeleton label="Loading progress" />}>
           <ProgressScreen game={game} />
         </Suspense>
       )
@@ -60,7 +61,7 @@ export default function App() {
       onToggleCompanion={() => setCompanionOpen((o) => !o)}
       companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
     >
-      {screen}
+      <ScreenBoundary resetKey={route.path}>{screen}</ScreenBoundary>
       <GameEvents game={game} />
     </AppShell>
   )

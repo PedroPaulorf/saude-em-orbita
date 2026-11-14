@@ -520,3 +520,10 @@ Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11
 - No histórico, um check-up refeito no mesmo dia aparece com "redo · 0".
 - As respostas comportamentais ao longo do tempo viraram uma tabela: uma linha por pergunta, uma coluna por check-in (até os 7 mais recentes), sem soma.
 
+**Fase 8**
+- `bundle.css` saiu do `index.css` e `src/components/h7/` foi apagada. O `tokens.css` do design system continua importado: é de onde vêm a paleta e a variável `--accent`.
+- O mapeamento `--color-link` saiu do Tailwind, para ninguém cair de novo no `text-link` amarelo.
+- Estados: esqueleto enquanto a aba Progress baixa; uma proteção de erro por tela ("This screen couldn't load", com volta para a Home), que se desfaz ao trocar de rota; os estados vazios (histórico, check-in comportamental, relatório, chat) e de carregamento/erro do DONKI e do chat já existiam.
+- A nota em [[Decisões]] registra a direção visual como **proposta aplicada, a confirmar pela equipe** (seção 11, pergunta 1), e a gamificação e o chat como decididos pela equipe em 14/11.
+- Fora do que foi feito: PWA (`vite-plugin-pwa`) e animações com `motion`, os dois primeiros da ordem de corte. O teste do chat com o fluxo real do n8n depende do endereço do webhook.
+
