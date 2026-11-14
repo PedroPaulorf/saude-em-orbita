@@ -20,4 +20,5 @@ Dados e regras para interpretação; design para comunicar limitações.
 Entrega revisada por outro membro e vinculada no [[Quadro de tarefas]].
 
 ## Notas e links de trabalho
-A preencher.
+- [[Riscos NASA HRP]] — riscos do voo espacial humano (NASA), com ligação aos indicadores candidatos.
+- [[Monitoramento de radiação e saúde dos astronautas (CSA)]] — artigo da CSA sobre medição de radiação.

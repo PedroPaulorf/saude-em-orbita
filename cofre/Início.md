@@ -25,6 +25,7 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 - [[Dados e regras]]
 - [[Integração e apresentação]]
 - [[Recursos oficiais]] — materiais ainda aguardados
+- [[Riscos NASA HRP]] — 17 riscos do voo espacial humano, uma nota por risco
 - [[Decisões]]
 - [[Modelo de reunião]]
 
