@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { ShieldCheck } from 'lucide-react'
 import { Dot } from '@/components/app/Dot'
 import { PatternCard } from '@/components/app/PatternCard'
+import { RadiationCard } from '@/components/app/RadiationCard'
 import { PlanActive, PlanFinished, PlanSuggestion } from '@/components/app/PlanCard'
 import { ReportDialog } from '@/components/app/Report'
 import { DemoTag } from '@/components/app/SourceTag'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { indicators, useSpaceWeather } from '@/lib/donki'
 import type { GameSummary } from '@/lib/game'
 import { getTodayVitals } from '@/lib/health'
 import { closePlan, OUTCOME_TEXT, type PlanOutcome } from '@/lib/plans'
@@ -20,7 +22,7 @@ import type { Connection } from '@/types'
   precoces e, quando um padrão está ativo, mostra quais sinais estão presentes e qual regra gerou cada um.
   Padrão não é diagnóstico: vai para o relatório do cirurgião de voo.
 */
-export function Prevention({ game, connection }: { game: GameSummary; connection: Connection }) {
+export function Prevention({ game, connection, params }: { game: GameSummary; connection: Connection; params?: URLSearchParams }) {
   const patterns = usePatterns()
   const active = patterns.filter((p) => p.active)
   const inactive = patterns.filter((p) => !p.active)
@@ -30,6 +32,17 @@ export function Prevention({ game, connection }: { game: GameSummary; connection
   const [confirmEnd, setConfirmEnd] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
   const today = utcDayKey()
+  const weather = useSpaceWeather()
+  const sep = weather.mode === 'live' ? indicators(weather.state.snapshot).sep.featured : undefined
+  const section = params?.get('section')
+
+  // #/prevention?section=radiation (vindo do clima espacial da Home): rola até a radiação,
+  // depois do "volta ao topo" que o App faz ao trocar de tela.
+  useEffect(() => {
+    if (section === 'radiation') {
+      requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById('radiation')?.scrollIntoView({ behavior: 'smooth' })))
+    }
+  }, [section])
 
   // Plano que fechou (último dia completo ou prazo vencido) e ainda não tem resultado: guarda o resultado
   // de agora, para "Past plans" continuar dizendo o que aconteceu.
@@ -64,8 +77,11 @@ export function Prevention({ game, connection }: { game: GameSummary; connection
         </p>
       </header>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
-        <div className="grid gap-4">
+      {/* Celular: padrões, plano, radiação, planos anteriores (ordem do plano v3).
+          Desktop: padrões e radiação à esquerda, plano à direita. As colunas são "contents" no celular. */}
+      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
+        <div className="contents lg:grid lg:gap-4">
+          <div className="order-1 grid gap-4">
           {active.length === 0 ? (
             <section aria-labelledby="no-pattern" className="flex flex-col gap-3 rounded-xl border border-hairline bg-surface-1 p-5 md:p-6">
               <div className="flex items-center gap-3">
@@ -105,16 +121,22 @@ export function Prevention({ game, connection }: { game: GameSummary; connection
               </ul>
             </section>
           )}
+          </div>
+          <RadiationCard className="order-3" sepDay={sep ? utcDay(sep.time) : undefined} />
         </div>
 
-        <aside className="grid gap-4">
-          {running && <PlanActive view={running} todayPoints={game.today.points.plan} onEnd={() => setConfirmEnd(true)} />}
-          {justFinished && (
-            <PlanFinished view={justFinished} outcome={justFinished.plan.outcome ?? 'back-to-baseline'} onOpenReport={() => setReportOpen(true)} />
+        <div className="contents lg:grid lg:gap-4">
+          {(running || justFinished || suggestion) && (
+            <div className="order-2 grid gap-4">
+              {running && <PlanActive view={running} todayPoints={game.today.points.plan} onEnd={() => setConfirmEnd(true)} />}
+              {justFinished && (
+                <PlanFinished view={justFinished} outcome={justFinished.plan.outcome ?? 'back-to-baseline'} onOpenReport={() => setReportOpen(true)} />
+              )}
+              {suggestion && <PlanSuggestion pattern={suggestion} blockedBy={running?.pattern.title} />}
+            </div>
           )}
-          {suggestion && <PlanSuggestion pattern={suggestion} blockedBy={running?.pattern.title} />}
           {past.length > 0 && (
-            <section aria-labelledby="past-plans" className="flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
+            <section aria-labelledby="past-plans" className="order-4 flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
               <h2 id="past-plans" className="font-display text-lg font-semibold">
                 Past plans
               </h2>
@@ -123,7 +145,8 @@ export function Prevention({ game, connection }: { game: GameSummary; connection
                   <li key={v.plan.id} className="grid gap-0.5 border-t border-hairline py-2.5 first:border-t-0">
                     <span className="font-semibold">{v.pattern.title}</span>
                     <span className="font-mono text-[13px] text-ink-soft">
-                      {utcDay(`${v.plan.startedDay}T00:00:00Z`)} to {utcDay(`${v.plan.endedDay ?? v.lastDay}T00:00:00Z`)} ·{' '}
+                      {utcDay(`${v.plan.startedDay}T00:00:00Z`)} to {utcDay(`${v.plan.endedDay ?? v.lastDay}T00:00:00Z`)}
+                      <Dot />
                       {v.days.filter((d) => d.complete).length} of {v.plan.days} days complete
                     </span>
                     {v.plan.outcome && <span className="text-sm text-ink-soft">{OUTCOME_TEXT[v.plan.outcome]}</span>}
@@ -132,7 +155,7 @@ export function Prevention({ game, connection }: { game: GameSummary; connection
               </ul>
             </section>
           )}
-          <section aria-labelledby="how-title" className="flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
+          <section aria-labelledby="how-title" className="order-5 flex flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-5">
             <h2 id="how-title" className="font-display text-lg font-semibold">
               How this works
             </h2>
@@ -143,7 +166,7 @@ export function Prevention({ game, connection }: { game: GameSummary; connection
               <li>The patterns are demonstration rules with no clinical source yet.</li>
             </ul>
           </section>
-        </aside>
+        </div>
       </div>
 
       <Dialog open={confirmEnd} onOpenChange={setConfirmEnd}>

@@ -122,6 +122,18 @@
       { "id": "crew-06", "displayName": "Crew member 06", "weekPoints": 470, "routineDoneToday": true }
     ]
   },
+  "radiation": {
+    "_note": "SIMULATED dosimeter series (effective dose). Order of magnitude of about 0.5 mSv per day on the ISS from NASA technical brief OCHMO-TB-020: check the sentence in the PDF before quoting it. DONKI does not report dose; this series does not come from DONKI.",
+    "unit": "mSv",
+    "source": "Simulated dosimeter",
+    "missionTotalBeforeWindow": 20.4,
+    "daily": [0.48, 0.51, 0.47, 0.52, 0.49, 0.50, 0.53],
+    "careerLimit": 600,
+    "careerLimitSource": {
+      "label": "NASA-STD-3001, Volume 1, requirement 4.8.2 [V1 4030]",
+      "url": "https://www.nasa.gov/reference/4-0-human-performance/"
+    }
+  },
   "behavioral": [
     { "id": "mood", "question": "How is your mood right now?", "low": "Very low", "high": "Very good" },
     { "id": "stress", "question": "How stressed do you feel right now?", "low": "Not at all", "high": "Extremely" },

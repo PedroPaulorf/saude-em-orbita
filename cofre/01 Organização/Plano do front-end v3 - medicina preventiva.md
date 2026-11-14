@@ -303,3 +303,11 @@ Registrado pelo agente de código (Claude Opus), em 14/11.
 - Entraram também, por serem baratos com os dados prontos: a lista "Past plans" (item 4 da seção 6), a nota da Home com plano ativo, a linha do plano no Today's routine, a seção "Back-to-baseline plan" do relatório e a conquista "First plan completed".
 - O diálogo de novo rank aparece quando os pontos do plano levam o tripulante a Pilot, como acontece com a rotina.
 
+**Fase 4**
+- O cartão "Mission exposure" fica na aba Prevention, abaixo dos padrões no desktop. No celular a ordem é a do plano: padrões, plano, radiação, planos anteriores; as duas colunas do desktop viram uma lista só com `display: contents`.
+- A linha "Mission exposure 23.9 mSv · Simulated" do clima espacial da Home leva a `#/prevention?section=radiation`, que rola até o cartão.
+- As barras dos 7 dias começam do zero, por isso as diferenças diárias parecem pequenas (0,47 a 0,53 mSv). Foi de propósito, para não exagerar a variação.
+- A frase sobre 0,5 mSv por dia na ISS (OCHMO-TB-020) **não aparece na tela**: ficou só como nota em `simulated.json`, porque o plano pede conferir o PDF antes de citar.
+- O limite de 600 mSv usa o link que o plano conferiu em 14/11 (NASA-STD-3001, volume 1, 4.8.2 [V1 4030]). Não abri o link de novo.
+- RadLab real (o extra da seção 7) não foi feito.
+

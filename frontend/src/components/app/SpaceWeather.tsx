@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ExternalLink, History, Orbit, RefreshCw, Sun } from 'lucide-react'
+import { ExternalLink, History, Orbit, Radiation, RefreshCw, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
@@ -11,6 +11,7 @@ import {
   type SpaceWeatherState,
 } from '@/lib/donki'
 import { dataAge, dayLabel as DAY } from '@/lib/present'
+import { radiationSummary } from '@/lib/radiation'
 import { href } from '@/lib/route'
 import { cn, utcDateTime, utcDay, utcTime } from '@/lib/utils'
 import { Panel, PanelHeader } from './Panel'
@@ -54,6 +55,7 @@ export function SpaceWeatherCompact({
   const ind = indicators(state.snapshot)
   const sep = ind.sep.featured
   const range = rangeLabel(state.snapshot.window, state.source === 'live')
+  const mission = radiationSummary().missionTotal
 
   return (
     <Panel aria-labelledby="space-weather" className={cn('gap-3', className)} aria-busy={state.checking}>
@@ -82,6 +84,16 @@ export function SpaceWeatherCompact({
             `No solar flare ${range}`
           )}
         </p>
+        {/* Dose medida (simulada), não calculada a partir do DONKI */}
+        <a
+          href={href('/prevention', { section: 'radiation' })}
+          className="mt-1 inline-flex items-center gap-1.5 self-start text-sm text-interactive underline underline-offset-3"
+        >
+          <Radiation className="size-3.5" aria-hidden />
+          Mission exposure <span className="font-mono">{mission.toFixed(1)}</span> mSv
+          <Dot />
+          Simulated
+        </a>
       </div>
       <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
         <AgeLine state={state} />
