@@ -1,10 +1,6 @@
 {
   "_note": "SIMULATED DATA. Fictional values for the demo; not real health data. Rules are demonstration rules with no clinical source.",
-  "crew": {
-    "id": "crew-02",
-    "displayName": "Crew member 02",
-    "missionDay": 47
-  },
+  "crew": { "id": "crew-02", "displayName": "Crew member 02", "missionDay": 47 },
   "vitals": [
     {
       "id": "heartRate",
@@ -15,7 +11,9 @@
       "decimals": 0,
       "baseline": 62,
       "history": [62, 63, 61, 64, 66, 68, 71],
-      "rule": { "direction": "both", "attention": 5, "flagged": 15 }
+      "rule": { "direction": "both", "attention": 5, "flagged": 15 },
+      "source": "Wearable",
+      "input": "manual"
     },
     {
       "id": "bloodPressure",
@@ -28,7 +26,9 @@
       "baselineDiastolic": 74,
       "history": [115, 117, 116, 118, 117, 119, 118],
       "todayDiastolic": 76,
-      "rule": { "direction": "both", "attention": 10, "flagged": 20 }
+      "rule": { "direction": "both", "attention": 10, "flagged": 20 },
+      "source": "Cuff, typed in",
+      "input": "manual"
     },
     {
       "id": "sleep",
@@ -39,7 +39,9 @@
       "decimals": 1,
       "baseline": 7.2,
       "history": [7.1, 7.0, 6.4, 5.9, 5.6, 5.4, 5.1],
-      "rule": { "direction": "below", "attention": 1, "flagged": 2 }
+      "rule": { "direction": "below", "attention": 1, "flagged": 2 },
+      "source": "Self-report",
+      "input": "manual"
     },
     {
       "id": "temperature",
@@ -50,7 +52,42 @@
       "decimals": 1,
       "baseline": 36.6,
       "history": [36.6, 36.5, 36.7, 36.6, 36.6, 36.8, 36.7],
-      "rule": { "direction": "both", "attention": 0.5, "flagged": 1 }
+      "rule": { "direction": "both", "attention": 0.5, "flagged": 1 },
+      "source": "Thermometer, typed in",
+      "input": "manual"
+    },
+    {
+      "id": "spo2",
+      "label": "Oxygen saturation",
+      "unit": "%",
+      "decimals": 0,
+      "baseline": 97,
+      "history": [97, 97, 98, 97, 97, 96, 97],
+      "rule": { "direction": "below", "attention": 2, "flagged": 4 },
+      "source": "Pulse oximeter",
+      "input": "device"
+    },
+    {
+      "id": "respiratoryRate",
+      "label": "Respiratory rate",
+      "unit": "breaths/min",
+      "decimals": 0,
+      "baseline": 14,
+      "history": [14, 14, 15, 14, 15, 15, 16],
+      "rule": { "direction": "both", "attention": 3, "flagged": 6 },
+      "source": "Wearable",
+      "input": "device"
+    },
+    {
+      "id": "bodyMass",
+      "label": "Body mass",
+      "unit": "kg",
+      "decimals": 1,
+      "baseline": 74.0,
+      "history": [74.0, 73.9, 73.9, 73.8, 73.6, 73.5, 73.3],
+      "rule": { "direction": "below", "attention": 1.0, "flagged": 2.0 },
+      "source": "Body mass device",
+      "input": "device"
     }
   ],
   "game": {
@@ -86,5 +123,12 @@
     { "id": "mood", "question": "How is your mood right now?", "low": "Very low", "high": "Very good" },
     { "id": "stress", "question": "How stressed do you feel right now?", "low": "Not at all", "high": "Extremely" },
     { "id": "rest", "question": "How rested do you feel today?", "low": "Not at all", "high": "Fully rested" }
-  ]
+  ],
+  "_sources": {
+    "water": "Self-logged",
+    "behavioral": "Self-report",
+    "radiation": "Dosimeter",
+    "spaceWeather": "NASA DONKI",
+    "_note": "Device feeds are simulated in this demo."
+  }
 }

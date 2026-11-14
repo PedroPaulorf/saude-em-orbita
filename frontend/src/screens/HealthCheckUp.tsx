@@ -3,7 +3,7 @@ import { CheckFlow, CheckSaved, MeasureField, Question } from '@/components/app/
 import { StatusBadge } from '@/components/app/StatusBadge'
 import { DemoTag } from '@/components/app/SourceTag'
 import { measureError, parseMeasure } from '@/lib/checkin'
-import { getTodayVitals, vitalConfigs } from '@/lib/health'
+import { getTodayVitals, manualVitalConfigs as vitalConfigs } from '@/lib/health'
 import { reportItems, summarySentence } from '@/lib/present'
 import { navigate } from '@/lib/route'
 import { saveCheckIn, type HealthCheckIn } from '@/lib/storage'

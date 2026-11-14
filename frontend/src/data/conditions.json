@@ -1,0 +1,65 @@
+{
+  "_note": "DEMONSTRATION RULES. No clinical source yet. Research (Valéria) replaces signs, limits and sources. A pattern is not a diagnosis: the app shows which signs are present and sends the pattern to the flight surgeon.",
+  "patterns": [
+    {
+      "id": "sleep-debt",
+      "title": "Sleep debt",
+      "summary": "Several days of short sleep with signs of strain.",
+      "hrpRisk": "inadequate-sleep-and-irregular-schedules",
+      "source": null,
+      "minSigns": 2,
+      "signs": [
+        { "id": "sleep-low", "type": "measure", "measure": "sleep", "side": "below", "days": 3, "label": "Sleep below your baseline for 3 days or more" },
+        { "id": "hr-up", "type": "measure", "measure": "heartRate", "side": "above", "days": 1, "label": "Resting heart rate above your baseline" },
+        { "id": "rest-low", "type": "selfReport", "question": "rest", "atMost": 2, "label": "You reported feeling little rested" },
+        { "id": "stress-high", "type": "selfReport", "question": "stress", "atLeast": 4, "label": "You reported high stress" }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from NASA HRP, 'What can be done' for this risk.",
+        "steps": [
+          { "id": "check-ups", "type": "auto", "rule": "bothCheckUps", "label": "Do both check-ups" },
+          { "id": "sleep-period", "type": "manual", "label": "Kept the scheduled sleep period" },
+          { "id": "lights", "type": "manual", "label": "Dimmed the lights before the sleep period" },
+          { "id": "relax", "type": "manual", "label": "Took the scheduled relaxation time" }
+        ]
+      }
+    },
+    {
+      "id": "low-intake",
+      "title": "Low fluid and food intake",
+      "summary": "Missed water goals with body mass going down.",
+      "hrpRisk": "inadequate-food-and-nutrition",
+      "source": null,
+      "minSigns": 2,
+      "signs": [
+        { "id": "water-missed", "type": "water", "missedDays": 2, "label": "Water goal missed on each of the last 2 days" },
+        { "id": "mass-low", "type": "measure", "measure": "bodyMass", "side": "below", "days": 2, "label": "Body mass below your baseline for 2 days or more" },
+        { "id": "hr-up", "type": "measure", "measure": "heartRate", "side": "above", "days": 1, "label": "Resting heart rate above your baseline" }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from NASA HRP, 'What can be done' for this risk.",
+        "steps": [
+          { "id": "water-goal", "type": "auto", "rule": "waterGoal", "label": "Reach the water goal" },
+          { "id": "meals", "type": "manual", "label": "Logged all scheduled meals" },
+          { "id": "check-ups", "type": "auto", "rule": "bothCheckUps", "label": "Do both check-ups" }
+        ]
+      }
+    },
+    {
+      "id": "reduced-oxygenation",
+      "title": "Reduced oxygenation",
+      "summary": "Lower oxygen saturation with faster breathing and heart rate.",
+      "hrpRisk": "hypoxia",
+      "source": null,
+      "minSigns": 2,
+      "signs": [
+        { "id": "spo2-low", "type": "measure", "measure": "spo2", "side": "below", "days": 1, "label": "Oxygen saturation below your baseline" },
+        { "id": "rr-up", "type": "measure", "measure": "respiratoryRate", "side": "above", "days": 1, "label": "Respiratory rate above your baseline" },
+        { "id": "hr-up", "type": "measure", "measure": "heartRate", "side": "above", "days": 1, "label": "Resting heart rate above your baseline" }
+      ],
+      "plan": null
+    }
+  ]
+}

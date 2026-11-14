@@ -7,7 +7,10 @@ export type Source = 'simulated' | 'demo' | 'live'
 /** Estado da comunicação com o solo. */
 export type Connection = 'offline' | 'queued' | 'online'
 
-export type VitalId = 'heartRate' | 'bloodPressure' | 'sleep' | 'temperature'
+export type VitalId = 'heartRate' | 'bloodPressure' | 'sleep' | 'temperature' | 'spo2' | 'respiratoryRate' | 'bodyMass'
+
+/** manual: perguntada no check-up · device: chega sozinha de um aparelho (simulado no demo). */
+export type VitalInput = 'manual' | 'device'
 
 export interface Vital {
   id: VitalId
@@ -26,6 +29,9 @@ export interface Vital {
   baselineValue?: number
   /** Regra que gerou o estado, mostrada no relatório. */
   rule?: string
+  /** De onde o dado vem (ex.: "Pulse oximeter"). */
+  source?: string
+  input?: VitalInput
 }
 
 export type BodyRegionId = 'head' | 'chest' | 'core' | 'leftArm' | 'rightArm' | 'leftLeg' | 'rightLeg'

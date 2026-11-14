@@ -26,6 +26,9 @@ export const VITAL_REGION: Record<VitalId, BodyRegionId> = {
   heartRate: 'chest',
   bloodPressure: 'chest',
   temperature: 'core',
+  spo2: 'chest',
+  respiratoryRate: 'chest',
+  bodyMass: 'core',
 }
 
 /** "Sleep is 2.1 h below your baseline." A partir do delta já formatado ("−2.1", "+9"). */

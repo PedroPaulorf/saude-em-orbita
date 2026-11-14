@@ -6,8 +6,8 @@
   data/simulated.json ("rule") para quem cuida de dados e regras ajustar sem mexer aqui.
 */
 import simulated from '@/data/simulated.json'
-import type { BodyRegion, Status, Vital, VitalId } from '@/types'
-import { latestCheckIn } from '@/lib/storage'
+import type { BodyRegion, Status, Vital, VitalId, VitalInput } from '@/types'
+import { loadCheckIns, type HealthCheckIn } from '@/lib/storage'
 
 type Direction = 'above' | 'below' | 'both'
 
@@ -23,10 +23,14 @@ export interface VitalConfig {
   todayDiastolic?: number
   history: number[]
   rule: { direction: Direction; attention: number; flagged: number }
+  source: string
+  input: VitalInput
 }
 
 export const crew = simulated.crew
 export const vitalConfigs = simulated.vitals as VitalConfig[]
+/** Só as medidas perguntadas no check-up; as de aparelho chegam sozinhas. */
+export const manualVitalConfigs = vitalConfigs.filter((c) => c.input === 'manual')
 export const behavioralQuestions = simulated.behavioral
 
 const MINUS = '−' // sinal de menos tipográfico, como no design system
@@ -72,19 +76,37 @@ function toVital(c: VitalConfig, today: number, history: number[], todayDiastoli
     history,
     baselineValue: c.baseline,
     rule: status === 'baseline' ? undefined : ruleText(c, status),
+    source: c.source,
+    input: c.input,
   }
 }
 
-/** Medidas de hoje: o último check-up salvo, ou os dados simulados se ainda não houver. */
-export function getTodayVitals(): Vital[] {
-  const saved = latestCheckIn('health')
+/** Os últimos `n` dias UTC (AAAA-MM-DD), terminando hoje. */
+export function lastDayKeys(n = 7, today = new Date()) {
+  return Array.from({ length: n }, (_, i) =>
+    new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (n - 1 - i))).toISOString().slice(0, 10),
+  )
+}
+
+/** Último check-up de saúde salvo em cada dia UTC. */
+function healthByDay(): Map<string, HealthCheckIn> {
+  const map = new Map<string, HealthCheckIn>()
+  for (const c of loadCheckIns()) if (c.kind === 'health') map.set(c.at.slice(0, 10), c)
+  return map
+}
+
+/**
+ * Medidas de hoje com o histórico dos últimos 7 dias UTC. Para cada dia: o valor do check-up de saúde
+ * salvo naquele dia, se houver; senão, o valor simulado da mesma posição. O último dia é hoje.
+ */
+export function getTodayVitals(today = new Date()): Vital[] {
+  const days = lastDayKeys(7, today)
+  const byDay = healthByDay()
   return vitalConfigs.map((c) => {
-    const savedValue = saved?.vitals[c.id]
-    if (savedValue == null) {
-      return toVital(c, c.history[c.history.length - 1], c.history)
-    }
-    const history = [...c.history.slice(1), savedValue]
-    return toVital(c, savedValue, history, saved?.vitals.bloodPressureDiastolic)
+    const offset = c.history.length - days.length
+    const history = days.map((d, i) => byDay.get(d)?.vitals[c.id] ?? c.history[offset + i])
+    const todaySaved = byDay.get(days[days.length - 1])
+    return toVital(c, history[history.length - 1], history, todaySaved?.vitals.bloodPressureDiastolic)
   })
 }
 
@@ -97,20 +119,20 @@ const STATUS_TEXT: Record<Status, string> = {
   flagged: 'Flagged for ground',
 }
 
-/** Liga as medidas às regiões da figura do corpo. */
+/** Estado de um grupo de medidas: o pior entre elas, com o detalhe da medida que o define. */
+function group(list: Vital[]) {
+  const status = worst(...list.map((x) => x.status))
+  const lead = list.find((x) => x.status === status) ?? list[0]
+  return { status, stateText: withDetail(status, `${lead.delta} ${lead.unit}`) }
+}
+
+/** Liga as medidas às regiões da figura do corpo. Peito: coração e respiração; tronco: temperatura e massa. */
 export function getBodyRegions(vitals: Vital[]): BodyRegion[] {
   const v = Object.fromEntries(vitals.map((x) => [x.id, x])) as Record<VitalId, Vital>
-  const cardio = worst(v.heartRate.status, v.bloodPressure.status)
-  const cardioDetail = v.heartRate.status === cardio ? `${v.heartRate.delta} bpm` : `${v.bloodPressure.delta} mmHg`
   return [
-    { id: 'head', name: 'Head · sleep', status: v.sleep.status, stateText: withDetail(v.sleep.status, `${v.sleep.delta} h`) },
-    { id: 'chest', name: 'Chest · cardiovascular', status: cardio, stateText: withDetail(cardio, cardioDetail) },
-    {
-      id: 'core',
-      name: 'Core · temperature',
-      status: v.temperature.status,
-      stateText: withDetail(v.temperature.status, `${v.temperature.delta} °C`),
-    },
+    { id: 'head', name: 'Head · sleep', ...group([v.sleep]) },
+    { id: 'chest', name: 'Chest · heart and lungs', ...group([v.heartRate, v.bloodPressure, v.spo2, v.respiratoryRate]) },
+    { id: 'core', name: 'Core · temperature and mass', ...group([v.temperature, v.bodyMass]) },
     { id: 'leftArm', status: 'baseline' },
     { id: 'rightArm', status: 'baseline' },
     { id: 'leftLeg', status: 'baseline' },

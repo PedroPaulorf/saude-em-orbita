@@ -272,3 +272,14 @@ Mais duas fontes para o pitch: uma que mostre que **os dados de saúde ficam dis
 ## Desvios
 
 A preencher por quem implementar: o que foi decidido diferente do plano e por quê.
+
+Registrado pelo agente de código (Claude Opus), em 14/11.
+
+**Fase 1**
+- A frequência cardíaca tem origem "Wearable" mas continua `input: "manual"`: a pessoa lê no aparelho e digita. Assim o check-up segue com as quatro perguntas, como o critério da fase pede.
+- As origens que não são medidas (água, autorrelato comportamental, dosímetro, DONKI) ficaram numa chave `_sources` do `simulated.json`, com a frase "Device feeds are simulated in this demo.", para as telas da fase 6 lerem de um lugar só.
+- Regiões do corpo: o peito virou "Chest · heart and lungs" (frequência cardíaca, pressão, saturação, frequência respiratória) e o tronco "Core · temperature and mass". O estado da região é o pior entre as medidas dela, e o detalhe mostra a medida que define esse estado.
+- O histórico por dia usa o último check-up de saúde salvo em cada dia UTC. Mudança de comportamento: um check-up de ontem não aparece mais como "hoje"; hoje volta ao valor simulado até a pessoa fazer o check-up do dia.
+- Sinal de medida: "presente" quando a medida está fora da linha de base, do lado pedido, pela regra dela, por `days` dias seguidos até hoje. O texto do sinal mostra quantos dias seguidos, quando passa de um ("Sleep 5.1 h · 2.1 h below baseline · 4 days").
+- Sinal de água: "desconhecido" se algum dos dias completos pedidos não tem registro (chave ausente no `health7:water:v1`). Um dia com registro 0 conta como meta não atingida.
+- Ordem dos padrões: ativos primeiro, sinalizados antes de atenção, depois por número de sinais presentes.
