@@ -1,0 +1,6 @@
+[
+  { "id": "20220017869", "topic": "MDA", "title": "ExMC Clinical Decision Support System Architecture Recommendation", "summary": "Integrated medical data as a foundation for decision support." },
+  { "id": "20250000009", "topic": "EIMO", "title": "Earth-Independent Medical Operations Concept of Operations", "summary": "Progressive autonomy with communication delays and limited resources." },
+  { "id": "20180002541", "topic": "AMO", "title": "Autonomous Medical Operations", "summary": "Research on medical decision support, including ultrasound interpretation." },
+  { "id": "20180006877", "topic": "IMM", "title": "Validation of the NASA Integrated Medical Model", "summary": "Monte Carlo mission modeling and comparison with observed medical events." }
+]

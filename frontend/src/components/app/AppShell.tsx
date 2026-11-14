@@ -21,9 +21,9 @@ function activeTab(path: Path): Path {
 }
 
 const CONNECTION_TEXT: Record<Connection, string> = {
-  offline: 'Offline',
-  queued: 'Report queued',
-  online: 'Sent',
+  offline: 'Local only',
+  queued: 'Sync pending',
+  online: 'Stored on server',
 }
 
 /** Estado da comunicação com o solo: ponto + palavra, nunca só cor. */

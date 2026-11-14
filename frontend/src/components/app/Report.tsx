@@ -65,6 +65,7 @@ export function ReportCompact({
         <CloudOff className="size-4" aria-hidden />
         <Dotted text={sendState(connection)} />
       </span>
+      <a href="#/data" className="text-sm font-semibold text-interactive underline">Medical data & sources</a>
     </Panel>
   )
 }

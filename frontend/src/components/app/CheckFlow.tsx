@@ -191,7 +191,7 @@ export function CheckSaved({ title, children }: { title: string; children: React
           <div>
             <p className="text-sm font-semibold text-ink-soft">{title}</p>
             <h1 id="saved-title" tabIndex={-1} className="font-display text-[26px] leading-tight font-semibold outline-none">
-              Saved. Queued for ground.
+              Saved on this device.
             </h1>
           </div>
         </div>

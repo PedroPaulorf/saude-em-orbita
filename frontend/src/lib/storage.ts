@@ -9,6 +9,8 @@
 */
 import { useSyncExternalStore } from 'react'
 import type { VitalId } from '@/types'
+import type { ApiCheckIn, OutboxEntry } from './sync-core'
+import simulated from '@/data/simulated.json'
 
 const KEY = 'health7:checkins:v2'
 const KEY_V1 = 'health7:checkins:v1'
@@ -16,6 +18,7 @@ const KEY_V1 = 'health7:checkins:v1'
 export type CheckInKind = 'health' | 'behavioral'
 
 export interface HealthCheckIn {
+  sync?: OutboxEntry
   kind: 'health'
   /** Horário ISO do envio. */
   at: string
@@ -23,6 +26,7 @@ export interface HealthCheckIn {
 }
 
 export interface BehavioralCheckIn {
+  sync?: OutboxEntry
   kind: 'behavioral'
   at: string
   /** Autorrelato de 1 a 5, por pergunta. Sem pontuação somada. */
@@ -56,9 +60,11 @@ const listeners = new Set<() => void>()
 
 function write(list: CheckIn[]) {
   try {
+    const existing = localStorage.getItem(KEY)
+    if (existing !== null && !Array.isArray(JSON.parse(existing))) throw new Error('Invalid stored history')
     localStorage.setItem(KEY, JSON.stringify(list))
   } catch {
-    // Sem espaço ou bloqueado: o app segue sem salvar.
+    throw new Error('Could not save on this device. Free storage and try again.')
   }
   version++
   listeners.forEach((l) => l())
@@ -112,7 +118,33 @@ export function latestAny(): CheckIn | null {
 }
 
 export function saveCheckIn(checkIn: CheckIn) {
-  write([...loadCheckIns(), checkIn])
+  const entry = { ...checkIn, sync: makeEntry(checkIn, false) }
+  write([...loadCheckIns(), entry])
+  window.dispatchEvent(new Event('health7:outbox'))
+}
+
+function makeEntry(record: CheckIn, legacy: boolean): OutboxEntry {
+  const vitals = record.kind === 'health' ? record.vitals : {}
+  const payload: ApiCheckIn = {
+    clientId: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    at: record.at, source: 'simulated', vitals,
+    behavioral: record.kind === 'behavioral' ? record.behavioral : {},
+    provenance: Object.fromEntries(Object.keys(vitals).map((id) => {
+      const config = simulated.vitals.find((v) => v.id === (id === 'bloodPressureDiastolic' ? 'bloodPressure' : id))
+      return [id, { method: legacy ? 'unknown' : config?.input === 'device' ? 'simulated-device' : 'manual', quality: legacy ? 'unknown' : 'simulated' }]
+    })),
+  }
+  return { payload, state: 'pending' }
+}
+
+/** One write stores both the record and its immutable retry payload. */
+export function prepareOutbox() {
+  const records = loadCheckIns()
+  if (records.some((r) => !r.sync)) write(records.map((r) => r.sync ? r : { ...r, sync: makeEntry(r, true) }))
+}
+
+export function updateOutbox(clientId: string, sync: OutboxEntry) {
+  write(loadCheckIns().map((r) => r.sync?.payload.clientId === clientId ? { ...r, sync } : r))
 }
 
 /** Apaga os registros. Grava uma lista vazia (e não remove a chave) para o v1 não ser migrado de novo. */

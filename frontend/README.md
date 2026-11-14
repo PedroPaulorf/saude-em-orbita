@@ -117,3 +117,7 @@ Companheiro de conversa, não assistente médico. A personalidade e os limites f
 - **Componentes de interface**: [shadcn/ui](https://ui.shadcn.com) (MIT), sobre [Radix UI](https://www.radix-ui.com) (MIT). Gráficos: [Recharts](https://recharts.org) (MIT). Ícones: [Lucide](https://lucide.dev) (ISC). Avisos: [Sonner](https://sonner.emilkowal.ski) (MIT).
 - **Fontes** servidas localmente via [Fontsource](https://fontsource.org): Fira Sans, Fira Code e Overpass (SIL Open Font License 1.1).
 - **Dados**: NASA DONKI (Space Weather Database Of Notifications, Knowledge, Information) e textos do NASA Human Research Program.
+
+## Dados médicos e API
+
+Acesse **Medical data & sources** pelo cartão Report para ver a fila de check-ups, avaliações salvas, referências NTRS e cenários educativos de missão. Configure a API local seguindo [Dados médicos e sincronização](../docs/medical-data.md). A integração é opcional; sem configuração, os check-ups continuam no navegador.

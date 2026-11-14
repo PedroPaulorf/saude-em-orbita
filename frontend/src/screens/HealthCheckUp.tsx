@@ -38,7 +38,12 @@ export function HealthCheckUp() {
       vitals[cfg.id] = parsed.value
       if (parsed.diastolic) vitals.bloodPressureDiastolic = parsed.diastolic
     }
-    saveCheckIn({ kind: 'health', at: new Date().toISOString(), vitals })
+    try {
+      saveCheckIn({ kind: 'health', at: new Date().toISOString(), vitals })
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save. Try again.')
+      return
+    }
     setSaved(getTodayVitals())
   }
 

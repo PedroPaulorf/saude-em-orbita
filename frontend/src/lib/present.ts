@@ -41,9 +41,9 @@ export function reportItems(vitals: Vital[]) {
 
 /** Estado do envio do relatório. */
 export function sendState(connection: Connection) {
-  if (connection === 'queued') return 'Queued · no ground link'
-  if (connection === 'online') return 'Sent to ground'
-  return "Waiting for today's check-up"
+  if (connection === 'queued') return 'Pending server confirmation'
+  if (connection === 'online') return 'Check-ups stored on server'
+  return 'Local storage · no server confirmation'
 }
 
 /** "5 Sep" ou "10 Sep 2026", a partir de AAAA-MM-DD. */

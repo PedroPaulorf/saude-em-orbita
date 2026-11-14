@@ -88,11 +88,11 @@ HTTP 201. Mesmo `clientId`, tripulante e conteúdo: HTTP 200, mesmo registro.
 Mesmo identificador com conteúdo diferente: HTTP 409. Dados inválidos: 400;
 token ausente/incorreto: 401; tripulante desconhecido: 404.
 
-## Conectar o front (próxima etapa)
+## Integração do front
 
-O front existente **não foi alterado nem conectado automaticamente** nesta entrega.
-Em `frontend/src/lib/storage.ts`, o objeto atual já tem `at`, `vitals` e `behavioral`.
-O adaptador de sincronização deve:
+O front tem fila persistente e integração opcional com esta API. Veja [Dados médicos e sincronização](../docs/medical-data.md) para configuração, novas tabelas, rastreabilidade das regras e simulação educativa. A tela `#/data` reúne os estados de envio e as referências NTRS. Sem as variáveis `VITE_HEALTH_API_URL` e `VITE_HEALTH_API_KEY`, o modo local continua disponível.
+
+O adaptador implementado em `frontend/src/lib/sync.ts` segue este fluxo:
 
 1. Acrescentar `clientId` (UUID) e `source: simulated` ao criar o registro.
 2. Salvar localmente esse mesmo objeto antes de enviar, mantendo o identificador.
@@ -101,9 +101,9 @@ O adaptador de sincronização deve:
    identificador se a resposta se perder. Em 409, mostrar conflito; não repetir indefinidamente.
 5. Atualizar o histórico pelo GET para enxergar registros de outros tablets.
 
-Os cálculos atuais de estados e o DONKI continuam no front. Receber um check-up
+Os cálculos do painel e o DONKI continuam no front; a API também preserva uma avaliação versionada das medidas recebidas. Receber um check-up
 na API não significa que ele foi enviado à Terra, analisado por IA ou revisado
-por um médico. A fila offline ainda depende dessa integração no front.
+por um médico. A fila cobre check-ups físicos e comportamentais; chat, água e planos não são sincronizados.
 
 ## Limites do esqueleto
 
@@ -112,7 +112,7 @@ por um médico. A fila offline ainda depende dessa integração no front.
   não distingue pessoas ou permissões. Quem conhece o token pode consultar todos
   os tripulantes existentes. Não inserir dados reais de saúde nesta versão.
 - Autenticação individual, autorização de registros psicológicos, auditoria,
-  backups, limitação de requisições e sincronização completa são próximos passos.
+  backups, limitação de requisições e sincronização dos demais dados são próximos passos.
 - O token não deve entrar no Git. Um token usado pelo navegador não é segredo
   contra quem tem acesso a esse navegador; CORS não substitui autenticação.
 - O serviço de IA poderá consultar a API em uma etapa posterior.

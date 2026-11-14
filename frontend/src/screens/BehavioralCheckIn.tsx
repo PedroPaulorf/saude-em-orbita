@@ -12,6 +12,7 @@ export function BehavioralCheckIn() {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
   const q = behavioralQuestions[step]
   const isLast = step === behavioralQuestions.length - 1
 
@@ -24,7 +25,12 @@ export function BehavioralCheckIn() {
       setStep(step + 1)
       return
     }
-    saveCheckIn({ kind: 'behavioral', at: new Date().toISOString(), behavioral: answers })
+    try {
+      saveCheckIn({ kind: 'behavioral', at: new Date().toISOString(), behavioral: answers })
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save. Try again.')
+      return
+    }
     setSaved(true)
   }
 
@@ -48,6 +54,7 @@ export function BehavioralCheckIn() {
       nextDisabled={answers[q.id] == null}
     >
       <Question id={`q-${q.id}`}>{q.question}</Question>
+      {error && <p role="alert" className="text-sm text-flag-ink">{error}</p>}
       <ScaleChoice
         key={q.id}
         labelledBy={`q-${q.id}`}

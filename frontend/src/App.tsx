@@ -7,13 +7,14 @@ import { GameEvents, RankChip } from '@/components/app/GameBits'
 import { crew } from '@/lib/health'
 import { useRoute } from '@/lib/route'
 import { useGame } from '@/lib/useGame'
-import { latestAny, useCheckInsVersion } from '@/lib/storage'
+import { loadCheckIns } from '@/lib/storage'
+import { API_CONFIGURED, useMedicalSync } from '@/lib/sync'
+import { MedicalData } from '@/screens/MedicalData'
 import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
 import { Prevention } from '@/screens/Prevention'
-import { isTodayUtc } from '@/lib/utils'
 import type { Connection } from '@/types'
 
 // Progress carrega o Recharts: só baixa quando a pessoa abre a aba.
@@ -22,7 +23,7 @@ const ProgressScreen = lazy(() => import('@/screens/Progress').then((m) => ({ de
 export default function App() {
   const route = useRoute()
   // Re-renderiza quando um check-up é salvo, para o cabeçalho mostrar "Report queued" na hora.
-  useCheckInsVersion()
+  useMedicalSync()
   const game = useGame()
   const [companionOpen, setCompanionOpen] = useState(false)
   const [demoOpen, setDemoOpen] = useState(false)
@@ -34,10 +35,15 @@ export default function App() {
 
   // Sem servidor: o relatório fica guardado para envio quando houver contato com o solo.
   // Recalculado a cada troca de rota, então reflete um check-up recém-salvo.
-  const connection: Connection = isTodayUtc(latestAny()?.at) ? 'queued' : 'offline'
+  const records = loadCheckIns()
+  const connection: Connection = !API_CONFIGURED || !records.length ? 'offline'
+    : records.every((r) => r.sync?.state === 'synced') ? 'online' : 'queued'
 
   let screen
   switch (route.path) {
+    case '/data':
+      screen = <MedicalData />
+      break
     case '/prevention':
       screen = <Prevention game={game} connection={connection} params={route.params} />
       break
