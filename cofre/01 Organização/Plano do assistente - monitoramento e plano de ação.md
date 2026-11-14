@@ -373,3 +373,13 @@ Registrados durante a implementação (14/11).
 | 28 | Companheiro | Frase quando o estado sobe | Estado subiu: "I noticed a change in your hydration…"; continua igual: "…is still off your baseline"; ESCALATE: aponta para a faixa, sem IA | O tema vem do padrão ativo ou, sem padrão, da medida principal |
 | 29 | Relatório e plano | — | Textos ajustados para títulos que agora são frases ("Early-sign pattern: …") | Os títulos antigos eram nomes curtos |
 
+### Fase 4: roteiro
+
+| # | Onde | O plano dizia | O que foi feito | Por quê |
+|---|---|---|---|---|
+| 30 | `RoadmapInput` | `state`, `score`, `signals` e padrões | `monitor: { state, score, day, wording, reasons, signals }`; os padrões já vêm do motor (no máximo dois, como na tela) | Uma entrada só para o motor no aparelho e para a IA |
+| 31 | Biblioteca de passos | Passos por condição (tabela da seção 8) | `CONDITION_ADVICE` por condição, na frente dos passos por medida; o passo da semana de C12, C06, C16 e C09 é "ground" | Segue a tabela; o que vai ao solo continua decidido pela regra |
+| 32 | Por estado | WATCH, PERSISTENT, ESCALATE | WATCH: "repeat" e "symptom check-in" no topo; PERSISTENT: passo da condição, depois "reduce non-critical workload" e "repeat the check-up daily"; ESCALATE: o motor no aparelho devolve só o passo do protocolo, e a tela mostra o texto fixo | Seção 8, item 3 |
+| 33 | IA do roteiro | Recebe estado e padrões | O contexto leva `monitor` e `conditionSteps`; as instruções proíbem mudar o estado, chamar o score de probabilidade e escrever passos em ESCALATE | "Regra decide, IA explica". O fluxo do n8n é da fase 5 |
+| 34 | Pontos dos passos | "marcar passos dá pontos" (fase 4) | Não mexido: os passos do roteiro continuam marcáveis, e os pontos seguem no plano de 5 dias | Depende da decisão 8 (um plano só), ainda em aberto |
+
