@@ -1,0 +1,74 @@
+{
+ "notice": "Synthetic crew profiles (NEXUS-Med research, fictional NX-01 to NX-06). Measurement values follow published spaceflight trends; environment is real NASA RR-1 telemetry re-indexed to mission day, not measured with these crew profiles.",
+ "source": "dados/NEXUS-Med_6crew_daily_30d_cases.xlsm",
+ "sheet": "04_Disease_Alignment",
+ "synthetic": true,
+ "items": [
+  {
+   "id": "C09",
+   "condition": "Respiratory Infection",
+   "crewUsed": "NX-06",
+   "primaryInputs": "T°, HR, RR, SpO₂, BP, sleep",
+   "checkIn": "cough; sore throat; congestion; general state",
+   "timeFactor": "Persistence/progression",
+   "environmentContext": "CO₂; cabin T/RH; workload",
+   "prototypePattern": "Symptoms + persistent T↑ HR↑ RR↑ SpO₂↓/sleep↓",
+   "safeWording": "Pattern increases concern for respiratory infection; requires medical evaluation."
+  },
+  {
+   "id": "C12",
+   "condition": "Dehydration / hypovolemia pattern",
+   "crewUsed": "NX-04",
+   "primaryInputs": "HR, BP, mass, urine, RR",
+   "checkIn": "intake; thirst; vomiting/diarrhea; dizziness",
+   "timeFactor": "Duration of low intake/loss",
+   "environmentContext": "thermal/workload context",
+   "prototypePattern": "HR↑ + BP↓ relative + urine↓ + mass↓",
+   "safeWording": "Pattern compatible with reduced circulating volume / dehydration concern."
+  },
+  {
+   "id": "C16",
+   "condition": "Nephrolithiasis",
+   "crewUsed": "NX-04",
+   "primaryInputs": "urine, hydration, mass, HR/T° support",
+   "checkIn": "flank pain; hematuria; nausea; stone history",
+   "timeFactor": "Long-duration context",
+   "environmentContext": "dehydration; microgravity",
+   "prototypePattern": "Flank discomfort + urinary/hydration changes",
+   "safeWording": "Urinary/renal pattern requires review; imaging/lab needed for diagnosis."
+  },
+  {
+   "id": "C18",
+   "condition": "Sleep / Circadian Deterioration",
+   "crewUsed": "NX-03",
+   "primaryInputs": "sleep, HR/HRV if available, activity",
+   "checkIn": "fatigue; sleepiness; errors; mood",
+   "timeFactor": "Accumulated sleep debt",
+   "environmentContext": "CO₂; light; T/RH; workload",
+   "prototypePattern": "Persistent sleep decline + physiological/functional impact",
+   "safeWording": "Persistent sleep/circadian deviation detected."
+  },
+  {
+   "id": "C05",
+   "condition": "Late Headache",
+   "crewUsed": "NX-03",
+   "primaryInputs": "BP, HR, T°, RR, SpO₂, sleep",
+   "checkIn": "pain score; neuro/visual symptoms; nausea",
+   "timeFactor": "Persistence/recurrence",
+   "environmentContext": "CO₂; sleep; hydration",
+   "prototypePattern": "Headache + multiple deviations/context",
+   "safeWording": "Headache pattern requires review; system does not determine cause."
+  },
+  {
+   "id": "C06",
+   "condition": "Space Motion Sickness + dehydration risk",
+   "crewUsed": "NX-01",
+   "primaryInputs": "HR, BP, mass, urine, sleep",
+   "checkIn": "nausea/vomiting/dizziness",
+   "timeFactor": "Early flight",
+   "environmentContext": "microgravity transition",
+   "prototypePattern": "Early nausea with transient volume/sleep changes",
+   "safeWording": "Early adaptation pattern; repeat measurements if symptoms persist."
+  }
+ ]
+}

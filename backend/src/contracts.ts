@@ -2,7 +2,7 @@ export interface CheckInInput {
   clientId: string; at: string; source: 'simulated'
   vitals: { heartRate?: number; bloodPressure?: number; bloodPressureDiastolic?: number; sleep?: number; temperature?: number; spo2?: number; respiratoryRate?: number; bodyMass?: number }
   behavioral: { mood?: number; stress?: number; rest?: number }
-  healthDetails?: { urine?: string; stool?: string }
+  healthDetails?: { urine?: string; stool?: string; urinations24h?: number; stools24h?: number; redFlag?: boolean }
   provenance?: Record<string, { method: 'manual' | 'simulated-device' | 'unknown'; quality: 'simulated' | 'unknown' }>
 }
 const positive = { type: 'number', exclusiveMinimum: 0, maximum: 1000 }
@@ -26,7 +26,11 @@ export const checkInSchema = {
       }])) },
     healthDetails: { type: 'object', additionalProperties: false, properties: {
       urine: { type: 'string', minLength: 1, maxLength: 2000, pattern: '\\S' },
-      stool: { type: 'string', minLength: 1, maxLength: 2000, pattern: '\\S' } } } },
+      stool: { type: 'string', minLength: 1, maxLength: 2000, pattern: '\\S' },
+      // Daily counts (NEXUS-Med import) and a "yes" to a check-up alert question.
+      urinations24h: { type: 'integer', minimum: 0, maximum: 100 },
+      stools24h: { type: 'integer', minimum: 0, maximum: 100 },
+      redFlag: { type: 'boolean' } } } },
 }
 export const historySchema = {
   type: 'object', additionalProperties: false,

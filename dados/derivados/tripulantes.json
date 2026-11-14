@@ -1,0 +1,134 @@
+{
+ "notice": "Synthetic crew profiles (NEXUS-Med research, fictional NX-01 to NX-06). Measurement values follow published spaceflight trends; environment is real NASA RR-1 telemetry re-indexed to mission day, not measured with these crew profiles.",
+ "source": "dados/NEXUS-Med_6crew_daily_30d_cases.xlsm",
+ "sheet": "01_Crew_Profiles",
+ "synthetic": true,
+ "items": [
+  {
+   "crewId": "NX-01",
+   "sex": "F",
+   "age": 29,
+   "role": "Mission Specialist",
+   "medicalHistory": "Seasonal allergic rhinitis; history of motion-sickness susceptibility; otherwise medically fit.",
+   "scenario": "Normal early adaptation / mild space-motion-sickness pattern",
+   "baseline": {
+    "heightCm": 165,
+    "bodyMass": 61,
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "urinations24h": 6,
+    "stools24h": 1,
+    "sleep": 7.6,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   }
+  },
+  {
+   "crewId": "NX-02",
+   "sex": "M",
+   "age": 33,
+   "role": "Pilot",
+   "medicalHistory": "Endurance-trained; physiologic resting bradycardia; no chronic disease.",
+   "scenario": "Stable adaptation / low false-positive case",
+   "baseline": {
+    "heightCm": 181,
+    "bodyMass": 78,
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "urinations24h": 6,
+    "stools24h": 1,
+    "sleep": 7.4,
+    "bloodPressure": 118,
+    "bloodPressureDiastolic": 72
+   }
+  },
+  {
+   "crewId": "NX-03",
+   "sex": "F",
+   "age": 37,
+   "role": "Payload Specialist",
+   "medicalHistory": "Episodic migraine without aura; no cardiovascular disease.",
+   "scenario": "Sleep/circadian deterioration with headache-context pattern",
+   "baseline": {
+    "heightCm": 170,
+    "bodyMass": 67,
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "urinations24h": 6,
+    "stools24h": 1,
+    "sleep": 7.5,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 72
+   }
+  },
+  {
+   "crewId": "NX-04",
+   "sex": "M",
+   "age": 41,
+   "role": "Flight Engineer",
+   "medicalHistory": "Remote nephrolithiasis, single resolved episode 8 years earlier; otherwise medically fit.",
+   "scenario": "Dehydration / renal-concern pattern",
+   "baseline": {
+    "heightCm": 176,
+    "bodyMass": 82,
+    "heartRate": 60,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "urinations24h": 6,
+    "stools24h": 1,
+    "sleep": 7.2,
+    "bloodPressure": 120,
+    "bloodPressureDiastolic": 76
+   }
+  },
+  {
+   "crewId": "NX-05",
+   "sex": "F",
+   "age": 46,
+   "role": "Crew Medical Officer",
+   "medicalHistory": "Remote recurrent uncomplicated UTI; mild prior orthostatic susceptibility; no active disease.",
+   "scenario": "Post-flight orthostatic intolerance concern",
+   "baseline": {
+    "heightCm": 160,
+    "bodyMass": 57,
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "urinations24h": 6,
+    "stools24h": 1,
+    "sleep": 7.3,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   }
+  },
+  {
+   "crewId": "NX-06",
+   "sex": "M",
+   "age": 52,
+   "role": "Commander",
+   "medicalHistory": "Family history of hypertension; high-normal personal blood pressure; no diagnosed hypertension.",
+   "scenario": "Respiratory/systemic deterioration warning pattern",
+   "baseline": {
+    "heightCm": 185,
+    "bodyMass": 88,
+    "heartRate": 68,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "urinations24h": 6,
+    "stools24h": 1,
+    "sleep": 7,
+    "bloodPressure": 128,
+    "bloodPressureDiastolic": 80
+   }
+  }
+ ]
+}

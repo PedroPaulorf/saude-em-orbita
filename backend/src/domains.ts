@@ -17,10 +17,12 @@ const healthOutput = (row: Row) => ({ id: row.checkin_id, crewId: row.crew_id, c
   vitals: defined([['heartRate', row.heart_rate_bpm], ['spo2', row.oxygen_saturation_percent],
     ['bloodPressure', row.blood_pressure_systolic_mmhg], ['bloodPressureDiastolic', row.blood_pressure_diastolic_mmhg],
     ['temperature', row.body_temperature_c], ['respiratoryRate', row.respiratory_rate_per_min], ['sleep', row.sleep_hours]]),
-  healthDetails: defined([['urine', row.urine], ['stool', row.stool]]) })
+  healthDetails: defined([['urine', row.urine], ['stool', row.stool], ['urinations24h', row.urinations_24h], ['stools24h', row.stools_24h]]) })
 const environmentInput = (row: Row) => ({ clientId: row.client_id, at: iso(row.at), source: row.source,
   ...defined([['radiationDoseMsv', row.radiation_dose_msv], ['altitudeMeters', row.altitude_meters],
-    ['temperatureC', row.temperature_c], ['oxygenPercent', row.oxygen_percent]]) })
+    ['temperatureC', row.temperature_c], ['oxygenPercent', row.oxygen_percent],
+    ['radiationDoseMgyDay', row.radiation_dose_mgy_day], ['radiationAccumMgy', row.radiation_accum_mgy],
+    ['co2Ppm', row.co2_ppm], ['relativeHumidityPct', row.relative_humidity_pct]]) })
 const environmentOutput = (row: Row) => ({ ...environmentInput(row), id: row.id, crewId: row.crew_id, receivedAt: iso(row.received_at) })
 
 export async function personFor(db: pg.Pool, crewId: string) {
@@ -48,15 +50,22 @@ const personSchema = { type: 'object', additionalProperties: false, minPropertie
   heightCm: nullable({ type: 'number', exclusiveMinimum: 0, maximum: 300 }),
   sex: nullable({ type: 'string', enum: ['female', 'male', 'intersex', 'unspecified'] }),
   medicalHistory: nullable({ type: 'string', maxLength: 4000, minLength: 1, pattern: '\\S' }) } }
-interface EnvironmentInput { clientId: string; at: string; source: 'simulated'; radiationDoseMsv?: number; altitudeMeters?: number; temperatureC?: number; oxygenPercent?: number }
+interface EnvironmentInput { clientId: string; at: string; source: 'simulated'; radiationDoseMsv?: number; altitudeMeters?: number; temperatureC?: number; oxygenPercent?: number
+  /** RR-1 cabin context (absorbed dose in mGy, never converted to mSv). */
+  radiationDoseMgyDay?: number; radiationAccumMgy?: number; co2Ppm?: number; relativeHumidityPct?: number }
+const ENVIRONMENT_VALUES = ['radiationDoseMsv', 'altitudeMeters', 'temperatureC', 'oxygenPercent', 'radiationDoseMgyDay', 'radiationAccumMgy', 'co2Ppm', 'relativeHumidityPct']
 const environmentSchema = { type: 'object', additionalProperties: false, required: ['clientId', 'at', 'source'], properties: {
   clientId: { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z0-9_-]+$' },
   at: { type: 'string', format: 'date-time', maxLength: 40 }, source: { type: 'string', const: 'simulated' },
   radiationDoseMsv: { type: 'number', minimum: 0, maximum: 1000000 },
   altitudeMeters: { type: 'number', minimum: -500, maximum: 1000000000 },
   temperatureC: { type: 'number', minimum: -273.15, maximum: 1000 },
-  oxygenPercent: { type: 'number', minimum: 0, maximum: 100 } },
-  anyOf: ['radiationDoseMsv', 'altitudeMeters', 'temperatureC', 'oxygenPercent'].map(key => ({ required: [key] })) }
+  oxygenPercent: { type: 'number', minimum: 0, maximum: 100 },
+  radiationDoseMgyDay: { type: 'number', minimum: 0, maximum: 1000000 },
+  radiationAccumMgy: { type: 'number', minimum: 0, maximum: 1000000 },
+  co2Ppm: { type: 'number', minimum: 0, maximum: 1000000 },
+  relativeHumidityPct: { type: 'number', minimum: 0, maximum: 100 } },
+  anyOf: ENVIRONMENT_VALUES.map(key => ({ required: [key] })) }
 
 /** Register inside the existing authenticated /api/v1 scope; identity never comes from the body. */
 export function registerDomainRoutes(api: FastifyInstance, db: pg.Pool, crew: (request: FastifyRequest) => string, windowOf: (input: WindowInput) => HistoryWindow) {
@@ -86,10 +95,12 @@ export function registerDomainRoutes(api: FastifyInstance, db: pg.Pool, crew: (r
     let at: string
     try { at = strictDate(request.body.at) } catch { return fail(400, 'Invalid timestamp') }
     const input = { ...request.body, at }, crewId = crew(request)
-    const inserted = await db.query(`INSERT INTO environment(id,crew_id,client_id,at,source,radiation_dose_msv,altitude_meters,temperature_c,oxygen_percent)
-      VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(crew_id,client_id) DO NOTHING RETURNING *`,
+    const inserted = await db.query(`INSERT INTO environment(id,crew_id,client_id,at,source,radiation_dose_msv,altitude_meters,temperature_c,oxygen_percent,
+      radiation_dose_mgy_day,radiation_accum_mgy,co2_ppm,relative_humidity_pct)
+      VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) ON CONFLICT(crew_id,client_id) DO NOTHING RETURNING *`,
       [randomUUID(), crewId, input.clientId, at, input.source, input.radiationDoseMsv ?? null,
-        input.altitudeMeters ?? null, input.temperatureC ?? null, input.oxygenPercent ?? null])
+        input.altitudeMeters ?? null, input.temperatureC ?? null, input.oxygenPercent ?? null,
+        input.radiationDoseMgyDay ?? null, input.radiationAccumMgy ?? null, input.co2Ppm ?? null, input.relativeHumidityPct ?? null])
     const row = inserted.rows[0] ?? (await db.query('SELECT * FROM environment WHERE crew_id=$1 AND client_id=$2', [crewId, input.clientId])).rows[0]
     if (canonical(environmentInput(row)) !== canonical(input)) fail(409, 'clientId already used with different data')
     return reply.code(inserted.rowCount ? 201 : 200).send(environmentOutput(row))

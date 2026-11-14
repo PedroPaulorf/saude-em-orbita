@@ -136,6 +136,35 @@ Não há cadastro público ou gerenciamento completo de usuários nesta versão.
 O perfil retorna referências pessoais; a escolha do modelo visual não determina
 limiares clínicos nem permite deduzir informações médicas da pessoa.
 
+### Tripulação NEXUS-Med (NX-01 a NX-06)
+
+Seis perfis **fictícios** da pesquisa NEXUS-Med, com 30 dias de voo cada. A importação é um comando explícito do operador, nunca roda na subida da API:
+
+```powershell
+$env:DEMO_PASSWORD = '<senha com 12 caracteres ou mais>'
+npm run import:nexus
+```
+
+Lê `../dados/derivados/` (gerado por `python3 -I dados/scripts/exportar.py`, na raiz) e grava pelas próprias rotas da API, em processo: Pessoa, um check-up por dia (procedência `simulated-device`, com `healthDetails.urinations24h`, `stools24h` e, quando a planilha marca, `redFlag`), sintomas pela API de sintomas (início, evolução e resolução de cada episódio) e um registro de ambiente RR-1 por dia (em mGy, sem conversão para mSv). As avaliações por medida saem do servidor, como em qualquer check-up.
+
+| Login | Tripulante | Dia que cai em hoje | Uso no demo |
+|---|---|---|---|
+| `nx06` | NX-06, Commander | 14 | Alerta (red flag no dia 14) |
+| `nx04` | NX-04, Flight Engineer | 19 | Plano de hidratação |
+| `nx03` | NX-03, Payload Specialist | 14 | Mudança persistente sem emergência |
+| `nx01` | NX-01, Mission Specialist | 2 | Adaptação do início do voo |
+| `nx02` | NX-02, Pilot | 30 | Controle, sem falso positivo |
+| `nx05` | NX-05, Crew Medical Officer | 30 | Estável em voo |
+
+O dia N vira `hoje - (diaHoje - N)`, às 06:00 UTC, e só entram os dias até o de hoje. A data de hoje fica guardada no perfil (`profile.nexus.anchorDate`): rodar de novo não duplica nada (`clientId` estável, como `nexus-NX-04-d17`) e não muda as datas. Para o demo de outro dia, ou outro "dia de hoje":
+
+```powershell
+npm run import:nexus -- --reset                       # todas as contas NX, com hoje = data atual
+npm run import:nexus -- --only NX-04 --today-day NX-04=21 --reset
+```
+
+`--reset` apaga só os registros das contas `nx01`–`nx06` cujo perfil é `synthetic-nexus` (a conta e a senha ficam). Os eventos de sintoma são só de acréscimo; o reset desliga essa trava dentro da própria transação, só para essas linhas. Uma conta com o mesmo nome que não seja NEXUS não é alterada. As 12 fontes da aba `03_Source_Evidence` entram em `medical_references` com papel `data-anchor` e `clinicalThresholdEvidence: false`.
+
 ## Autenticação e acesso
 
 - Senhas são armazenadas com hash scrypt e salt aleatório; nunca em texto puro.
@@ -355,9 +384,11 @@ O teste de provedor de IA usa somente um servidor HTTP de teste no próprio comp
 - `src/contracts.ts`: campos aceitos e validação de datas e limites.
 - `src/database.ts`: pool PostgreSQL e aplicação transacional das migrações.
 - `src/manage.ts` e `src/seed.ts`: comandos de migração e criação dos perfis fictícios.
+- `src/import-nexus.ts`: importação explícita da tripulação fictícia NEXUS-Med (`npm run import:nexus`).
 - `migrations/`: esquema versionado; não edite uma migração já aplicada.
 - `test/api.test.ts`: testes de integração da API com PostgreSQL real.
 - `test/auth.test.ts`: hash, salt e verificação de senhas.
+- `test/nexus.test.ts`: importação NEXUS-Med (dias até hoje, reexecução, `--reset`).
 - `compose.yaml`: PostgreSQL local opcional por Docker.
 
 Tabelas: `person`, `health`, `environment`, `crew` (perfil e credenciais), `sessions`, `checkins`, `symptoms`,

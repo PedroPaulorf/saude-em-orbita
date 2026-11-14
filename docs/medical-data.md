@@ -40,6 +40,8 @@ Dentro de `frontend/`, execute `npm ci` e `npm run dev`. Entre com uma conta fic
 
 A migração adicional `003_medical_traceability.sql` preserva as tabelas e os registros anteriores. O controle de checksum das migrações existentes permanece ativo.
 
+A `004_nexus.sql` acrescenta, sem apagar nada, `health.urinations_24h` e `stools_24h` (projetados de `healthDetails` do check-up) e o contexto de cabine do RR-1 em `environment` (`radiation_dose_mgy_day`, `radiation_accum_mgy`, `co2_ppm`, `relative_humidity_pct`). A coluna antiga em mSv continua para os registros que já a usam; mGy não é convertido. A tripulação fictícia NEXUS-Med entra por `npm run import:nexus` (ver `backend/README.md` e `dados/README.md`).
+
 | Tabela adicional | Conteúdo |
 |---|---|
 | `medical_references` | Quatro referências NTRS, links e papel de arquitetura/metodologia. |
