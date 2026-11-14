@@ -24,8 +24,17 @@ export function ReportCompact({
   const flagged = items.filter((v) => v.status === 'flagged').length
   return (
     <Panel aria-labelledby="report-ground" className={cn('gap-3', className)}>
-      <PanelHeader id="report-ground" icon={<Send />} title="Report for ground" />
-      <div className="flex flex-wrap items-center justify-between gap-x-2">
+      <PanelHeader
+        id="report-ground"
+        icon={<Send />}
+        title="Report"
+        subtitle="For your flight surgeon"
+        aside={
+          <Button variant="ghost" size="sm" className="-mt-2 -mr-3 text-interactive" onClick={onOpen}>
+            Open report
+          </Button>
+        }
+      />
       <p className="text-[15px] text-ink">
         {items.length === 0 ? (
           'Nothing differs from your baseline today.'
@@ -42,10 +51,6 @@ export function ReportCompact({
           </>
         )}
       </p>
-        <Button variant="ghost" size="sm" className="-mr-3 text-interactive" onClick={onOpen}>
-          Open report
-        </Button>
-      </div>
       <span className="mt-auto inline-flex items-center gap-2 text-sm text-ink-soft">
         <CloudOff className="size-4" aria-hidden />
         <Dotted text={sendState(connection)} />

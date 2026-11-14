@@ -67,7 +67,7 @@ export function Home({ connection, game }: { connection: Connection; game: GameS
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-6 md:px-8">
       <h1 className="sr-only">Home</h1>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.75fr)_minmax(0,1fr)] xl:grid-rows-[repeat(6,auto)_auto]">
+      <div className="grid gap-4 md:grid-cols-2 xl:gap-3.5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.75fr)_minmax(0,1fr)] xl:grid-rows-[repeat(6,auto)_auto]">
         <AvatarCard
           vitals={vitals}
           regions={regions}

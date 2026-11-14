@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 export function Panel({ className, ...props }: ComponentProps<'section'>) {
   return (
     <section
-      className={cn('flex min-w-0 flex-col gap-3 rounded-xl border border-hairline bg-surface-1 p-5', className)}
+      className={cn('flex min-w-0 flex-col gap-3 rounded-xl border border-hairline bg-surface-1 p-5 xl:py-4', className)}
       {...props}
     />
   )

@@ -49,7 +49,6 @@ export const RoutineCard = forwardRef<
         id="routine-title"
         icon={<ListChecks />}
         title="Today's routine"
-        subtitle="Points for what you do"
         aside={<Ring value={today.total} max={MAX_DAY_POINTS} label={`${today.total} of ${MAX_DAY_POINTS} points today`} />}
       />
       <ul className="grid gap-2">

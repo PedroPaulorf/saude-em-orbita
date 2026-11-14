@@ -7,6 +7,7 @@ import { useGame } from '@/lib/useGame'
 import { latestAny, useCheckInsVersion } from '@/lib/storage'
 import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
+import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
 import { Placeholder } from '@/screens/Placeholder'
 import { isTodayUtc } from '@/lib/utils'
@@ -28,7 +29,7 @@ export default function App() {
       screen = <Placeholder title="Progress" text="Your rank, trends and check-up history will appear here." />
       break
     case '/stats':
-      screen = <Placeholder title="Detailed stats" text="Your body map and today's measures will appear here." />
+      screen = <DetailedStats params={route.params} />
       break
     case '/check/health':
       screen = <HealthCheckUp />

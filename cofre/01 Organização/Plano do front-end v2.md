@@ -491,3 +491,13 @@ Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11
 - Pontos formatados no padrão do inglês ("2,940 pts"), já que a interface é em inglês; o plano escreve "2 940".
 - `game.crew` (colegas simulados) fica para a fase 7, junto com a tela Progress.
 
+**Fase 5**
+- O teste do boneco já tinha sido feito na fase 2 (traçados copiados, componente nosso). Nesta fase entrou o seletor **Male / Female**, porque a biblioteca dava os dois corpos de graça; a escolha fica no `localStorage` (`health7:body:v1`), só como preferência de quem vê.
+- A região escolhida fica na URL (`#/stats?region=head`) e trocar de região **substitui** a entrada do histórico: o botão voltar sai da tela em vez de passar por cada região clicada.
+- O risco de radiação abre por `#/stats?risk=radiation`, a partir do link no diálogo do clima espacial (aparece quando há evento de partículas, por exemplo no modo "Show past event").
+- Os textos da NASA são longos (até 1.600 caracteres); cada trecho aparece recortado em quatro linhas com "Show more", para cumprir "no máximo cinco linhas de texto corrido por cartão".
+- Clicar numa medida da lista da esquerda também escolhe a região ligada a ela. Braços e pernas não têm medida diária: o painel diz isso e mostra só os riscos.
+- No celular a ordem é avatar, painel da região, medidas; ao escolher uma região a tela rola até o painel.
+- Em coluna estreita o selo de estado do rótulo do avatar quebra em duas linhas, para não invadir o cartão vizinho.
+- Home: "Report for ground" virou "Report", com o subtítulo "For your flight surgeon", e o botão "Open report" foi para o cabeçalho do cartão, como o "Details" do clima espacial. Com a rotina maior da fase 4, a Home tem 934 px em 1440×900.
+

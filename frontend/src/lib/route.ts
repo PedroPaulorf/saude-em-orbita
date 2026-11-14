@@ -39,7 +39,8 @@ export function href(path: Path, params?: Record<string, string>) {
   return `#${path}${q ? `?${q}` : ''}`
 }
 
-/** Navega para uma rota (entra no histórico do navegador). */
-export function navigate(path: Path, params?: Record<string, string>) {
-  window.location.hash = href(path, params)
+/** Navega para uma rota. Com replace, troca a entrada atual do histórico (ex.: escolher outra região). */
+export function navigate(path: Path, params?: Record<string, string>, { replace = false } = {}) {
+  if (replace) window.location.replace(href(path, params))
+  else window.location.hash = href(path, params)
 }

@@ -92,9 +92,13 @@ function RegionName({ name }: { name?: string }) {
 
 function RegionLabel({ region, align }: { region: BodyRegion; align: 'left' | 'right' }) {
   return (
-    <div className={cn('flex flex-col gap-1 whitespace-nowrap', align === 'right' ? 'items-end text-right' : 'items-start')}>
+    <div className={cn('flex max-w-[11rem] flex-col gap-1', align === 'right' ? 'items-end text-right' : 'items-start')}>
       <RegionName name={region.name} />
-      <StatusBadge status={region.status} className={region.status === 'baseline' ? '' : '-mx-0.5'} />
+      {/* Em coluna estreita o selo quebra em duas linhas em vez de invadir o cartão vizinho */}
+      <StatusBadge
+        status={region.status}
+        className={cn('h-auto min-h-6 py-1 leading-tight whitespace-normal', region.status !== 'baseline' && '-mx-0.5')}
+      />
       {region.status !== 'baseline' && detailOf(region) && (
         <span className="font-mono text-[13px] text-ink">{detailOf(region)}</span>
       )}
