@@ -38,3 +38,7 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 4. Distribuir entregas e registrar dependências no quadro.
 
 Data do evento: dia 13 as 18 horas, endereço no grupo
+
+## Registro da conversa
+
+- [[Transcrição da reunião]] — transcrição automática completa do áudio, com marcações de tempo.
