@@ -1,9 +1,9 @@
 ---
 tipo: plano
 criada: 2026-11-14
-estado: proposta para a equipe validar
+estado: implementado (ver "Desvios" no fim)
 para: agente de código que vai implementar (Claude Opus) e equipe de interface
-fontes: "wireframe do quadro branco (arquivos/wireframe-home-quadro-branco.jpg), conversa de 2026-11-14, [[Escopo do protótipo]], [[Decisões]], [[DONKI - clima espacial da NASA]]"
+fontes: "wireframe do quadro branco (cofre/anexos/wireframe-home-quadro-branco.jpg), conversa de 2026-11-14, [[Escopo do protótipo]], [[Decisões]], [[DONKI - clima espacial da NASA]]"
 ---
 # Plano do front-end v2 (Health 7)
 
@@ -17,7 +17,7 @@ Refazer a interface do Health 7: novo visual, navegação em três abas, check-u
 
 Para quem implementa:
 
-1. Leia antes de escrever código: `frontend/README.md`, `health7-design-system/README.md` (as regras de conteúdo continuam valendo; as de forma mudam, ver seção 4) e abra a foto `arquivos/wireframe-home-quadro-branco.jpg`.
+1. Leia antes de escrever código: `frontend/README.md`, `health7-design-system/README.md` (as regras de conteúdo continuam valendo; as de forma mudam, ver seção 4) e abra a foto `cofre/anexos/wireframe-home-quadro-branco.jpg`.
 2. Trabalhe na branch `feat/front-v2`, com commits pequenos e mensagens em português (ver `CONTRIBUTING.md`).
 3. Ao fim de cada fase: `npm run build` e `npm run lint` sem erro, e um commit.
 4. **Olhe o que você fez.** A queixa da equipe é visual, e código que compila não prova que ficou bom. A cada fase, rode o app, tire prints em 1440 px e em 390 px de largura e compare com os critérios da seção 4. Há um Chromium headless em `~/.cache/ms-playwright/` na máquina do Yvens; se não houver navegador disponível, diga isso no relatório em vez de afirmar que conferiu.
@@ -457,7 +457,7 @@ A preencher por quem implementar: o que foi decidido diferente do plano e por qu
 Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11.
 
 **Fase 0**
-- Os prints de cada fase ficam em `arquivos/prints-front-v2/fase-N/`, para a equipe comparar sem rodar o app. Tirados com o Chromium headless de `~/.cache/ms-playwright/` (via `playwright-core` fora do repositório).
+- Os prints de cada fase ficaram em `arquivos/prints-front-v2/fase-N/` (removidos depois; para ver uma tela, rode o app). Tirados com o Chromium headless de `~/.cache/ms-playwright/` (via `playwright-core` fora do repositório).
 
 **Fase 1**
 - O `npx shadcn add` gerou os componentes importando `cn` de um pacote npm chamado `cn` (não do nosso `@/lib/utils`) e instalou `next-themes`. Corrigi os imports e removi os dois pacotes; o `sonner` ficou com tema escuro fixo.

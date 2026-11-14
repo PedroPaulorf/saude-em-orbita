@@ -1,7 +1,7 @@
 ---
 tipo: plano
 criada: 2026-11-14
-estado: proposta para a equipe validar
+estado: implementado (ver "Desvios" no fim)
 para: agente de código que vai implementar (Claude Opus) e equipe
 fontes: "conversa da equipe de 2026-11-14 sobre a solução (gravação de 7min42s, transcrita), [[Plano do front-end v2]], [[Decisões]], [[Riscos NASA HRP]], [[Monitoramento de radiação e saúde dos astronautas (CSA)]]"
 ---

@@ -163,11 +163,11 @@ O texto oficial ([página do desafio](https://www.spaceappschallenge.org/2026/ch
 |---|---|
 | Quais medições podem ser feitas no espaço? | [[Riscos NASA HRP]] (cada nota cita como o risco é acompanhado); instrumentos ainda a pesquisar. |
 | Por que é preciso o exame? Como os perigos afetam o indicador? | Tabela "indicadores candidatos e riscos ligados" em [[Riscos NASA HRP]]. |
-| Quando um resultado merece atenção da tripulação ou dos cirurgiões de voo? | Regras explicáveis em [[Dados e regras]]; **sem inventar limiares**. |
+| Quando um resultado merece atenção da tripulação ou dos cirurgiões de voo? | Regras explicáveis no motor de monitoramento (ver [[Plano do assistente - monitoramento e plano de ação]]); **sem inventar limiares**. |
 | Que ações podem prevenir uma condição crítica? | Seção "O que pode ser feito?" de cada nota de risco (NASA). |
-| Interface clara, com animação e interatividade, talvez figura humana clicável | [[Experiência e design]] e [[Interface]]. |
+| Interface clara, com animação e interatividade, talvez figura humana clicável | [[Plano do front-end v2]] (avatar clicável por região). |
 
-Itens opcionais do enunciado: avisos periódicos para medir, gamificação, gráficos dinâmicos, **código de cores** e instruções simples ("não assuma que o astronauta sabe tudo"). Pela regra já registrada em [[Experiência e design]], não depender só de cor.
+Itens opcionais do enunciado: avisos periódicos para medir, gamificação, gráficos dinâmicos, **código de cores** e instruções simples ("não assuma que o astronauta sabe tudo"). Regra da equipe: não depender só de cor.
 
 ## Como aplicar no Saúde em Órbita
 
@@ -177,11 +177,11 @@ Sugestões para discussão. Nada aqui foi decidido; registrar o que for aceito e
 - [ ] **Mapear perigo, indicador e ação**, como o Space Travelers, usando os 5 perigos do HRP (radiação, isolamento e confinamento, distância da Terra, gravidade, ambiente hostil e fechado).
 - [ ] **Escolher o dado real.** O critério "usar dados reais" já está em [[Desafio e escopo]], mas contradiz o CONTRIBUTING.md (dados fictícios). Decidir e registrar. Opção que segue o padrão dos vencedores: usar um conjunto público da NASA (por exemplo, dados do HRP ou do GeneLab) e **identificar claramente o que é dado simulado**.
 - [ ] **Mostrar o método.** Explicar de onde vem cada sinalização e as limitações; evitar diagnóstico, doses e limiares sem fonte.
-- [ ] **Ir um passo além:** orientação por gravidade ("autocuidado" vs "contatar o cirurgião de voo"), como o Shelter in Space, sempre ancorada em fonte da NASA e revisada por quem cuida de [[Pesquisa e saúde]].
+- [ ] **Ir um passo além:** orientação por gravidade ("autocuidado" vs "contatar o cirurgião de voo"), como o Shelter in Space, sempre ancorada em fonte da NASA e revisada pela pesquisa (ver [[Equipe]]).
 - [ ] **Publicar um link** do protótipo (por exemplo, GitHub Pages ou Framer) e gravar o vídeo/slides.
 - [ ] **Preparar o demo no formato oficial:** até 7 slides ou vídeo de até 30 s, em inglês, com legendas se falado em português.
 - [ ] **Listar todas as referências**, inclusive IA e ferramentas usadas (ver regra de originalidade).
-- [ ] **Reservar tempo de pitch** e dividir quem conta a história ([[Integração e apresentação]]).
+- [ ] **Reservar tempo de pitch** e dividir quem conta a história ([[Equipe]]).
 - [ ] **Confirmar prazo e regras do evento local** hoje (ver alerta no topo).
 
 ## Limitações desta pesquisa

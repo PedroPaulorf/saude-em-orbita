@@ -7,7 +7,7 @@ consulta: 2026-11-14
 ---
 # Guia de submissão do projeto (Space Apps 2026)
 
-Resumo em português do guia oficial de submissão. Relacionado: [[Padrões de projetos vencedores do Space Apps]], [[Escopo do protótipo]], [[Quadro de tarefas]]. O sistema da equipe se chama **Health 7** (ver [[Decisões]]).
+Resumo em português do guia oficial de submissão. Relacionado: [[Padrões de projetos vencedores do Space Apps]], [[Escopo do protótipo]]. O sistema da equipe se chama **Health 7** (ver [[Decisões]]).
 
 > [!warning] Prazo
 > A submissão **abre sábado, 14 de novembro, às 9h** e **fecha domingo, 15 de novembro, às 23h59**, no fuso do Local Event da equipe. Só vale a **última versão salva**, e é preciso clicar em **"Submit for Judging"** antes do prazo. Projetos salvos ou enviados depois não são julgados.

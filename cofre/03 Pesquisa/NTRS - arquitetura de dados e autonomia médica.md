@@ -87,6 +87,5 @@ As referências não sustentam afirmar que o Health7 é validado ou certificado 
 ## Ligações
 
 - [[Recursos oficiais]] — registro das fontes e limitações.
-- [[Pesquisa e saúde]] — seleção e revisão de evidências.
-- [[Dados e regras]] — contrato e lógica explicável.
+- [[Plano do assistente - monitoramento e plano de ação]] — motor de regras e estados de alerta.
 - [[Plano do front-end v3 - medicina preventiva]] — funcionalidades atuais e evolução do protótipo.

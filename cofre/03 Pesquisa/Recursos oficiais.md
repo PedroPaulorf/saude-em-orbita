@@ -2,11 +2,6 @@
 
 **Estado:** fontes institucionais registradas abaixo; confirmação dos recursos específicos do desafio e revisão clínica pela equipe permanecem pendentes. As referências de arquitetura e autonomia não validam os limiares de demonstração do protótipo.
 
-## Materiais a localizar
-- Página oficial do desafio e regras do evento.
-- Recursos do NASA Human Research Program citados no enunciado.
-- Recursos públicos de outras agências espaciais, quando pertinentes.
-
 ## Registro de fontes
 | Título | URL | Instituição | Consulta em | Afirmação apoiada | Limitações | Validado por |
 |---|---|---|---|---|---|---|

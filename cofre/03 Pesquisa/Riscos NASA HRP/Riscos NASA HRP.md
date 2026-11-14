@@ -13,13 +13,13 @@ Riscos do voo espacial humano identificados pelo **NASA Human Research Program (
 - **Os 5 perigos do voo espacial humano:** https://www.nasa.gov/hrp/hazards/
 - **Lista completa de riscos do sistema humano:** https://www.nasa.gov/hhp/human-system-risks/
 - **Evidências do HRP:** https://humanresearchroadmap.nasa.gov/evidence/
-- Registrado em [[Recursos oficiais]]. Responsável pela revisão: [[Pesquisa e saúde]].
+- Registrado em [[Recursos oficiais]]. Revisão: equipe de pesquisa (ver [[Equipe]]).
 
 > [!info] Como foi coletado
 > A página-índice foi lida e cada link de risco foi aberto e lido. O texto de cada risco está traduzido para o português, com o original em inglês dobrável no fim de cada nota. A NASA diz que os efeitos de cada risco variam conforme o destino: órbita baixa, Lua ou Marte.
 
 > [!warning] Cuidado ao citar
-> São textos de divulgação. Nenhum traz limiares clínicos. Nada aqui deve virar valor de alerta no app sem fonte formal e revisão de quem cuida de [[Pesquisa e saúde]].
+> São textos de divulgação. Nenhum traz limiares clínicos. Nada aqui deve virar valor de alerta no app sem fonte formal e revisão da equipe de pesquisa.
 
 ## Fisiologia humana
 

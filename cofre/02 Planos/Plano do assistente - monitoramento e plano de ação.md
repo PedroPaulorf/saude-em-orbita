@@ -2,7 +2,7 @@
 tipo: plano
 criada: 2026-11-14
 atualizada: 2026-11-14 (depois do pull de 61e48f5; telas reduzidas a poucos ajustes)
-estado: proposta para a equipe validar
+estado: implementado (ver "Desvios" no fim)
 para: equipe e agente de código que vai implementar
 fontes: "quadro branco 'Como o assistente vai funcionar' (foto de 14/11), gravação da equipe de 13min24s (14/11), pasta `dados/` (planilhas NEXUS-Med), commits até 61e48f5 (roteiro preventivo, linhas de base pré-voo e em voo, rastreabilidade NTRS, testes cognitivos), [[Plano do front-end v3 - medicina preventiva]], [[NTRS - arquitetura de dados e autonomia médica]], [[Escopo do protótipo]], [[Decisões]]"
 ---
