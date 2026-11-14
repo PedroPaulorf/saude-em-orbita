@@ -4,20 +4,17 @@ import { crew } from '@/lib/health'
 import { navigate, useRoute } from '@/lib/route'
 import { latestCheckIn } from '@/lib/storage'
 import { CheckIn } from '@/screens/CheckIn'
-import { Dashboard } from '@/screens/Dashboard'
+import { Home } from '@/screens/Home'
 import { Placeholder } from '@/screens/Placeholder'
+import { isTodayUtc } from '@/lib/utils'
 import type { Connection } from '@/types'
-
-function isToday(iso: string | undefined) {
-  return !!iso && iso.slice(0, 10) === new Date().toISOString().slice(0, 10)
-}
 
 export default function App() {
   const route = useRoute()
 
   // Sem servidor: o relatório fica guardado para envio quando houver contato com o solo.
   // Recalculado a cada troca de rota, então reflete um check-up recém-salvo.
-  const connection: Connection = isToday(latestCheckIn()?.at) ? 'queued' : 'offline'
+  const connection: Connection = isTodayUtc(latestCheckIn()?.at) ? 'queued' : 'offline'
 
   let screen
   switch (route.path) {
@@ -37,11 +34,7 @@ export default function App() {
       )
       break
     default:
-      screen = (
-        <div className="h7 bg-transparent max-md:[&_.h7-screen]:px-4">
-          <Dashboard connection={connection} onStartCheckIn={() => navigate('/check/health')} />
-        </div>
-      )
+      screen = <Home connection={connection} />
   }
 
   return (

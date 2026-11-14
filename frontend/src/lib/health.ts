@@ -103,11 +103,11 @@ export function getBodyRegions(vitals: Vital[]): BodyRegion[] {
   const cardio = worst(v.heartRate.status, v.bloodPressure.status)
   const cardioDetail = v.heartRate.status === cardio ? `${v.heartRate.delta} bpm` : `${v.bloodPressure.delta} mmHg`
   return [
-    { id: 'head', name: 'HEAD · SLEEP', status: v.sleep.status, stateText: withDetail(v.sleep.status, `${v.sleep.delta} h`) },
-    { id: 'chest', name: 'CHEST · CARDIOVASCULAR', status: cardio, stateText: withDetail(cardio, cardioDetail) },
+    { id: 'head', name: 'Head · sleep', status: v.sleep.status, stateText: withDetail(v.sleep.status, `${v.sleep.delta} h`) },
+    { id: 'chest', name: 'Chest · cardiovascular', status: cardio, stateText: withDetail(cardio, cardioDetail) },
     {
       id: 'core',
-      name: 'CORE · TEMPERATURE',
+      name: 'Core · temperature',
       status: v.temperature.status,
       stateText: withDetail(v.temperature.status, `${v.temperature.delta} °C`),
     },

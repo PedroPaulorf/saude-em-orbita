@@ -6,6 +6,7 @@ import { href, type Path } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import type { Connection } from '@/types'
 import { CompanionButton } from './CompanionButton'
+import { Dot } from './Dot'
 
 const TABS: { path: Path; label: string; short: string; Icon: LucideIcon }[] = [
   { path: '/', label: 'Home', short: 'Home', Icon: House },
@@ -36,15 +37,6 @@ function ConnectionStatus({ state }: { state: Connection }) {
         )}
       />
       {CONNECTION_TEXT[state]}
-    </span>
-  )
-}
-
-/** Separador "·" com respiro igual dos dois lados (o espaço do Overpass é estreito). */
-export function Dot() {
-  return (
-    <span aria-hidden className="mx-1.5">
-      ·
     </span>
   )
 }

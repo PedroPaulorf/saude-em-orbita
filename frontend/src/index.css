@@ -143,10 +143,18 @@
 
   /* O reset do Tailwind tira o sublinhado; links de texto ficam sublinhados. */
   .h7 a,
-  .h7-link,
-  a.text-link {
+  .h7-link {
     text-decoration-line: underline;
     text-underline-offset: 3px;
+  }
+
+  /* Regiões da figura do corpo: foco de teclado e seleção com contorno branco */
+  .body-region:focus-visible path,
+  .body-region.is-selected path {
+    stroke: var(--ink);
+  }
+  .body-region:focus-visible path {
+    stroke-width: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {

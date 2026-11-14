@@ -62,3 +62,9 @@ Base `https://ccmc.gsfc.nasa.gov/DONKI-API/get/{recurso}`, só GET, sem chave, C
 Sem conexão, o cartão usa a cópia mais nova entre o `localStorage` e `donki-snapshot.json`, mostrando a data dela. Rode `npm run data:donki` antes do demo para a cópia do repositório ficar recente. O botão "Show past event" mostra o SEP de 05/09/2026, marcado como evento passado.
 
 Limites que aparecem na tela: o DONKI informa eventos, não a dose recebida; é dado experimental de pesquisa (a fonte oficial de previsão é o NOAA SWPC); a janela de 7 dias é regra de demonstração.
+
+## Credits
+
+- **Figura do corpo** (`src/data/body-paths.ts`): traçados SVG de [@mjcdev/react-body-highlighter](https://github.com/MichaelMjc/react-body-highlighter) 0.0.4, de MichaelMJC, adaptação para web do [react-native-body-highlighter](https://github.com/HichamELBSI/react-native-body-highlighter) de HichamELBSI. Licença MIT, Copyright (c) 2022 ELABBASSI Hicham. Os traçados foram copiados (o pacote não é dependência); o componente `BodyAvatar` é nosso.
+- **Componentes de interface**: [shadcn/ui](https://ui.shadcn.com) (MIT), sobre [Radix UI](https://www.radix-ui.com) (MIT). Ícones: [Lucide](https://lucide.dev) (ISC). Avisos: [Sonner](https://sonner.emilkowal.ski) (MIT).
+- **Fontes** servidas localmente via [Fontsource](https://fontsource.org): Fira Sans, Fira Code e Overpass (SIL Open Font License 1.1).

@@ -32,7 +32,7 @@ export type BodyRegionId = 'head' | 'chest' | 'core' | 'leftArm' | 'rightArm' | 
 
 export interface BodyRegion {
   id: BodyRegionId
-  /** Rótulo em maiúsculas ao lado da figura (ex.: "CHEST · CARDIOVASCULAR"). */
+  /** Rótulo ao lado da figura (ex.: "Chest · cardiovascular"); a tela decide a caixa. */
   name?: string
   /** Frase do estado (ex.: "Attention · +9 bpm"). Só regiões com name ganham rótulo. */
   stateText?: string
