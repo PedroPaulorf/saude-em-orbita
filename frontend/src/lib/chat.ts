@@ -11,9 +11,13 @@ import { useSyncExternalStore } from 'react'
 import { indicators, type DonkiSnapshot, type SpaceWeatherSource } from '@/lib/donki'
 import type { GameSummary } from '@/lib/game'
 import { crew, getTodayVitals } from '@/lib/health'
-import { latestCheckIn } from '@/lib/storage'
+import { activePlan, loadPlans } from '@/lib/plans'
+import { evaluatePatterns } from '@/lib/prevention'
+import { radiationSummary } from '@/lib/radiation'
+import { latestCheckIn, loadCheckIns } from '@/lib/storage'
+import { preventionInput } from '@/lib/usePrevention'
 import { isTodayUtc } from '@/lib/utils'
-import { WATER_GOAL } from '@/lib/water'
+import { loadWater, WATER_GOAL } from '@/lib/water'
 
 export const WEBHOOK_URL = (import.meta.env.VITE_N8N_CHAT_WEBHOOK_URL ?? '').trim()
 export const DEMO_MODE = WEBHOOK_URL === ''
@@ -114,6 +118,7 @@ export function buildContext(game: GameSummary, weather?: WeatherContext) {
       rank: game.rank.name,
       pointsToday: game.today.total,
     },
+    prevention: preventionContext(),
     spaceWeather: ind
       ? {
           sepCount: ind.sep.count,
@@ -124,6 +129,24 @@ export function buildContext(game: GameSummary, weather?: WeatherContext) {
           source: weather!.source,
         }
       : null,
+  }
+}
+
+/**
+ * Padrões ativos, plano em andamento e dose da missão (plano v3, seção 9). Para o companheiro
+ * incentivar o plano; o prompt do n8n proíbe explicar o padrão como doença ou comentar risco.
+ */
+function preventionContext() {
+  const water = loadWater()
+  const patterns = evaluatePatterns(preventionInput(water)).filter((p) => p.active)
+  const plan = activePlan(loadPlans(), { checkIns: loadCheckIns(), water, waterGoal: WATER_GOAL })
+  const rad = radiationSummary()
+  return {
+    patterns: patterns.map((p) => ({ id: p.def.id, title: p.def.title, signsPresent: p.present, signsTotal: p.total, status: p.status })),
+    plan: plan?.today
+      ? { pattern: plan.pattern.title, day: plan.dayNumber, days: plan.plan.days, stepsDoneToday: plan.today.doneCount, stepsToday: plan.today.steps.length }
+      : null,
+    radiation: { missionTotal: rad.missionTotal, unit: rad.unit, simulated: true },
   }
 }
 
@@ -173,6 +196,12 @@ export function demoReply(message: string, context: ReturnType<typeof buildConte
     return "That sounds like one for your flight surgeon, and it's worth telling them today. I can't advise on health, but I'm happy to keep you company while you reach out."
   }
   const m = message.toLowerCase()
+  const plan = context.prevention.plan
+  if (plan && (m.includes('plan') || m.includes('my day'))) {
+    return plan.stepsDoneToday > 0
+      ? `You're on day ${plan.day} of your plan, with ${plan.stepsDoneToday} of ${plan.stepsToday} steps done today. That's real effort. How did today go for you?`
+      : `You're on day ${plan.day} of ${plan.days} of your plan. Today's steps are still open, no rush. How is your day going so far?`
+  }
   if (m.includes('my day')) {
     const sleep = context.vitals.find((v) => v.id === 'sleep')
     return sleep && sleep.status !== 'baseline'

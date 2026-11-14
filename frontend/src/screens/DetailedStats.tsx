@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Cpu, PenLine } from 'lucide-react'
 import { BodyAvatar } from '@/components/app/BodyAvatar'
 import { RegionPanel } from '@/components/app/RegionPanel'
 import { StatusBadge } from '@/components/app/StatusBadge'
@@ -6,6 +7,7 @@ import { RADIATION_RISKS, REGION_RISKS } from '@/data/regions'
 import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { VITAL_REGION } from '@/lib/notes'
 import { navigate } from '@/lib/route'
+import { usePatterns } from '@/lib/usePrevention'
 import { cn } from '@/lib/utils'
 import type { BodyRegionId } from '@/types'
 
@@ -39,6 +41,10 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
   const vitals = useMemo(() => getTodayVitals(), [])
   const regions = useMemo(() => getBodyRegions(vitals), [vitals])
   const [body, setBody] = useState<Body>(readBody)
+  // Padrões ativos com sinal de medida presente em cada região (para "Part of an active pattern").
+  const activeByRegion = usePatterns()
+    .filter((p) => p.active)
+    .flatMap((p) => p.signs.filter((s) => s.state === 'present' && s.measure).map((s) => ({ region: VITAL_REGION[s.measure!], title: p.def.title })))
 
   const regionParam = params.get('region') as BodyRegionId | null
   const focus: BodyRegionId | 'radiation' | null =
@@ -111,6 +117,7 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
           vitals={vitals}
           riskGroups={REGION_RISKS}
           radiation={RADIATION_RISKS}
+          patternTitles={selected ? [...new Set(activeByRegion.filter((x) => x.region === selected).map((x) => x.title))] : []}
           className="xl:order-3"
         />
 
@@ -119,9 +126,13 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
           aria-labelledby="measures-title"
           className="flex min-w-0 flex-col gap-1 rounded-xl border border-hairline bg-surface-1 p-5 lg:col-span-2 xl:order-1 xl:col-span-1"
         >
-          <h2 id="measures-title" className="mb-1 font-display text-lg font-semibold">
+          <h2 id="measures-title" className="font-display text-lg font-semibold">
             Today&apos;s measures
           </h2>
+          <p className="mb-1 text-sm text-ink-soft">
+            {vitals.length} measures from {new Set(vitals.map((v) => v.source)).size} sources, in one place. Device feeds are
+            simulated in this demo.
+          </p>
           <ul className="grid sm:grid-cols-2 sm:gap-x-6 xl:grid-cols-1">
             {vitals.map((v) => {
               const region = VITAL_REGION[v.id]
@@ -147,6 +158,11 @@ export function DetailedStats({ params }: { params: URLSearchParams }) {
                     </span>
                     <span className="font-mono text-[13px] text-ink-soft">
                       baseline {v.baseline} · <span className="text-ink">{v.delta}</span>
+                    </span>
+                    <span className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-ink-soft">
+                      {v.input === 'device' ? <Cpu className="size-3.5" aria-hidden /> : <PenLine className="size-3.5" aria-hidden />}
+                      {v.source}
+                      <span className="sr-only">{v.input === 'device' ? ', device feed' : ', from your check-up'}</span>
                     </span>
                   </button>
                 </li>

@@ -318,3 +318,10 @@ Registrado pelo agente de código (Claude Opus), em 14/11.
 - Os pontos dos dias anteriores contam, então o "Day 5" já abre com cerca de 3.600 pontos (Pilot).
 - O chip "Simulated data" virou botão (com área de toque de 44 px) e abre o diálogo "Demo data".
 
+**Fase 6**
+- Detailed stats: cada medida mostra a origem com um ícone (lápis para o que a pessoa digita no check-up, chip para o que vem de aparelho) e a lista abre com "7 measures from 6 sources, in one place. Device feeds are simulated in this demo." A frequência cardíaca aparece como "Wearable" digitada no check-up.
+- Painel da região: "Part of an active pattern: Sleep debt" aparece quando um sinal **presente** de um padrão ativo é de medida daquela região, com link para a aba Prevention.
+- Progress: as quatro medidas do check-up ficam nos gráficos 2×2 e as três de aparelho numa linha compacta (gráfico mais baixo, sem eixo de datas), sob "From devices · simulated in this demo". O histórico ganhou uma linha por dia de plano com os pontos daquele dia.
+- Chat: o contexto leva `prevention` com padrões ativos, plano em andamento e dose da missão (testado contra o servidor local que imita o n8n). A resposta pronta do modo de demonstração cita o plano quando a pessoa fala do dia ou do plano; com nenhum passo feito, não elogia ("Today's steps are still open, no rush"). O trecho de prompt da seção 9 **ainda precisa ser colado no nó AI Agent do n8n**.
+- README do front e linha nova em [[Decisões]] ("Medicina preventiva no front"), registrando a forma aplicada e que falta a fonte da Valéria.
+

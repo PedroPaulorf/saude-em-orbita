@@ -39,7 +39,7 @@ export function trendSentence(v: Vital): string {
 export interface HistoryRow {
   id: string
   at: string
-  kind: CheckIn['kind']
+  kind: CheckIn['kind'] | 'plan'
   /** Medidas fora da linha de base (só no check-up de saúde). */
   offCount: number | null
   points: number

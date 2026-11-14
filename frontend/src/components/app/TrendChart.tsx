@@ -2,6 +2,7 @@ import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'rec
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart'
 import { vitalConfigs } from '@/lib/health'
 import { dayStatuses, lastSevenDays, trendSentence } from '@/lib/progress'
+import { cn } from '@/lib/utils'
 import type { Status, Vital } from '@/types'
 import { StatusBadge } from './StatusBadge'
 
@@ -11,7 +12,7 @@ const DOT: Record<Status, string> = { baseline: 'var(--ink)', attention: 'var(--
  * Tendência de uma medida: últimos 7 dias, linha de base tracejada, ponto de hoje destacado
  * (na cor do estado, com o selo ao lado em palavra) e uma frase embaixo.
  */
-export function TrendChart({ vital }: { vital: Vital }) {
+export function TrendChart({ vital, compact = false }: { vital: Vital; compact?: boolean }) {
   const history = vital.history ?? []
   const days = lastSevenDays().slice(-history.length)
   const statuses = dayStatuses(vital)
@@ -27,11 +28,11 @@ export function TrendChart({ vital }: { vital: Vital }) {
   const sentence = trendSentence(vital)
 
   return (
-    <figure className="flex min-w-0 flex-col gap-2 rounded-xl border border-hairline bg-surface-1 p-4 md:p-5">
+    <figure className={cn('flex min-w-0 flex-col gap-2 rounded-xl border border-hairline bg-surface-1', compact ? 'p-4' : 'p-4 md:p-5')}>
       <figcaption className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className="text-sm text-ink-soft">{vital.label}</p>
-          <p className="font-mono text-2xl leading-tight text-ink">
+          <p className={cn('font-mono leading-tight text-ink', compact ? 'text-xl' : 'text-2xl')}>
             {vital.value}
             <span className="ml-1 text-sm text-ink-soft">{vital.unit}</span>
           </p>
@@ -46,10 +47,10 @@ export function TrendChart({ vital }: { vital: Vital }) {
           </span>
         </div>
       </figcaption>
-      <ChartContainer config={config} className="aspect-auto h-36 w-full" aria-label={`${vital.label}, last ${history.length} days. ${sentence}`}>
+      <ChartContainer config={config} className={cn('aspect-auto w-full', compact ? 'h-20' : 'h-36')} aria-label={`${vital.label}, last ${history.length} days. ${sentence}`}>
         <LineChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: -4 }} accessibilityLayer>
           <CartesianGrid vertical={false} stroke="var(--hairline)" />
-          <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={6} interval="preserveStartEnd" tick={{ fill: 'var(--ink-soft)', fontSize: 11 }} />
+          <XAxis hide={compact} dataKey="day" tickLine={false} axisLine={false} tickMargin={6} interval="preserveStartEnd" tick={{ fill: 'var(--ink-soft)', fontSize: 11 }} />
           <YAxis
             domain={[lo, hi]}
             ticks={[Math.min(...history), Math.max(...history)].filter((v, i, a) => a.indexOf(v) === i)}

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Award, CalendarCheck, CircleCheck, CircleDashed, HeartPulse, Lock, Smile, Users } from 'lucide-react'
+import { Award, CalendarCheck, CircleCheck, CircleDashed, HeartPulse, Lock, Route, Smile, Users } from 'lucide-react'
+import { Dot } from '@/components/app/Dot'
 import { Panel, PanelHeader } from '@/components/app/Panel'
 import { TrendChart } from '@/components/app/TrendChart'
 import { Progress as Bar } from '@/components/ui/progress'
@@ -117,8 +118,12 @@ function Crew({ game }: { game: GameSummary }) {
   )
 }
 
-function History() {
-  const rows = historyRows(loadCheckIns())
+function History({ game }: { game: GameSummary }) {
+  // Check-ups e, nos dias de plano, uma linha com os pontos do plano.
+  const planRows = game.days
+    .filter((d) => d.points.plan > 0)
+    .map((d) => ({ id: `plan-${d.day}`, at: `${d.day}T23:59:59.000Z`, kind: 'plan' as const, offCount: null, points: d.points.plan }))
+  const rows = [...historyRows(loadCheckIns()), ...planRows].sort((a, b) => b.at.localeCompare(a.at))
   return (
     <Panel aria-labelledby="history-title">
       <PanelHeader id="history-title" icon={<CalendarCheck />} title="Check-up history" />
@@ -130,15 +135,25 @@ function History() {
             <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-hairline py-2.5 first:border-t-0">
               {r.kind === 'health' ? (
                 <HeartPulse className="size-4 text-interactive" aria-hidden />
+              ) : r.kind === 'plan' ? (
+                <Route className="size-4 text-interactive" aria-hidden />
               ) : (
                 <Smile className="size-4 text-interactive" aria-hidden />
               )}
               <span className="min-w-0 flex-1">
-                <span className="block">{r.kind === 'health' ? 'Health check-up' : 'Behavioral check-in'}</span>
-                <span className="font-mono text-[13px] text-ink-soft">{utcDateTime(r.at)}</span>
+                <span className="block">
+                  {r.kind === 'health' ? 'Health check-up' : r.kind === 'plan' ? 'Back-to-baseline plan' : 'Behavioral check-in'}
+                </span>
+                <span className="font-mono text-[13px] text-ink-soft">{r.kind === 'plan' ? utcDay(r.at) : utcDateTime(r.at)}</span>
               </span>
               <span className="text-sm text-ink-soft">
-                {r.offCount == null ? 'Self-report' : r.offCount === 0 ? 'All within baseline' : `${r.offCount} differ from baseline`}
+                {r.kind === 'plan'
+                  ? 'Plan steps'
+                  : r.offCount == null
+                    ? 'Self-report'
+                    : r.offCount === 0
+                      ? 'All within baseline'
+                      : `${r.offCount} differ from baseline`}
               </span>
               <span className={cn('w-20 text-right font-mono text-sm', r.points ? 'text-ink' : 'text-ink-soft')}>
                 {r.points ? `+${r.points}` : 'redo · 0'}
@@ -213,9 +228,23 @@ export function ProgressScreen({ game }: { game: GameSummary }) {
               Last 7 days
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              {vitals.map((v) => (
-                <TrendChart key={v.id} vital={v} />
-              ))}
+              {vitals
+                .filter((v) => v.input !== 'device')
+                .map((v) => (
+                  <TrendChart key={v.id} vital={v} />
+                ))}
+            </div>
+            <h3 className="mt-1 text-sm font-semibold text-ink-soft">
+              From devices
+              <Dot />
+              simulated in this demo
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {vitals
+                .filter((v) => v.input === 'device')
+                .map((v) => (
+                  <TrendChart key={v.id} vital={v} compact />
+                ))}
             </div>
           </section>
           <BehavioralOverTime />
@@ -223,7 +252,7 @@ export function ProgressScreen({ game }: { game: GameSummary }) {
         <div className="grid gap-4">
           <Crew game={game} />
           <Achievements game={game} />
-          <History />
+          <History game={game} />
         </div>
       </div>
     </div>

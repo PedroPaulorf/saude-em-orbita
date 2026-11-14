@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { ExternalLink, MousePointerClick, Orbit } from 'lucide-react'
+import { ArrowRight, ExternalLink, MousePointerClick, Orbit, ShieldPlus } from 'lucide-react'
 import hrp from '@/data/hrp-risks.json'
 import type { RiskGroup } from '@/data/regions'
 import { VITAL_REGION } from '@/lib/notes'
 import { REGION_NAMES, summarySentence } from '@/lib/present'
+import { href } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import type { BodyRegion, BodyRegionId, Vital } from '@/types'
 import { Clamped } from './Clamped'
@@ -112,6 +113,7 @@ export function RegionPanel({
   vitals,
   riskGroups,
   radiation,
+  patternTitles = [],
   className,
 }: {
   focus: BodyRegionId | 'radiation' | null
@@ -119,6 +121,8 @@ export function RegionPanel({
   vitals: Vital[]
   riskGroups: Record<BodyRegionId, RiskGroup>
   radiation: RiskGroup
+  /** Padrões ativos com sinal nesta região. */
+  patternTitles?: string[]
   className?: string
 }) {
   const wrap = cn('flex min-w-0 scroll-mt-20 flex-col gap-5 rounded-xl border border-hairline bg-surface-1 p-5 md:p-6', className)
@@ -175,6 +179,16 @@ export function RegionPanel({
         </h2>
         <StatusBadge status={region?.status ?? 'baseline'} />
       </header>
+      {patternTitles.length > 0 && (
+        <a
+          href={href('/prevention')}
+          className="flex items-center gap-2 rounded-lg border border-hairline-strong px-3 py-2.5 text-[15px] text-ink no-underline hover:bg-surface-2"
+        >
+          <ShieldPlus className="size-4.5 shrink-0 text-brand" aria-hidden />
+          <span className="flex-1">Part of an active pattern: {patternTitles.join(', ')}</span>
+          <ArrowRight className="size-4 text-ink-soft" aria-hidden />
+        </a>
+      )}
       {linked.length > 0 ? (
         <ul className="grid gap-2" aria-label="Linked measures">
           {linked.map((v) => (
