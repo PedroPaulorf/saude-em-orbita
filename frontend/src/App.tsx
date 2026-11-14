@@ -20,6 +20,7 @@ import { Home } from '@/screens/Home'
 import { Login } from '@/screens/Login'
 import { Prevention } from '@/screens/Prevention'
 import { MedicalData } from '@/screens/MedicalData'
+import { Integrations } from '@/screens/Integrations'
 import type { Profile } from '@/lib/api'
 import type { Connection } from '@/types'
 
@@ -65,6 +66,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const connection: Connection = pending ? 'queued' : state.error || !state.historyLoaded ? 'offline' : 'online'
   let screen
   switch (route.path) {
+    case '/integrations': screen = <Integrations key={profile.id} owner={profile.id} />; break
     case '/data': screen = <MedicalData state={state} section={route.params.get('section')} />; break
     case '/prevention': screen = <Prevention game={game} connection={connection} params={route.params} profile={profile} checkins={state.checkins} />; break
     case '/progress': screen = <Suspense fallback={<ScreenSkeleton label="Loading progress" />}><ProgressScreen game={game} /></Suspense>; break

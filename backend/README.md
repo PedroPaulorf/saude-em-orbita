@@ -21,6 +21,8 @@ A migração `003_medical_traceability.sql` acrescenta referências NTRS, regras
 
 ## Arquitetura
 
+A migração `004_wearables.sql` acrescenta importações e observações de vestíveis por conta, separadas dos check-ups simulados. `POST /api/v1/me/wearables/imports` recebe lotes normalizados e `GET /api/v1/me/wearables` consulta o histórico. Veja [contratos, limites e caminhos de integração](../docs/integrations.md).
+
 ```text
 Front React no notebook/tablet
        | HTTP + cookie de sessão

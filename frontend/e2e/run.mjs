@@ -15,7 +15,10 @@ const admin = new pg.Pool({ connectionString: process.env.TEST_DATABASE_URL })
 const { openDatabase, migrate } = await import('../../backend/dist/database.js')
 const { seedDemo } = await import('../../backend/dist/seed.js')
 try {
-  const specs = (await readdir(new URL('./', import.meta.url))).filter(name => name.endsWith('.spec.ts')).sort()
+  const available = (await readdir(new URL('./', import.meta.url))).filter(name => name.endsWith('.spec.ts')).sort()
+  const requested = process.argv.slice(2)
+  if (requested.some(name => !available.includes(name))) throw new Error('Unknown spec; pass an exact filename from e2e/')
+  const specs = requested.length ? available.filter(name => requested.includes(name)) : available
   for (const spec of specs) {
     const schema = 'health7_browser_' + randomUUID().replaceAll('-', '')
     const scoped = new URL(process.env.TEST_DATABASE_URL)
