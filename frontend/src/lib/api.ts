@@ -17,7 +17,7 @@ export interface History<T> { items: T[]; from: string; to: string; truncated: b
 export class ApiError extends Error {
   status: number
   constructor(message: string, status = 0) { super(message); this.status = status }
-  get retryable() { return this.status === 0 || this.status >= 500 }
+  get retryable() { return this.status === 0 || this.status === 408 || this.status === 429 || this.status >= 500 }
 }
 export function apiBase(configured?: string, location = window.location) {
   const hostname=location.hostname.replace(/^\[|\]$/g,'')
@@ -43,7 +43,8 @@ export async function apiRequest<T>(path: string, body?: unknown, signal?: Abort
     throw new ApiError(timeout.aborted ? 'The server took too long. Your pending records stay on this device.' : 'Cannot reach the server. Your pending records stay on this device.')
   }
 }
-export const checkInPayload = (c: CheckIn) => ({ clientId: c.clientId, at: c.at, source: c.source, vitals: c.vitals, behavioral: c.behavioral, ...(c.healthDetails ? { healthDetails: c.healthDetails } : {}) })
+export const checkInPayload = (c: CheckIn) => ({ clientId: c.clientId, at: c.at, source: c.source, vitals: c.vitals, behavioral: c.behavioral,
+  ...(c.healthDetails ? { healthDetails: c.healthDetails } : {}), ...(c.provenance ? { provenance: c.provenance } : {}) })
 
 export function createClientId(cryptoApi:Crypto=crypto):string {
   if(cryptoApi.randomUUID)return cryptoApi.randomUUID()

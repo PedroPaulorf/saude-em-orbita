@@ -8,6 +8,8 @@ import { openDatabase, migrate } from './database.js'
 import { hashPassword, tokenHash, verifyPassword } from './auth.js'
 import { registerDomainRoutes, personFor, healthFor, environmentFor } from './domains.js'
 import { canonical, strictDate, checkInSchema, historySchema, symptomSchema, eventSchema, analysisSchema, type CheckInInput } from './contracts.js'
+import { initializeMedical, observations, storeObservations } from './medical.js'
+import { scenarioSchema, simulate, type Scenario } from './simulation.js'
 
 export interface AiProvider { url: string; name: string; modelVersion: string; apiKey?: string; timeoutMs?: number }
 export interface Options { databaseUrl: string; origins?: string[]; secureCookies?: boolean; logger?: boolean; aiProvider?: AiProvider; sessionTtlSeconds?: number }
@@ -32,7 +34,7 @@ function normalizeAt<T extends { at: string }>(input: T): T {
 }
 export async function createApp(options: Options) {
   const db = openDatabase(options.databaseUrl)
-  try { await migrate(db) } catch (error) { await db.end(); throw error }
+  try { await migrate(db); await initializeMedical(db) } catch (error) { await db.end(); throw error }
   const ttl = options.sessionTtlSeconds ?? 8 * 60 * 60
   if (!Number.isInteger(ttl) || ttl < 1 || ttl > 7 * 86400) { await db.end(); throw new Error('Invalid session TTL') }
   const app = Fastify({ logger: options.logger ? { redact: ['req.headers.cookie', 'req.headers.authorization'] } : false,
@@ -90,17 +92,44 @@ export async function createApp(options: Options) {
       const input = normalizeAt(request.body)
       if (!Object.keys(input.vitals).length && !Object.keys(input.behavioral).length && !Object.keys(input.healthDetails ?? {}).length) fail(400, 'Provide at least one answer')
       const id = randomUUID(), crewId = crew(request)
-      const added = await db.query('INSERT INTO checkins(id,crew_id,client_id,at,payload) VALUES($1,$2,$3,$4,$5) ON CONFLICT(crew_id,client_id) DO NOTHING RETURNING *',
-        [id, crewId, input.clientId, input.at, input])
-      const row = added.rows[0] ?? (await db.query('SELECT * FROM checkins WHERE crew_id=$1 AND client_id=$2', [crewId, input.clientId])).rows[0]
-      if (canonical(row.payload) !== canonical(input)) fail(409, 'clientId already used with different data')
-      return reply.code(added.rowCount ? 201 : 200).send(checkinOutput(row))
+      if (Object.keys(input.provenance ?? {}).some(metric => !(metric in input.vitals))) fail(400, 'Provenance must refer to a submitted measurement')
+      const client = await db.connect()
+      try {
+        await client.query('BEGIN')
+        const added = await client.query('INSERT INTO checkins(id,crew_id,client_id,at,payload) VALUES($1,$2,$3,$4,$5) ON CONFLICT(crew_id,client_id) DO NOTHING RETURNING *',
+          [id, crewId, input.clientId, input.at, input])
+        const row = added.rows[0] ?? (await client.query('SELECT * FROM checkins WHERE crew_id=$1 AND client_id=$2', [crewId, input.clientId])).rows[0]
+        if (canonical(row.payload) !== canonical(input)) fail(409, 'clientId already used with different data')
+        if (added.rowCount) await storeObservations(client, row.id, crewId, input)
+        const assessment = await observations(client, crewId, row.id)
+        await client.query('COMMIT')
+        return reply.code(added.rowCount ? 201 : 200).send({ ...checkinOutput(row), observations: assessment })
+      } catch (error) { await client.query('ROLLBACK'); throw error } finally { client.release() }
     })
     api.get<{ Querystring: WindowInput }>('/me/checkins', { schema: { querystring: historySchema } }, async request => {
       const window = windowOf(request.query)
       const rows = await db.query('SELECT * FROM checkins WHERE crew_id=$1 AND at >= $2 AND at <= $3 ORDER BY at DESC,id DESC LIMIT $4',
         [crew(request), window.from, window.to, window.limit + 1])
-      return { items: rows.rows.slice(0, window.limit).map(checkinOutput), ...window, truncated: rows.rows.length > window.limit }
+      const items = await Promise.all(rows.rows.slice(0, window.limit).map(async row => ({ ...checkinOutput(row), observations: await observations(db, crew(request), row.id) })))
+      return { items, ...window, truncated: rows.rows.length > window.limit }
+    })
+    api.get('/references', async () => ({ items: (await db.query('SELECT document FROM medical_references ORDER BY id')).rows.map(r => r.document) }))
+    api.get('/rules', async () => ({ items: (await db.query('SELECT document FROM medical_rules ORDER BY version')).rows.map(r => r.document) }))
+    api.post<{ Body: Scenario }>('/me/simulations', { schema: { body: scenarioSchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (request, reply) => {
+      if (new Set(request.body.conditions.map(c => c.id)).size !== request.body.conditions.length) fail(400, 'Condition ids must be unique')
+      const result = simulate(request.body)
+      const saved = (await db.query('INSERT INTO mission_simulations(id,crew_id,input,result) VALUES($1,$2,$3,$4) RETURNING *', [randomUUID(), crew(request), request.body, result])).rows[0]
+      return reply.code(201).send({ id: saved.id, crewId: saved.crew_id, createdAt: iso(saved.created_at), input: saved.input, result: saved.result })
+    })
+    api.get<{ Params: { id: string } }>('/me/simulations/:id', { schema: { params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } } } }, async request => {
+      const saved = (await db.query('SELECT * FROM mission_simulations WHERE id=$1 AND crew_id=$2', [request.params.id, crew(request)])).rows[0]
+      if (!saved) fail(404, 'Simulation not found')
+      return { id: saved.id, crewId: saved.crew_id, createdAt: iso(saved.created_at), input: saved.input, result: saved.result }
+    })
+    api.get<{ Querystring: WindowInput }>('/me/simulations', { schema: { querystring: historySchema } }, async request => {
+      const window = windowOf(request.query)
+      const saved = await db.query('SELECT * FROM mission_simulations WHERE crew_id=$1 AND created_at >= $2 AND created_at <= $3 ORDER BY created_at DESC,id DESC LIMIT $4', [crew(request), window.from, window.to, window.limit + 1])
+      return { items: saved.rows.slice(0, window.limit).map(row => ({ id: row.id, crewId: row.crew_id, createdAt: iso(row.created_at), input: row.input, result: row.result })), ...window, truncated: saved.rows.length > window.limit }
     })
     api.post<{ Body: Row & { at: string } }>('/me/symptoms', { schema: { body: symptomSchema } }, async (request, reply) => {
       const input = normalizeAt(request.body), crewId = crew(request)

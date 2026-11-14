@@ -82,3 +82,27 @@ test('save reports a permanent rejection so the form can retain and correct its 
   await expect(controller.save(record)).rejects.toThrow(/rejected/i)
   expect(loadCheckIns('a')[0].sync).toBe('rejected')
 })
+
+test('rate limiting and invalid acknowledgment keep a stable pending payload for its owner', async () => {
+  let limited = true
+  const posted: unknown[] = []
+  const controller = new SessionController((async (path: string, body: unknown) => {
+    if (path === '/me') return profile('a')
+    if (path === '/me/checkins') {
+      posted.push(body)
+      if (limited) throw new ApiError('Try later', 429)
+      return { ...record, crewId: 'b' }
+    }
+    return { items: [], truncated: false }
+  }) as never)
+  await controller.restore()
+  saveCheckIn('a', record)
+  await controller.sync()
+  expect(loadCheckIns('a')[0].sync).toBe('pending')
+  limited = false
+  await controller.sync()
+  expect(loadCheckIns('a')[0].sync).toBe('pending')
+  expect(posted[0]).toEqual(posted[1])
+  expect(loadCheckIns('b')).toEqual([])
+  expect(controller.getSnapshot().error).toMatch(/acknowledgment/i)
+})

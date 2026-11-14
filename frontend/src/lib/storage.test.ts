@@ -13,7 +13,7 @@ test('keeps pending records isolated and ignores unowned legacy records', () => 
   localStorage.setItem('health7:checkins:v1', JSON.stringify([record]))
   saveCheckIn('crew-a', record)
   expect(loadCheckIns('crew-b')).toEqual([])
-  expect(loadCheckIns('crew-a')).toEqual([{ ...record, kind: 'health', sync: 'pending' }])
+  expect(loadCheckIns('crew-a')).toEqual([{ ...record, kind: 'health', sync: 'pending', provenance: { sleep: { method: 'manual', quality: 'simulated' } } }])
 })
 test('merges idempotent server acknowledgments without discarding queued writes', () => {
   saveCheckIn('crew-a', record)
@@ -33,4 +33,20 @@ test('an authoritative empty server window drops stale saved cache but keeps unc
   saveCheckIn('a',{...record,clientId:'pending'})
   cacheCheckIns('a',[])
   expect(loadCheckIns('a').map(c=>c.clientId)).toEqual(['pending'])
+})
+
+test('persisted provenance is stable across retries and isolated from another account', () => {
+  saveCheckIn('a', record)
+  const first = loadCheckIns('a')[0]
+  saveCheckIn('a', { ...record, provenance: { sleep: { method: 'unknown', quality: 'unknown' } } })
+  expect(loadCheckIns('a')[0]).toEqual(first)
+  expect(first.provenance?.sleep).toEqual({ method: 'manual', quality: 'simulated' })
+  expect(loadCheckIns('b')).toEqual([])
+})
+
+test('a malformed stored history cannot be silently overwritten by a new record', () => {
+  const key = 'health7:checkins:v2:a'
+  localStorage.setItem(key, '{broken')
+  expect(() => saveCheckIn('a', record)).toThrow(/save/i)
+  expect(localStorage.getItem(key)).toBe('{broken')
 })

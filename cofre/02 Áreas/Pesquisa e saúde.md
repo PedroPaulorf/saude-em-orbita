@@ -21,4 +21,5 @@ Entrega revisada por outro membro e vinculada no [[Quadro de tarefas]].
 
 ## Notas e links de trabalho
 - [[Riscos NASA HRP]] — riscos do voo espacial humano (NASA), com ligação aos indicadores candidatos.
+- [[NTRS - arquitetura de dados e autonomia médica]] — referências sobre MDA, EIMO, AMO e IMM, com aplicações propostas e revisão pendente.
 - [[Monitoramento de radiação e saúde dos astronautas (CSA)]] — artigo da CSA sobre medição de radiação.

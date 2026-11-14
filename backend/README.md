@@ -13,10 +13,11 @@ Esta branch substitui o SQLite como banco principal. Não usa Java ou Spring.
 - Análises persistidas: resumo determinístico sem IA e adaptador HTTP opcional para um serviço de IA.
 - Migrações do PostgreSQL, contas fictícias para demonstração e testes de integração.
 
-**Esta branch altera somente o back-end.** O front atual ainda precisa de tela de login,
-requisições autenticadas e armazenamento local separado por conta. O back devolve `bodyModel`;
-é o front que passa esse valor ao `BodyAvatar`, que já possui as duas figuras 2D.
+O front já inclui login, requisições autenticadas e armazenamento separado por conta.
+O back devolve `bodyModel`; o front passa esse valor ao `BodyAvatar`, que possui as duas figuras 2D.
 Não basta adicionar o login no front: a autorização é aplicada no servidor em todas as consultas.
+
+A migração `003_medical_traceability.sql` acrescenta referências NTRS, regras e avaliações versionadas, preservando os domínios existentes. A tela `#/data` mostra os dados da conta e permite simulações educativas privadas. Veja [Dados médicos e sincronização](../docs/medical-data.md) para contratos, configuração e limites.
 
 ## Arquitetura
 
@@ -109,10 +110,19 @@ npm.cmd start
 
 Mantenha a pasta `migrations` ao lado de `dist` ao distribuir o backend compilado.
 
-**Ainda não execute o front esperando login pronto:** essa integração é uma etapa
-separada e está descrita ao final deste README.
+O front usa `VITE_API_URL` e o cookie de sessão existente. Não é necessária chave de API compartilhada no navegador.
 
 ## Contas de demonstração
+
+Para criar uma conta de teste adicional, execute **no backend conectado ao banco da aplicação**, com `DATABASE_URL` já configurada:
+
+```powershell
+$env:NEW_USER_PASSWORD = '<senha escolhida>'
+npm run user:create -- nome-do-usuario
+Remove-Item Env:NEW_USER_PASSWORD
+```
+
+O comando grava somente o hash da senha, cria um perfil fictício com histórico vazio e não altera uma conta que já tenha o mesmo nome. A criação é uma ação explícita do operador; não ocorre automaticamente ao iniciar a API. As senhas das contas existentes e as exigências do seed permanecem inalteradas.
 
 O seed cria dois perfis fictícios:
 
@@ -296,20 +306,11 @@ por padrão e os testes usam servidor HTTP fictício local.
 A função acompanha mudanças e organiza registros para revisão; qualquer evolução
 para predição clínica exige dados adequados e validação independente.
 
-## Integração futura com o front atual
+## Integração com o front atual
 
-1. Criar tela de login que chama `/auth/login` com cabeçalho CSRF e cookies.
-2. Consultar `/me` para nome, modelo do corpo e referências individuais.
-3. Passar `bodyModel` para a propriedade `gender` do componente `BodyAvatar`.
-4. Trocar o `crew-02` fixo por perfil carregado; não reutilizar baseline de outro astronauta.
-5. Separar check-ups, água, rascunhos e fila pendente no navegador por usuário.
-6. Usar `/me/checkins` e `/me/symptoms`; sincronizar registros e atualizar a tela.
-7. No logout, limpar o estado da tela. Pendências ficam vinculadas ao dono e não
-   podem ser enviadas na próxima conta. Sessão expirada exige novo login.
+O front usa `/auth/login`, `/me`, `/me/checkins` e `/me/symptoms`, com cookie de sessão, cabeçalho CSRF e identidade capturada nas requisições. O perfil define a figura do corpo e a linha de base pessoal. Dados locais e pendências são separados por conta; logout e troca de conta descartam respostas antigas. Sessão expirada exige novo login.
 
-O back sozinho não instala o aplicativo offline, não cria fila no navegador e não
-sincroniza automaticamente o front. Ao guardar dados localmente em aparelho
-compartilhado, também será necessário definir acesso e remoção desses dados.
+A fila existente preserva identificadores e procedência para reenvio e acrescenta as avaliações versionadas às respostas salvas. A tela `#/data` usa essa mesma sessão para consultar fontes e salvar cenários privados. O back sozinho não instala o aplicativo offline. Ao guardar dados localmente em aparelho compartilhado, também será necessário definir acesso e remoção desses dados.
 
 ## Migração do protótipo SQLite
 
@@ -360,7 +361,7 @@ O teste de provedor de IA usa somente um servidor HTTP de teste no próprio comp
 - `compose.yaml`: PostgreSQL local opcional por Docker.
 
 Tabelas: `person`, `health`, `environment`, `crew` (perfil e credenciais), `sessions`, `checkins`, `symptoms`,
-`symptom_events`, `analyses` e `schema_migrations`.
+`symptom_events`, `analyses`, `medical_references`, `medical_rules`, `medical_observations`, `mission_simulations` e `schema_migrations`.
 Índices relacionam registros ao astronauta e à data. Check-ups usam `jsonb` para
 os campos; datas e vínculos permanecem em colunas próprias. Eventos de sintomas
 têm proteção no banco contra alteração e exclusão; correções devem ser novos

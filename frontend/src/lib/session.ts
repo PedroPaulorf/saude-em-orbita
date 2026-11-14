@@ -89,6 +89,7 @@ export class SessionController {
         try {
           const saved=await this.request<CheckIn>('/me/checkins',checkInPayload(c),signal,profile.id)
           if(!this.valid(epoch,profile.id)) return
+          if(saved.clientId!==c.clientId || (saved.crewId && saved.crewId!==profile.id)) throw new ApiError('Invalid server acknowledgment. Record retained for retry.')
           replaceCheckIns(profile.id,[saved])
           this.update({checkins:loadCheckIns(profile.id)})
         } catch(error) {

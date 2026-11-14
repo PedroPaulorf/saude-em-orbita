@@ -19,6 +19,7 @@ import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
 import { Login } from '@/screens/Login'
 import { Prevention } from '@/screens/Prevention'
+import { MedicalData } from '@/screens/MedicalData'
 import type { Profile } from '@/lib/api'
 import type { Connection } from '@/types'
 
@@ -29,10 +30,13 @@ export default function App() {
   useEffect(() => {
     void session.restore()
     const online = () => { void session.sync() }
+    const retryTimer = window.setInterval(() => {
+      if (session.getSnapshot().checkins.some(c => c.sync === 'pending')) void session.sync()
+    }, 30000)
     const changed = (event: StorageEvent) => { if (event.key === 'health7:auth-change') session.invalidate() }
     window.addEventListener('online', online)
     window.addEventListener('storage', changed)
-    return () => { window.removeEventListener('online', online); window.removeEventListener('storage', changed) }
+    return () => { window.clearInterval(retryTimer); window.removeEventListener('online', online); window.removeEventListener('storage', changed) }
   }, [])
   if (state.phase === 'restoring') return <main className="p-8" role="status">Verifying your session…</main>
   if (!state.profile) return <Login />
@@ -61,6 +65,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const connection: Connection = pending ? 'queued' : state.error || !state.historyLoaded ? 'offline' : 'online'
   let screen
   switch (route.path) {
+    case '/data': screen = <MedicalData state={state} section={route.params.get('section')} />; break
     case '/prevention': screen = <Prevention game={game} connection={connection} params={route.params} profile={profile} checkins={state.checkins} />; break
     case '/progress': screen = <Suspense fallback={<ScreenSkeleton label="Loading progress" />}><ProgressScreen game={game} /></Suspense>; break
     case '/stats': screen = <DetailedStats params={route.params} profile={profile} checkins={state.checkins} symptoms={state.symptoms} truncated={state.truncated} historyLoaded={state.historyLoaded} />; break

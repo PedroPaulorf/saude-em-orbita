@@ -2,6 +2,8 @@ import { useSyncExternalStore } from 'react'
 import type { VitalId } from '@/types'
 import { getActiveCrewId, scopedStorageKey, subscribeActiveProfile } from './active-profile'
 import { createClientId } from './api'
+import type { MedicalObservation, Provenance } from './medical-types'
+import simulated from '@/data/simulated.json'
 
 export type CheckInKind = 'health' | 'behavioral' | 'combined'
 type Vitals = Partial<Record<VitalId, number>> & { bloodPressureDiastolic?: number }
@@ -13,6 +15,8 @@ export interface CheckIn {
   vitals: Vitals
   behavioral: Record<string, number>
   healthDetails?: { urine?: string; stool?: string }
+  provenance?: Record<string, Provenance>
+  observations?: MedicalObservation[]
   id?: string
   crewId?: string
   receivedAt?: string
@@ -53,7 +57,11 @@ export function loadCheckIns(crewId = getActiveCrewId()): CheckIn[] {
 function write(crewId: string | undefined, records: CheckIn[]) {
   const storageKey = key(crewId)
   if (!storageKey) throw new Error('Sign in before saving a check-in.')
-  try { localStorage.setItem(storageKey, JSON.stringify(records)) }
+  try {
+    const current = localStorage.getItem(storageKey)
+    if (current !== null && !Array.isArray(JSON.parse(current))) throw new Error('Invalid stored history')
+    localStorage.setItem(storageKey, JSON.stringify(records))
+  }
   catch { throw new Error('Could not save on this device. Free storage or allow browser storage, then try again.') }
   changed()
 }
@@ -65,7 +73,11 @@ export function saveCheckIn(ownerOrRecord: string | CheckInInput, input?: CheckI
   if (record.crewId && record.crewId !== crewId) throw new Error('This check-in belongs to a different account.')
   const all = loadCheckIns(crewId)
   if (all.some(c => c.clientId === record.clientId)) return
-  write(crewId, [...all, { ...record, sync: 'pending' }])
+  const provenance: Record<string, Provenance> = record.provenance ?? Object.fromEntries(Object.keys(record.vitals).map(id => {
+    const config = simulated.vitals.find(v => v.id === (id === 'bloodPressureDiastolic' ? 'bloodPressure' : id))
+    return [id, { method: config?.input === 'device' ? 'simulated-device' : 'manual', quality: 'simulated' }]
+  }))
+  write(crewId, [...all, { ...record, ...(Object.keys(provenance).length ? { provenance } : {}), sync: 'pending' }])
 }
 export function replaceCheckIns(crewId: string, server: CheckInInput[]) {
   const merged = new Map(loadCheckIns(crewId).map(c => [c.clientId, c]))

@@ -29,7 +29,8 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 - [[Interface]]
 - [[Dados e regras]]
 - [[Integração e apresentação]]
-- [[Recursos oficiais]] — materiais ainda aguardados
+- [[Recursos oficiais]] — fontes registradas e revisões pendentes
+- [[NTRS - arquitetura de dados e autonomia médica]] — MDA, EIMO, AMO e IMM: referências, aplicações no Health7 e limites
 - [[Riscos NASA HRP]] — 17 riscos do voo espacial humano, uma nota por risco
 - [[Padrões de projetos vencedores do Space Apps]] — critérios, prazos e o que projetos premiados têm em comum
 - [[DONKI - documentação da API]] — endpoints, parâmetros e formato das respostas

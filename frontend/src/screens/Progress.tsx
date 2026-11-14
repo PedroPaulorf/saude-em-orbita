@@ -251,6 +251,11 @@ export function ProgressScreen({ game }: { game: GameSummary }) {
           <BehavioralOverTime />
         </div>
         <div className="grid gap-4">
+          <Panel aria-labelledby="mission-planning-title">
+            <PanelHeader id="mission-planning-title" title="Mission planning" />
+            <p className="text-sm text-ink-soft">Explore hypothetical events and medical resource needs. These scenarios are separate from your personal measurements and do not predict disease.</p>
+            <a href="#/data?section=mission" className="font-semibold text-interactive underline">Explore mission scenarios</a>
+          </Panel>
           <Crew game={game} />
           <Achievements game={game} />
           <History game={game} />

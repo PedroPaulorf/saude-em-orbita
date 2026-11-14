@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { PersonalRecords } from './Stats'
 import type { Profile, Symptom } from '@/lib/api'
 import type { CheckIn } from '@/lib/storage'
-import { Cpu, PenLine } from 'lucide-react'
+import { MeasurementProvenance } from '@/components/app/MeasurementDetails'
 import { BodyAvatar } from '@/components/app/BodyAvatar'
 import { RegionPanel } from '@/components/app/RegionPanel'
 import { StatusBadge } from '@/components/app/StatusBadge'
@@ -95,15 +95,14 @@ export function DetailedStats({ params, profile, checkins, symptoms, truncated, 
             Today&apos;s measures
           </h2>
           <p className="mb-1 text-sm text-ink-soft">
-            {vitals.filter(v => v.observed !== false).length} recorded measures from {new Set(vitals.map((v) => v.source)).size} sources, in one place. Device feeds are
-            simulated in this demo.
+            {vitals.filter(v => v.observed !== false).length} recorded measures. Select a measure to inspect its source and assessment. Data is simulated in this demo.
           </p>
           <ul className="grid sm:grid-cols-2 sm:gap-x-6 xl:grid-cols-1">
             {vitals.map((v) => {
               const region = VITAL_REGION[v.id]
               const active = selected === region
               return (
-                <li key={v.id} className="border-t border-hairline first:border-t-0 sm:[&:nth-child(2)]:border-t-0 xl:[&:nth-child(2)]:border-t">
+                <li key={v.id} className="border-t border-hairline pb-3 first:border-t-0 sm:[&:nth-child(2)]:border-t-0 xl:[&:nth-child(2)]:border-t">
                   <button
                     type="button"
                     onClick={() => select(region)}
@@ -124,12 +123,9 @@ export function DetailedStats({ params, profile, checkins, symptoms, truncated, 
                     <span className="font-mono text-[13px] text-ink-soft">
                       baseline {v.baseline} · <span className="text-ink">{v.delta}</span>
                     </span>
-                    <span className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-ink-soft">
-                      {v.input === 'device' ? <Cpu className="size-3.5" aria-hidden /> : <PenLine className="size-3.5" aria-hidden />}
-                      {v.source}
-                      <span className="sr-only">{v.input === 'device' ? ', device feed' : ', from your check-up'}</span>
-                    </span>
+                    {v.observed !== false && <span className="text-xs text-ink-soft">{v.assessment ? 'Assessment saved with this record' : 'Local comparison preview'}</span>}
                   </button>
+                  {v.observed !== false && <MeasurementProvenance provenance={v.provenance} at={v.at} sync={v.recordSync} />}
                 </li>
               )
             })}
@@ -137,6 +133,10 @@ export function DetailedStats({ params, profile, checkins, symptoms, truncated, 
         </section>
       </div>
       {selected && <PersonalRecords profile={profile} checkins={checkins} symptoms={symptoms} region={selected} truncated={truncated} historyLoaded={historyLoaded} />}
+      <div className="mt-5 rounded-xl border border-hairline bg-surface-1 p-4 text-sm text-ink-soft">
+        <a href="#/data?section=sources" className="font-semibold text-interactive underline">Sources & methodology</a>
+        <p className="mt-1">NASA research informs the data architecture. These references do not validate the demonstration thresholds or provide a diagnosis.</p>
+      </div>
     </div>
   )
 }

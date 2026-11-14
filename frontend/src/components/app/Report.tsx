@@ -10,6 +10,7 @@ import { Panel, PanelHeader } from './Panel'
 import { Dot, Dotted } from './Dot'
 import { DemoTag } from './SourceTag'
 import { StatusBadge } from './StatusBadge'
+import { AssessmentDetails, MeasurementProvenance } from './MeasurementDetails'
 
 export function ReportCompact({
   vitals,
@@ -65,6 +66,7 @@ export function ReportCompact({
         <CloudOff className="size-4" aria-hidden />
         <Dotted text={sendState(connection)} />
       </span>
+      <a href="#/data" className="text-sm font-semibold text-interactive underline">Medical data & sources</a>
     </Panel>
   )
 }
@@ -86,6 +88,7 @@ export function ReportDialog({
   connection: Connection
 }) {
   const items = reportItems(vitals)
+  const otherRecorded = vitals.filter(v => v.observed !== false && !items.some(item => item.id === v.id))
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -115,11 +118,22 @@ export function ReportDialog({
                   </span>{' '}
                   · baseline {v.baseline} · {v.delta}
                 </p>
-                {v.rule && <p className="text-sm text-ink-soft">{v.rule}</p>}
+                <MeasurementProvenance provenance={v.provenance} at={v.at} sync={v.recordSync} />
+                <p className="text-xs text-ink-soft">{v.assessment ? 'Assessment saved with this record' : 'Local comparison preview'}</p>
+                <AssessmentDetails assessment={v.assessment} localRule={v.assessment ? undefined : v.rule} recordId={v.recordId} clientId={v.clientId} />
               </li>
             ))}
           </ul>
         )}
+
+        {otherRecorded.length > 0 && <details className="border-t border-hairline pt-3 text-sm">
+          <summary className="cursor-pointer py-2 font-semibold">Other recorded measurements ({otherRecorded.length})</summary>
+          <ul className="grid gap-3">{otherRecorded.map(v => <li key={v.id} className="rounded-lg bg-surface-2 p-3">
+            <p className="font-semibold">{v.label}: {v.value} {v.unit}</p>
+            <MeasurementProvenance provenance={v.provenance} at={v.at} sync={v.recordSync} />
+            <AssessmentDetails assessment={v.assessment} localRule={v.assessment ? undefined : v.rule} recordId={v.recordId} clientId={v.clientId} />
+          </li>)}</ul>
+        </details>}
 
         {patterns.length > 0 && (
           <section aria-labelledby="report-patterns" className="grid gap-2 border-t border-hairline pt-4">

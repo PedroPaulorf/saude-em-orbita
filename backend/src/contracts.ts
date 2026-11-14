@@ -3,6 +3,7 @@ export interface CheckInInput {
   vitals: { heartRate?: number; bloodPressure?: number; bloodPressureDiastolic?: number; sleep?: number; temperature?: number; spo2?: number; respiratoryRate?: number; bodyMass?: number }
   behavioral: { mood?: number; stress?: number; rest?: number }
   healthDetails?: { urine?: string; stool?: string }
+  provenance?: Record<string, { method: 'manual' | 'simulated-device' | 'unknown'; quality: 'simulated' | 'unknown' }>
 }
 const positive = { type: 'number', exclusiveMinimum: 0, maximum: 1000 }
 const scale = { type: 'integer', minimum: 1, maximum: 5 }
@@ -18,6 +19,11 @@ export const checkInSchema = {
         sleep: { type: 'number', minimum: 0, maximum: 24 }, temperature: positive,
         spo2: { type: 'number', minimum: 0, maximum: 100 }, respiratoryRate: positive, bodyMass: positive } },
     behavioral: { type: 'object', additionalProperties: false, properties: { mood: scale, stress: scale, rest: scale } },
+    provenance: { type: 'object', additionalProperties: false,
+      properties: Object.fromEntries(['heartRate', 'bloodPressure', 'bloodPressureDiastolic', 'sleep', 'temperature', 'spo2', 'respiratoryRate', 'bodyMass'].map(id => [id, {
+        type: 'object', additionalProperties: false, required: ['method', 'quality'],
+        properties: { method: { enum: ['manual', 'simulated-device', 'unknown'] }, quality: { enum: ['simulated', 'unknown'] } },
+      }])) },
     healthDetails: { type: 'object', additionalProperties: false, properties: {
       urine: { type: 'string', minLength: 1, maxLength: 2000, pattern: '\\S' },
       stool: { type: 'string', minLength: 1, maxLength: 2000, pattern: '\\S' } } } },
