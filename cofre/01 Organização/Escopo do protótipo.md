@@ -88,7 +88,7 @@ O enunciado sugere "figura humana clicável"; uma figura 2D (SVG) entrega quase 
 
 - Detectar capacete ou falha no traje com visão computacional não cabe no prazo, como a própria equipe disse.
 - Na ISS a proteção contra radiação é sobretudo blindagem e medição (por exemplo, o espectrômetro CANS da [[Monitoramento de radiação e saúde dos astronautas (CSA)|nota da CSA]] mede o ambiente), não um equipamento que o astronauta "veste" como caneleira.
-- **Alternativa que resolve a maior lacuna do projeto:** a API pública **DONKI** da NASA ([api.nasa.gov](https://api.nasa.gov/)) traz eventos de clima espacial em quase tempo real, inclusive erupções solares (FLR) e partículas solares energéticas (SEP). Um cartão "clima espacial agora", com dado real, ligado ao risco [[Cânceres induzidos por radiação]], põe **dado da NASA no centro** (critério Relevance). Foi o que fez o PureFlow, vencedor de 2025. Limitação a declarar: o DONKI informa eventos solares, **não a dose recebida pelo astronauta**.
+- **Alternativa que resolve a maior lacuna do projeto:** a API pública **DONKI** da NASA (detalhes em [[DONKI - clima espacial da NASA]]) traz eventos de clima espacial em quase tempo real, inclusive erupções solares (FLR) e partículas solares energéticas (SEP). Um cartão "clima espacial agora", com dado real, ligado ao risco [[Cânceres induzidos por radiação]], põe **dado da NASA no centro** (critério Relevance). Foi o que fez o PureFlow, vencedor de 2025. Limitação a declarar: o DONKI informa eventos solares, **não a dose recebida pelo astronauta**.
 
 ### 8. Stack técnica. **Rever: o juiz não vê o back-end.**
 
@@ -132,8 +132,8 @@ A ideia de um boneco que mostra o estado da pessoa vira a figura do corpo do ite
 
 | Prioridade | Itens |
 |---|---|
-| **Obrigatório** | Check-up de saúde; check-in comportamental separado; figura do corpo 2D clicável ligada aos riscos HRP; relatório para solo; dados simulados identificados; app publicado em um link; demo em inglês; References completas |
-| **Desejável** | Cartão DONKI com dado real; teste de reação; figura masculina e feminina; lembrete de check-up |
+| **Obrigatório** | Check-up de saúde; check-in comportamental separado; figura do corpo 2D clicável ligada aos riscos HRP; relatório para solo; **cartão de clima espacial com dado real do DONKI** (decidido em 2026-11-14); dados simulados identificados; app publicado em um link; demo em inglês; References completas |
+| **Desejável** | Teste de reação; figura masculina e feminina; lembrete de check-up |
 | **Se sobrar tempo** | Modelo 3D; resumo por IA para o médico, sem diagnóstico; alertas por voz (se for isso o "item auditivo") |
 | **Fora** | Visão computacional; diagnóstico; limiares clínicos sem fonte; servidor e banco publicados (se a equipe aceitar o item 8); logo ou identidade visual da NASA |
 
@@ -152,7 +152,7 @@ A ideia de um boneco que mostra o estado da pessoa vira a figura do corpo do ite
 | Quando | O quê |
 |---|---|
 | Sábado, hoje | Fechar as decisões da lista abaixo; dividir tarefas; esqueleto do app publicado no link; JSON dos riscos; telas dos check-ups |
-| Domingo, manhã | Painel com a figura do corpo; relatório para solo; DONKI se estiver no escopo |
+| Domingo, manhã | Painel com a figura do corpo; relatório para solo; cartão do DONKI integrado ao painel |
 | Domingo, 15h | **Congelar funcionalidades**; só correções |
 | Domingo, 18h | Gravar o vídeo ou fechar os slides; escrever a página do projeto em inglês |
 | Domingo, até 21h | **Enviar**, com margem antes das 23h59 |
@@ -161,8 +161,8 @@ Horários são sugestão; ajustar ao horário do evento local.
 
 ## Decisões para registrar em [[Decisões]]
 
-- [ ] Stack: leve, sem servidor (recomendado), ou Spring Boot com PostgreSQL.
-- [ ] Usar o DONKI como dado real da NASA.
+- [x] Stack: React + TypeScript + Tailwind + shadcn/ui, sem servidor, com dados no localStorage (registrado em 2026-11-14).
+- [x] Usar o DONKI como dado real da NASA (registrado em 2026-11-14; o que ele traz: [[DONKI - clima espacial da NASA]]).
 - [ ] Quantos e quais riscos têm medição (proposta: cardiovascular, sono, comportamental e temperatura).
 - [ ] Regra dos alertas: linha de base pessoal com "regra de demonstração" declarada.
 - [ ] O que era o quinto item ("Terfáceito auditivo").
