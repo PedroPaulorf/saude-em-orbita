@@ -22,6 +22,7 @@ Escolham um papel principal por pessoa e registrem os nomes em [[Equipe]]. A apr
 - [[Desafio e escopo]] — contexto recebido e limites atuais
 - [[Escopo do protótipo]] — o que a reunião decidiu, avaliação crítica e escopo proposto
 - [[Plano do front-end v2]] — novo visual, telas, chat de IA com n8n e fases de implementação
+- [[Plano do front-end v3 - medicina preventiva]] — padrões de sinais precoces, plano de volta à linha de base e radiação acumulada
 - [[Quadro de tarefas]] — próximos passos
 - [[Pesquisa e saúde]]
 - [[Experiência e design]]

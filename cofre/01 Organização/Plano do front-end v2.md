@@ -9,6 +9,8 @@ fontes: "wireframe do quadro branco (arquivos/wireframe-home-quadro-branco.jpg),
 
 Refazer a interface do Health 7: novo visual, navegação em três abas, check-ups separados, tela focada no avatar, gamificação da rotina diária (pontos, rank e registro de água) e um chat de IA de companhia ligado a um webhook do n8n. A lógica que já funciona (regras de linha de base, DONKI, armazenamento) fica.
 
+**Continuação:** este plano foi implementado (ver "Desvios"). A parte de medicina preventiva, decidida depois, está em [[Plano do front-end v3 - medicina preventiva]].
+
 **Prazo:** a submissão fecha domingo, 15/11, às 23h59. Congelar funcionalidades domingo às 15h. As fases da seção 10 estão em ordem de prioridade: se o tempo acabar, corta-se de baixo para cima e o app continua inteiro.
 
 ## 1. Como usar este plano
