@@ -20,7 +20,7 @@ const password = 'test-medical-password-29'
 let app: Awaited<ReturnType<typeof createApp>>, a: Record<string, string>, b: Record<string, string>
 const url = '/api/v1/me/checkins'
 const payload = { clientId: 'medical-1', at: '2026-11-14T12:00:00Z', source: 'simulated',
-  vitals: { sleep: 5.1, spo2: 96 }, behavioral: {}, provenance: { sleep: { method: 'manual', quality: 'simulated' } } }
+  vitals: { sleep: 5.1, bodyMass: 71 }, behavioral: {}, provenance: { sleep: { method: 'manual', quality: 'simulated' } } }
 const window = '?from=2026-11-14T00:00:00Z&to=2026-11-15T00:00:00Z'
 async function login(username: string) {
   const response = await app.inject({ method: 'POST', url: '/api/v1/auth/login', headers: { 'x-requested-with': 'Health7' }, payload: { username, password } })
@@ -46,8 +46,9 @@ test('research registry requires authentication and upgrade preserves legacy dat
   const legacy = (await app.inject({ url: url + window, headers: a })).json().items.find((c: any) => c.clientId === 'legacy')
   const sleep = legacy.observations.find((o: any) => o.metric === 'sleep')
   assert.equal(sleep.method, 'unknown'); assert.equal(sleep.quality, 'unknown'); assert.equal(sleep.retrospective, true)
-  const oxygen = legacy.observations.find((o: any) => o.metric === 'spo2')
-  assert.equal(oxygen.status, 'not-evaluated'); assert.equal(oxygen.baseline, null)
+  // The seed baseline has no body mass, so this measure stays explicitly unevaluated.
+  const mass = legacy.observations.find((o: any) => o.metric === 'bodyMass')
+  assert.equal(mass.status, 'not-evaluated'); assert.equal(mass.baseline, null)
   assert.equal(legacy.provenance, undefined)
 })
 
