@@ -510,3 +510,13 @@ Registrado pelo agente de código (Claude Opus) durante as fases 0 a 2, em 14/11
 - `context.behavioral` só vai preenchido se o check-in comportamental for de hoje; senão vai `null`.
 - O painel usa o `useSpaceWeather` quando abre, para mandar o resumo do clima espacial. Isso pode disparar uma consulta ao DONKI a mais.
 
+**Fase 7**
+- Recharts entrou pelo `chart` do shadcn sem problema com React 19. O `shadcn add chart` parou pedindo para sobrescrever `card.tsx` e trouxe de novo o pacote `cn`; rodei com `--overwrite` (o `card.tsx` não tinha mudança nossa e ficou igual), corrigi o import e tirei o `cn`.
+- A tela Progress é carregada sob demanda (`React.lazy`): o Recharts (366 KB) só baixa ao abrir a aba, e a Home fica em 527 KB.
+- Gráficos com **linha reta** entre os dias, não curva suavizada: a curva inventava picos entre os pontos, o que engana em dado de saúde. O eixo mostra só o mínimo e o máximo; a linha de base aparece tracejada no gráfico e com o valor na legenda.
+- A frase de tendência conta os dias seguidos, até hoje, fora da linha de base do mesmo lado, pela mesma regra de demonstração. O exemplo do plano sai igual para o sono: "Below your baseline for 4 days in a row."
+- **Tripulação com cinco colegas, não quatro.** O plano pede quatro colegas e, ao mesmo tempo, "5 of 6 done today" e "seis pessoas confinadas". Fiquei com seis pessoas (cinco colegas e o tripulante), para a meta coletiva fechar: começa em 4 de 6 e vai a 5 de 6 quando a pessoa completa a rotina.
+- Os pontos da semana do tripulante somam `game.weekPointsBeforeToday` (360, simulado) aos pontos dos últimos 7 dias, para ele não aparecer zerado contra colegas com a semana cheia.
+- No histórico, um check-up refeito no mesmo dia aparece com "redo · 0".
+- As respostas comportamentais ao longo do tempo viraram uma tabela: uma linha por pergunta, uma coluna por check-in (até os 7 mais recentes), sem soma.
+

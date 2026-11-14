@@ -72,6 +72,14 @@
       { "name": "Flight Engineer", "min": 1500 },
       { "name": "Pilot", "min": 3000 },
       { "name": "Commander", "min": 5000 }
+    ],
+    "weekPointsBeforeToday": 360,
+    "crew": [
+      { "id": "crew-01", "displayName": "Crew member 01", "weekPoints": 455, "routineDoneToday": true },
+      { "id": "crew-03", "displayName": "Crew member 03", "weekPoints": 410, "routineDoneToday": true },
+      { "id": "crew-04", "displayName": "Crew member 04", "weekPoints": 520, "routineDoneToday": true },
+      { "id": "crew-05", "displayName": "Crew member 05", "weekPoints": 385, "routineDoneToday": false },
+      { "id": "crew-06", "displayName": "Crew member 06", "weekPoints": 470, "routineDoneToday": true }
     ]
   },
   "behavioral": [

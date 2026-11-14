@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { AppShell } from '@/components/app/AppShell'
 import { ChatPanel } from '@/components/app/ChatPanel'
 import { GameEvents, RankChip } from '@/components/app/GameBits'
@@ -10,9 +10,11 @@ import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
-import { Placeholder } from '@/screens/Placeholder'
 import { isTodayUtc } from '@/lib/utils'
 import type { Connection } from '@/types'
+
+// Progress carrega o Recharts: só baixa quando a pessoa abre a aba.
+const ProgressScreen = lazy(() => import('@/screens/Progress').then((m) => ({ default: m.ProgressScreen })))
 
 export default function App() {
   const route = useRoute()
@@ -28,7 +30,11 @@ export default function App() {
   let screen
   switch (route.path) {
     case '/progress':
-      screen = <Placeholder title="Progress" text="Your rank, trends and check-up history will appear here." />
+      screen = (
+        <Suspense fallback={<p className="mx-auto max-w-[1360px] px-4 py-8 text-ink-soft md:px-8">Loading progress…</p>}>
+          <ProgressScreen game={game} />
+        </Suspense>
+      )
       break
     case '/stats':
       screen = <DetailedStats params={route.params} />
