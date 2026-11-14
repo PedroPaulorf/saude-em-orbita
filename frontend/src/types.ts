@@ -10,6 +10,8 @@ export type Connection = 'offline' | 'queued' | 'online'
 export type VitalId = 'heartRate' | 'bloodPressure' | 'sleep' | 'temperature'
 
 export interface Vital {
+  observed?: boolean
+  at?: string
   id: VitalId
   label: string
   unit: string
@@ -31,6 +33,7 @@ export interface Vital {
 export type BodyRegionId = 'head' | 'chest' | 'core' | 'leftArm' | 'rightArm' | 'leftLeg' | 'rightLeg'
 
 export interface BodyRegion {
+  observed?: boolean
   id: BodyRegionId
   /** Rótulo ao lado da figura (ex.: "Chest · cardiovascular"); a tela decide a caixa. */
   name?: string

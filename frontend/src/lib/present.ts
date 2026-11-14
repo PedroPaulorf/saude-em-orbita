@@ -27,22 +27,23 @@ export const REGION_NAMES: Record<BodyRegionId, string> = {
 
 /** "2 measures differ from your baseline" ou "All measures within your baseline". */
 export function summarySentence(vitals: Vital[]) {
-  const n = vitals.filter((v) => v.status !== 'baseline').length
-  if (n === 0) return 'All measures within your baseline'
+  if (vitals.every(v => v.observed === false)) return 'No measurements recorded today'
+  const n = vitals.filter((v) => v.observed !== false && v.status !== 'baseline').length
+  if (n === 0) return vitals.some(v => v.observed === false) ? 'Some measurements are missing today' : 'All measures within your baseline'
   return `${n} ${n === 1 ? 'measure differs' : 'measures differ'} from your baseline`
 }
 
 /** Itens do relatório para o solo: só medidas em atenção ou sinalizadas, as sinalizadas primeiro. */
 export function reportItems(vitals: Vital[]) {
   return vitals
-    .filter((v) => v.status !== 'baseline')
+    .filter((v) => v.observed !== false && v.status !== 'baseline')
     .sort((a, b) => (a.status === b.status ? 0 : a.status === 'flagged' ? -1 : 1))
 }
 
 /** Estado do envio do relatório. */
 export function sendState(connection: Connection) {
-  if (connection === 'queued') return 'Queued · no ground link'
-  if (connection === 'online') return 'Sent to ground'
+  if (connection === 'queued') return 'Queued on this device'
+  if (connection === 'online') return 'Saved to server · ground delivery not connected'
   return "Waiting for today's check-up"
 }
 

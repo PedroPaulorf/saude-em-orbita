@@ -28,7 +28,7 @@ export function ReportCompact({
       <div className="flex flex-wrap items-center justify-between gap-x-2">
       <p className="text-[15px] text-ink">
         {items.length === 0 ? (
-          'Nothing differs from your baseline today.'
+          vitals.some(v => v.observed === false) ? 'Measurements are missing today.' : 'Recorded measures match your baseline today.'
         ) : (
           <>
             <span className="font-mono text-2xl font-medium">{items.length}</span>{' '}
@@ -80,7 +80,7 @@ export function ReportDialog({
         </DialogHeader>
 
         {items.length === 0 ? (
-          <p className="text-ink-soft">Nothing differs from your baseline today.</p>
+          <p className="text-ink-soft">{vitals.some(v => v.observed === false) ? 'Measurements are missing today.' : 'Recorded measures match your baseline today.'}</p>
         ) : (
           <ul className="grid">
             {items.map((v) => (

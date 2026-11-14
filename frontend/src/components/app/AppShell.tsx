@@ -21,14 +21,14 @@ function activeTab(path: Path): Path {
 
 const CONNECTION_TEXT: Record<Connection, string> = {
   offline: 'Offline',
-  queued: 'Report queued',
-  online: 'Sent',
+  queued: 'Queued locally',
+  online: 'Server synced',
 }
 
 /** Estado da comunicação com o solo: ponto + palavra, nunca só cor. */
 function ConnectionStatus({ state }: { state: Connection }) {
   return (
-    <span role="status" className="inline-flex items-center gap-2 font-mono text-[13px] text-ink-soft">
+    <span role="status" className="hidden items-center gap-2 font-mono text-[13px] text-ink-soft sm:inline-flex">
       <span
         aria-hidden
         className={cn(
@@ -125,7 +125,7 @@ export function AppShell({
                 Mission day <span className="font-mono text-ink">{missionDay}</span>
               </span>
               {headerExtra}
-              <SimulatedChip />
+              <SimulatedChip className="hidden sm:inline-flex" />
               <ConnectionStatus state={connection} />
             </div>
           </div>

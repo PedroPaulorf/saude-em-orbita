@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Button, Field, ScaleInput, SourceBadge } from '@/components/h7'
-import { behavioralQuestions, vitalConfigs } from '@/lib/health'
-import { saveCheckIn, type CheckIn as CheckInRecord } from '@/lib/storage'
+import { behavioralQuestions, configForProfile, vitalConfigs } from '@/lib/health'
+import type { CheckIn as CheckInRecord } from '@/lib/storage'
+import { createClientId, type Profile } from '@/lib/api'
+import { session } from '@/lib/session'
 
 /*
   Check-up diário: uma pergunta por etapa, sem formulário longo.
@@ -24,13 +26,15 @@ function parse(id: string, raw: string): { value: number; diastolic?: number } |
   return text !== '' && Number.isFinite(n) && n > 0 ? { value: n } : null
 }
 
-export function CheckIn({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
+export function CheckIn({ onDone, onCancel, profile }: { profile: Profile; onDone: () => void; onCancel: () => void }) {
   const [step, setStep] = useState<Step>({ flow: 'health', index: 0 })
   const [raw, setRaw] = useState<Record<string, string>>({})
   const [scale, setScale] = useState<Record<string, number>>({})
   const [error, setError] = useState<string | null>(null)
 
-  function finish() {
+  const [saving, setSaving] = useState(false)
+  const [clientId] = useState(() => createClientId())
+  async function finish() {
     const vitals: CheckInRecord['vitals'] = {}
     for (const c of vitalConfigs) {
       const parsed = parse(c.id, raw[c.id] ?? '')
@@ -38,8 +42,12 @@ export function CheckIn({ onDone, onCancel }: { onDone: () => void; onCancel: ()
       vitals[c.id] = parsed.value
       if (parsed.diastolic) vitals.bloodPressureDiastolic = parsed.diastolic
     }
-    saveCheckIn({ at: new Date().toISOString(), vitals, behavioral: scale })
-    onDone()
+    setSaving(true)
+    try {
+      await session.save({ clientId, source: 'simulated', at: new Date().toISOString(), vitals, behavioral: scale })
+      onDone()
+    } catch(error) { setError((error as Error).message) }
+    finally { setSaving(false) }
   }
 
   function next(e?: FormEvent) {
@@ -75,6 +83,7 @@ export function CheckIn({ onDone, onCancel }: { onDone: () => void; onCancel: ()
       <form className="h7-card mx-auto w-full max-w-xl gap-6 p-6" onSubmit={next} noValidate>
         {step.flow === 'health' ? (
           <HealthStep
+            profile={profile}
             index={step.index}
             value={raw[vitalConfigs[step.index].id] ?? ''}
             error={error}
@@ -88,12 +97,13 @@ export function CheckIn({ onDone, onCancel }: { onDone: () => void; onCancel: ()
           />
         )}
 
+        {error && step.flow === 'behavioral' && <p role='alert'>{error}</p>}
         <div className="h7-row justify-between">
           <Button onClick={back}>{step.flow === 'health' && step.index === 0 ? 'Cancel' : 'Back'}</Button>
           <Button
             type="submit"
             variant="primary"
-            disabled={step.flow === 'behavioral' && scale[behavioralQuestions[step.index].id] == null}
+            disabled={saving || step.flow === 'behavioral' && scale[behavioralQuestions[step.index].id] == null}
           >
             {isLast ? 'Save check-in' : 'Next'}
           </Button>
@@ -104,17 +114,19 @@ export function CheckIn({ onDone, onCancel }: { onDone: () => void; onCancel: ()
 }
 
 function HealthStep({
+  profile,
   index,
   value,
   error,
   onChange,
 }: {
+  profile: Profile
   index: number
   value: string
   error: string | null
   onChange: (v: string) => void
 }) {
-  const c = vitalConfigs[index]
+  const c = configForProfile(profile)[index]
   const baseline = c.id === 'bloodPressure' ? `${c.baseline}/${c.baselineDiastolic}` : String(c.baseline)
   return (
     <>

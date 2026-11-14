@@ -8,7 +8,9 @@ import { SpaceWeatherCompact, SpaceWeatherDialog } from '@/components/app/SpaceW
 import { indicators, useSpaceWeather } from '@/lib/donki'
 import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { buildNotes } from '@/lib/notes'
-import { loadCheckIns } from '@/lib/storage'
+import type { CheckIn } from '@/lib/storage'
+import type { Profile } from '@/lib/api'
+import { toast } from 'sonner'
 import { isTodayUtc, utcDay } from '@/lib/utils'
 import { addWater, useWaterLog, utcDayKey, WATER_GOAL } from '@/lib/water'
 import type { Connection } from '@/types'
@@ -23,10 +25,11 @@ import type { Connection } from '@/types'
 */
 
 /** Último check-up de hoje com cada parte preenchida (armazenamento v1: saúde e comportamento juntos). */
-function todayStatus() {
-  const all = loadCheckIns()
-  const health = [...all].reverse().find((c) => Object.keys(c.vitals ?? {}).length > 0)
-  const behavioral = [...all].reverse().find((c) => Object.keys(c.behavioral ?? {}).length > 0)
+function todayStatus(all: CheckIn[]) {
+
+  const usable = all.filter(c => c.sync !== 'rejected')
+  const health = [...usable].reverse().find((c) => Object.keys(c.vitals ?? {}).length > 0)
+  const behavioral = [...usable].reverse().find((c) => Object.keys(c.behavioral ?? {}).length > 0)
   return {
     healthDoneAt: isTodayUtc(health?.at) ? health!.at : undefined,
     behavioralDoneAt: isTodayUtc(behavioral?.at) ? behavioral!.at : undefined,
@@ -34,12 +37,12 @@ function todayStatus() {
   }
 }
 
-export function Home({ connection }: { connection: Connection }) {
-  const vitals = useMemo(() => getTodayVitals(), [])
+export function Home({ connection, profile, checkins }: { connection: Connection; profile: Profile; checkins: CheckIn[] }) {
+  const vitals = useMemo(() => getTodayVitals(profile, checkins), [profile, checkins])
   const regions = useMemo(() => getBodyRegions(vitals), [vitals])
-  const today = useMemo(() => todayStatus(), [])
+  const today = useMemo(() => todayStatus(checkins), [checkins])
   const weather = useSpaceWeather()
-  const water = useWaterLog()[utcDayKey()] ?? 0
+  const water = useWaterLog(profile.id)[utcDayKey()] ?? 0
   const [weatherOpen, setWeatherOpen] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
   const waterButton = useRef<HTMLButtonElement>(null)
@@ -69,6 +72,7 @@ export function Home({ connection }: { connection: Connection }) {
       <h1 className="sr-only">Home</h1>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.75fr)_minmax(0,1fr)] xl:grid-rows-[repeat(6,auto)_auto]">
         <AvatarCard
+          bodyModel={profile.bodyModel}
           vitals={vitals}
           regions={regions}
           className="md:col-span-2 xl:col-span-1 xl:col-start-2 xl:row-span-6 xl:row-start-1"
@@ -78,7 +82,7 @@ export function Home({ connection }: { connection: Connection }) {
           healthDone={healthDone}
           behavioralDone={behavioralDone}
           water={water}
-          onWater={(d) => addWater(d)}
+          onWater={(d) => { try { addWater(profile.id, d) } catch(error) { toast.error((error as Error).message) } }}
           className="md:col-span-2 xl:col-span-1 xl:col-start-3 xl:row-span-2 xl:row-start-1"
         />
         <HealthCheckUpCard

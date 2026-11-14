@@ -94,7 +94,7 @@ function RegionLabel({ region, align }: { region: BodyRegion; align: 'left' | 'r
   return (
     <div className={cn('flex flex-col gap-1 whitespace-nowrap', align === 'right' ? 'items-end text-right' : 'items-start')}>
       <RegionName name={region.name} />
-      <StatusBadge status={region.status} className={region.status === 'baseline' ? '' : '-mx-0.5'} />
+      {region.observed === false ? <span className='text-sm text-ink-soft'>No measurement recorded</span> : <StatusBadge status={region.status} className={region.status === 'baseline' ? '' : '-mx-0.5'} />}
       {region.status !== 'baseline' && detailOf(region) && (
         <span className="font-mono text-[13px] text-ink">{detailOf(region)}</span>
       )}
@@ -107,12 +107,14 @@ export function BodyAvatar({
   selected,
   onSelect,
   gender = 'male',
+  compact = false,
   className,
 }: {
   regions: BodyRegion[]
   selected?: BodyRegionId | null
   onSelect?: (id: BodyRegionId) => void
   gender?: 'male' | 'female'
+  compact?: boolean
   className?: string
 }) {
   const { paths, box, anchors } = LAYOUTS[gender]
@@ -134,7 +136,7 @@ export function BodyAvatar({
     <div className={cn('flex flex-col items-center gap-4', className)}>
       <div className="grid w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch">
         {/* Rótulos à esquerda (só a partir de sm; no celular viram lista embaixo) */}
-        <div className="relative hidden sm:block" aria-hidden>
+        <div className={compact ? "hidden" : "relative hidden sm:block"} aria-hidden>
           {labelled
             .filter((r) => anchors[r.id]!.side === 'left')
             .map((r) => (
@@ -153,7 +155,7 @@ export function BodyAvatar({
             aria-hidden
             className="pointer-events-none absolute inset-[8%_14%] rounded-full bg-[radial-gradient(closest-side,rgb(46_150_245/0.22),transparent)]"
           />
-          <svg viewBox={vb} className="relative size-full overflow-visible" role="group" aria-label="Body map">
+          <svg viewBox={vb} className="relative size-full overflow-visible" role="group" aria-label="Body map" data-body-model={gender}>
             <path
               d={paths.outline}
               className="fill-[rgb(17_48_107/0.55)] stroke-[rgb(169_189_230/0.45)]"
@@ -176,7 +178,7 @@ export function BodyAvatar({
                   key={id}
                   role={onSelect ? 'button' : undefined}
                   tabIndex={onSelect ? 0 : undefined}
-                  aria-label={`${REGION_NAMES[id]}: ${region?.stateText ?? 'Within baseline'}`}
+                  aria-label={`${REGION_NAMES[id]}: ${region?.stateText ?? 'No measurement recorded'}`}
                   aria-pressed={onSelect ? isSelected : undefined}
                   onClick={onSelect ? () => onSelect(id) : undefined}
                   onKeyDown={onSelect ? (e) => onKey(e, id) : undefined}
@@ -203,7 +205,7 @@ export function BodyAvatar({
               const a = anchors[r.id]!
               const x2 = a.side === 'left' ? box.x - pad : box.x + box.w + pad
               return (
-                <g key={`lead-${r.id}`} aria-hidden className="hidden sm:inline">
+                <g key={`lead-${r.id}`} aria-hidden className={compact ? "hidden" : "hidden sm:inline"}>
                   <line
                     x1={a.x}
                     y1={a.y}
@@ -220,7 +222,7 @@ export function BodyAvatar({
           </svg>
         </div>
 
-        <div className="relative hidden sm:block" aria-hidden>
+        <div className={compact ? "hidden" : "relative hidden sm:block"} aria-hidden>
           {labelled
             .filter((r) => anchors[r.id]!.side === 'right')
             .map((r) => (
@@ -232,11 +234,11 @@ export function BodyAvatar({
       </div>
 
       {/* Celular: os mesmos rótulos em lista, embaixo da figura */}
-      <ul className="grid w-full gap-2 sm:hidden" aria-hidden>
+      <ul className={cn("grid w-full gap-2", !compact && "sm:hidden")} aria-hidden>
         {labelled.map((r) => (
           <li key={r.id} className="flex items-center justify-between gap-3 rounded-lg bg-surface-2/60 px-3 py-2">
             <RegionName name={r.name} />
-            <StatusBadge status={r.status} detail={r.status === 'baseline' ? undefined : detailOf(r)} />
+            {r.observed === false ? <span className='text-sm text-ink-soft'>No measurement recorded</span> : <StatusBadge status={r.status} detail={r.status === 'baseline' ? undefined : detailOf(r)} />}
           </li>
         ))}
       </ul>

@@ -70,7 +70,7 @@ export function HealthCheckUpCard({
                 <span className="ml-1 text-[13px] text-ink-soft">{v.unit}</span>
               </span>
             </span>
-            <StatusBadge status={v.status} />
+            {v.observed === false ? <span className='text-xs text-ink-soft'>No measurement</span> : <StatusBadge status={v.status} />}
           </li>
         ))}
       </ul>

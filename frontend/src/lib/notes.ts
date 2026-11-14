@@ -59,7 +59,7 @@ export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water }: 
     })
   }
 
-  const off = vitals.filter((v) => v.status !== 'baseline').sort((a, b) => SEVERITY[b.status] - SEVERITY[a.status])
+  const off = vitals.filter((v) => v.observed !== false && v.status !== 'baseline').sort((a, b) => SEVERITY[b.status] - SEVERITY[a.status])
   const measureNote = (v: Vital): Note => ({
     id: `measure-${v.id}`,
     kind: 'measure',
@@ -69,7 +69,7 @@ export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water }: 
   })
 
   // Nada fora da linha de base: diz isso logo, para não sumir no corte de três.
-  if (off.length === 0) {
+  if (off.length === 0 && vitals.length > 0 && vitals.every(v => v.observed !== false)) {
     notes.push({ id: 'calm', kind: 'calm', status: 'baseline', text: 'All measures within your baseline.' })
   }
 
