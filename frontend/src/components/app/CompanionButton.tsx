@@ -55,7 +55,7 @@ export function CompanionFace({ mood, blink, className }: { mood: Mood; blink?: 
   return (
     <span aria-hidden className={cn('grid size-[60px] shrink-0 place-items-center rounded-full bg-sa-neon-blue p-1', className)}>
       <span className="grid size-full place-items-center rounded-full bg-sa-deep">
-        <svg viewBox="0 0 46 20" className="w-[42px]">
+        <svg viewBox="0 0 46 20" className="w-[80%]">
           <EyeDots eye={l} x={1} lit={LIT[mood]} />
           <EyeDots eye={r} x={25} lit={LIT[mood]} />
         </svg>
