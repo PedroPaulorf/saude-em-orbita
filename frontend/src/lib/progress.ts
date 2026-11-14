@@ -83,9 +83,11 @@ export function crewBoard(game: GameSummary) {
   const todayKey = game.today.day
   const weekStart = new Date(`${todayKey}T00:00:00Z`)
   weekStart.setUTCDate(weekStart.getUTCDate() - 6)
-  const myWeek =
-    GAME.weekPointsBeforeToday +
-    game.days.filter((d) => d.day >= weekStart.toISOString().slice(0, 10)).reduce((s, d) => s + d.total, 0)
+  const start = weekStart.toISOString().slice(0, 10)
+  // Os 6 dias antes de hoje: os pontos reais, se houver registro; senão o valor simulado.
+  // Somar os dois contava os mesmos dias duas vezes.
+  const before = game.days.filter((d) => d.day >= start && d.day < todayKey)
+  const myWeek = (before.length ? before.reduce((s, d) => s + d.total, 0) : GAME.weekPointsBeforeToday) + game.today.total
   const rows: CrewRow[] = [
     ...GAME.crew.filter(c => c.id !== crew.id).map((c) => ({ ...c, you: false })),
     { id: crew.id, displayName: crew.displayName, weekPoints: myWeek, routineDoneToday: game.today.fullRoutine, you: true },

@@ -100,7 +100,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
         </p>
       )}
       <ScreenBoundary resetKey={route.path}>{screen}</ScreenBoundary>
-      <GameEvents game={game} />
+      <GameEvents game={game} ready={state.historyLoaded || !!state.error} />
       <DemoDataDialog open={demoOpen} onOpenChange={setDemoOpen} />
     </AppShell>
   )

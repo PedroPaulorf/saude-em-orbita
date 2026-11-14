@@ -115,9 +115,10 @@ export class SessionController {
       // Only unconfirmed records are merged with the authoritative current window.
       const pending=loadCheckIns(profile.id).filter(c=>c.sync!=='saved')
       const byId=new Map([...pending,...checks.items.map(c=>({...normalizeCheckIn(c),sync:'saved' as const}))].map(c=>[c.clientId,c]))
+      // Cache first: when historyLoaded turns true, everything read from this device (points, plans) is already current.
+      cacheCheckIns(profile.id,checks.items)
       this.update({checkins:[...byId.values()].sort((a,b)=>a.at.localeCompare(b.at)),symptoms:symptoms.items,environment:environment?.items ?? [],
         truncated:checks.truncated||symptoms.truncated||!!symptoms.eventsTruncated,historyLoaded:true})
-      cacheCheckIns(profile.id,checks.items)
     } catch(error) { this.failure(error,epoch) }
     finally { if(this.valid(epoch,profile.id)) this.update({syncing:false,checkins:this.state.historyLoaded ? this.state.checkins : loadCheckIns(profile.id)}) }
   }
