@@ -40,12 +40,14 @@ export function HealthNotes({
   return (
     <section
       aria-labelledby="health-notes"
-      className={cn('rounded-xl border border-hairline bg-surface-1/70 p-4 md:px-5 md:py-3.5', className)}
+      className={cn('rounded-xl border border-hairline bg-surface-1 p-4 md:px-5 md:py-3.5', className)}
     >
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
         <div className="flex shrink-0 items-center justify-between gap-3 lg:w-44 lg:flex-col lg:items-start lg:gap-1.5">
           <h2 id="health-notes" className="flex items-center gap-2 font-display text-base font-semibold">
-            <NotebookPen className="size-4.5 text-interactive" aria-hidden />
+            <span aria-hidden className="grid size-7 place-items-center rounded-md bg-sa-rocket-600 text-white">
+              <NotebookPen className="size-4" />
+            </span>
             Health notes
           </h2>
           <DemoTag />

@@ -11,8 +11,8 @@ import type { BodyRegionId, Connection, Status, Vital } from '@/types'
 export const STATUS: Record<Status, { text: string; Icon: LucideIcon; className: string }> = {
   // Estado calmo: sem caixa, texto de apoio com check.
   baseline: { text: 'Within baseline', Icon: Check, className: 'text-ink-soft' },
-  attention: { text: 'Attention', Icon: TrendingUp, className: 'bg-attention-tint text-brand px-2' },
-  flagged: { text: 'Flagged for ground', Icon: Radio, className: 'bg-flag-tint text-flag-ink px-2' },
+  attention: { text: 'Attention', Icon: TrendingUp, className: 'bg-attention-tint text-attention-ink px-2' },
+  flagged: { text: 'Flagged for ground', Icon: Radio, className: 'bg-flag-tint text-flag-badge-ink px-2' },
 }
 
 export const REGION_NAMES: Record<BodyRegionId, string> = {
@@ -66,4 +66,13 @@ export function dataAge(state: SpaceWeatherState) {
     case 'history':
       return `Past event · ${dayLabel(state.snapshot.window.startDate, true)}`
   }
+}
+
+/** Nível do alarme geral (cor do fundo): atenção vale 1, sinalizado vale 2, nas medidas de hoje. */
+export type HealthLevel = 'calm' | 'watch' | 'alert'
+export function healthLevel(vitals: Vital[]): HealthLevel {
+  const score = vitals
+    .filter((v) => v.observed !== false && v.comparable !== false)
+    .reduce((n, v) => n + (v.status === 'flagged' ? 2 : v.status === 'attention' ? 1 : 0), 0)
+  return score >= 4 ? 'alert' : score >= 2 ? 'watch' : 'calm'
 }

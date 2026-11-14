@@ -74,7 +74,20 @@
   --color-flag-mark: var(--flag-mark);
   --color-interactive: var(--interactive);
   --color-attention-tint: var(--attention-tint);
+  --color-attention-ink: var(--attention-ink);
   --color-flag-tint: var(--flag-tint);
+  --color-flag-badge-ink: var(--flag-badge-ink);
+  --color-stage: var(--stage);
+
+  /* Paleta da marca (sólida) */
+  --color-sa-deep: var(--c-deep);
+  --color-sa-electric: var(--c-electric);
+  --color-sa-neon-blue: var(--c-neon-blue);
+  --color-sa-yonder: var(--c-yonder);
+  --color-sa-yellow: var(--c-yellow);
+  --color-sa-rocket: var(--c-rocket);
+  --color-sa-rocket-600: var(--c-rocket-600);
+  --color-sa-martian: var(--c-martian);
 
   /* Nomes do shadcn/ui. bg-accent = hover sutil (--surface-2), NÃO o amarelo. */
   --color-background: var(--background);
@@ -126,11 +139,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Fundo: Deep Blue com um degradê radial discreto no topo */
+  /* Fundo sólido, na cor da saúde de hoje (styles/theme.css). Muda devagar. */
   body {
-    background-color: var(--ground);
-    background-image: radial-gradient(120% 60% at 50% -10%, rgb(0 66 166 / 0.45), transparent 60%);
-    background-attachment: fixed;
+    background-color: var(--stage);
+    transition: background-color 0.8s ease;
   }
 
   /* Foco de teclado sempre visível */
@@ -162,4 +174,22 @@
 
 #root {
   min-height: 100vh;
+}
+
+/* Luz de alerta: o ponto do que está sinalizado pisca devagar (só opacidade). */
+@keyframes blink-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@utility animate-blink {
+  animation: blink-soft 1.6s ease-in-out infinite;
+}
+
+/* Virar a figura do corpo: meia volta curta no eixo vertical (só transform). */
+@keyframes body-turn {
+  from { transform: perspective(900px) rotateY(80deg); opacity: 0.2; }
+  to { transform: none; opacity: 1; }
+}
+@utility animate-body-turn {
+  animation: body-turn 0.35s ease-out;
 }

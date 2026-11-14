@@ -59,24 +59,28 @@
     {
       "id": "spo2",
       "label": "Oxygen saturation",
+      "question": "What is your oxygen saturation?",
+      "fieldLabel": "SpO₂ from the pulse oximeter",
       "unit": "%",
       "decimals": 0,
       "baseline": 97,
       "history": [97, 97, 98, 97, 97, 96, 97],
       "rule": { "direction": "below", "attention": 2, "flagged": 4 },
-      "source": "Pulse oximeter",
-      "input": "device"
+      "source": "Pulse oximeter, typed in",
+      "input": "manual"
     },
     {
       "id": "respiratoryRate",
       "label": "Respiratory rate",
+      "question": "How many breaths do you take in one minute at rest?",
+      "fieldLabel": "Breaths in one minute",
       "unit": "breaths/min",
       "decimals": 0,
       "baseline": 14,
       "history": [14, 14, 15, 14, 15, 15, 16],
       "rule": { "direction": "both", "attention": 3, "flagged": 6 },
-      "source": "Wearable",
-      "input": "device"
+      "source": "Counted, typed in",
+      "input": "manual"
     },
     {
       "id": "bodyMass",

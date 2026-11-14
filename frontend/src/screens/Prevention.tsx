@@ -3,6 +3,7 @@ import { ShieldCheck } from 'lucide-react'
 import { Dot } from '@/components/app/Dot'
 import { PatternCard } from '@/components/app/PatternCard'
 import { RadiationCard } from '@/components/app/RadiationCard'
+import { RoadmapPanel } from '@/components/app/RoadmapPanel'
 import { PlanActive, PlanFinished, PlanSuggestion } from '@/components/app/PlanCard'
 import { ReportDialog } from '@/components/app/Report'
 import { DemoTag } from '@/components/app/SourceTag'
@@ -16,13 +17,17 @@ import { useActivePlan, usePatterns, usePlanViews } from '@/lib/usePrevention'
 import { utcDay } from '@/lib/utils'
 import { utcDayKey } from '@/lib/water'
 import type { Connection } from '@/types'
+import type { Profile } from '@/lib/api'
+import type { CheckIn } from '@/lib/storage'
+import { useRoadmapInput } from '@/lib/useRoadmapInput'
 
 /*
   Prevention (plano v3, seção 6): a tese do projeto. Junta as medidas, compara com padrões de sinais
   precoces e, quando um padrão está ativo, mostra quais sinais estão presentes e qual regra gerou cada um.
   Padrão não é diagnóstico: vai para o relatório do cirurgião de voo.
 */
-export function Prevention({ game, connection, params }: { game: GameSummary; connection: Connection; params?: URLSearchParams }) {
+export function Prevention({ game, connection, params, profile, checkins }: { game: GameSummary; connection: Connection; params?: URLSearchParams; profile: Profile; checkins: CheckIn[] }) {
+  const roadmapInput = useRoadmapInput(profile, checkins)
   const patterns = usePatterns()
   const active = patterns.filter((p) => p.active)
   const inactive = patterns.filter((p) => !p.active)
@@ -69,13 +74,8 @@ export function Prevention({ game, connection, params }: { game: GameSummary; co
 
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-8 md:px-8">
-      <header className="mb-5 max-w-3xl">
-        <h1 className="font-display text-2xl font-semibold">Prevention</h1>
-        <p className="mt-1 text-ink-soft">
-          Your measures, all in one place, compared with patterns of early signs. When several signs show up together, you
-          see which ones, and your flight surgeon sees them too.
-        </p>
-      </header>
+      <h1 className="mb-4 font-display text-2xl font-semibold">Prevention</h1>
+      <RoadmapPanel input={roadmapInput} className="mb-4" />
 
       {/* Celular: padrões, plano, radiação, planos anteriores (ordem do plano v3).
           Desktop: padrões e radiação à esquerda, plano à direita. As colunas são "contents" no celular. */}
@@ -105,7 +105,7 @@ export function Prevention({ game, connection, params }: { game: GameSummary; co
           )}
 
           {active.length > 0 && inactive.length > 0 && (
-            <section aria-label="Other patterns" className="rounded-xl border border-hairline bg-surface-1/60 px-5 py-4">
+            <section aria-label="Other patterns" className="rounded-xl border border-hairline bg-surface-1 px-5 py-4">
               <p className="text-ink">
                 {inactive.length} other {inactive.length === 1 ? 'pattern' : 'patterns'} checked, not active:
               </p>

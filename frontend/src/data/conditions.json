@@ -9,19 +9,62 @@
       "source": null,
       "minSigns": 2,
       "signs": [
-        { "id": "sleep-low", "type": "measure", "measure": "sleep", "side": "below", "days": 3, "label": "Sleep below your baseline for 3 days or more" },
-        { "id": "hr-up", "type": "measure", "measure": "heartRate", "side": "above", "days": 1, "label": "Resting heart rate above your baseline" },
-        { "id": "rest-low", "type": "selfReport", "question": "rest", "atMost": 2, "label": "You reported feeling little rested" },
-        { "id": "stress-high", "type": "selfReport", "question": "stress", "atLeast": 4, "label": "You reported high stress" }
+        {
+          "id": "sleep-low",
+          "type": "measure",
+          "measure": "sleep",
+          "side": "below",
+          "days": 3,
+          "label": "Sleep below your baseline for 3 days or more"
+        },
+        {
+          "id": "hr-up",
+          "type": "measure",
+          "measure": "heartRate",
+          "side": "above",
+          "days": 1,
+          "label": "Resting heart rate above your baseline"
+        },
+        {
+          "id": "rest-low",
+          "type": "selfReport",
+          "question": "rest",
+          "atMost": 2,
+          "label": "You reported feeling little rested"
+        },
+        {
+          "id": "stress-high",
+          "type": "selfReport",
+          "question": "stress",
+          "atLeast": 4,
+          "label": "You reported high stress"
+        }
       ],
       "plan": {
         "days": 5,
         "stepsSource": "Adapted from NASA HRP, 'What can be done' for this risk.",
         "steps": [
-          { "id": "check-ups", "type": "auto", "rule": "bothCheckUps", "label": "Do both check-ups" },
-          { "id": "sleep-period", "type": "manual", "label": "Kept the scheduled sleep period" },
-          { "id": "lights", "type": "manual", "label": "Dimmed the lights before the sleep period" },
-          { "id": "relax", "type": "manual", "label": "Took the scheduled relaxation time" }
+          {
+            "id": "check-ups",
+            "type": "auto",
+            "rule": "bothCheckUps",
+            "label": "Do both check-ups"
+          },
+          {
+            "id": "sleep-period",
+            "type": "manual",
+            "label": "Kept the scheduled sleep period"
+          },
+          {
+            "id": "lights",
+            "type": "manual",
+            "label": "Dimmed the lights before the sleep period"
+          },
+          {
+            "id": "relax",
+            "type": "manual",
+            "label": "Took the scheduled relaxation time"
+          }
         ]
       }
     },
@@ -33,17 +76,50 @@
       "source": null,
       "minSigns": 2,
       "signs": [
-        { "id": "water-missed", "type": "water", "missedDays": 2, "label": "Water goal missed on each of the last 2 days" },
-        { "id": "mass-low", "type": "measure", "measure": "bodyMass", "side": "below", "days": 2, "label": "Body mass below your baseline for 2 days or more" },
-        { "id": "hr-up", "type": "measure", "measure": "heartRate", "side": "above", "days": 1, "label": "Resting heart rate above your baseline" }
+        {
+          "id": "water-missed",
+          "type": "water",
+          "missedDays": 2,
+          "label": "Water goal missed on each of the last 2 days"
+        },
+        {
+          "id": "mass-low",
+          "type": "measure",
+          "measure": "bodyMass",
+          "side": "below",
+          "days": 2,
+          "label": "Body mass below your baseline for 2 days or more"
+        },
+        {
+          "id": "hr-up",
+          "type": "measure",
+          "measure": "heartRate",
+          "side": "above",
+          "days": 1,
+          "label": "Resting heart rate above your baseline"
+        }
       ],
       "plan": {
         "days": 5,
         "stepsSource": "Adapted from NASA HRP, 'What can be done' for this risk.",
         "steps": [
-          { "id": "water-goal", "type": "auto", "rule": "waterGoal", "label": "Reach the water goal" },
-          { "id": "meals", "type": "manual", "label": "Logged all scheduled meals" },
-          { "id": "check-ups", "type": "auto", "rule": "bothCheckUps", "label": "Do both check-ups" }
+          {
+            "id": "water-goal",
+            "type": "auto",
+            "rule": "waterGoal",
+            "label": "Reach the water goal"
+          },
+          {
+            "id": "meals",
+            "type": "manual",
+            "label": "Logged all scheduled meals"
+          },
+          {
+            "id": "check-ups",
+            "type": "auto",
+            "rule": "bothCheckUps",
+            "label": "Do both check-ups"
+          }
         ]
       }
     },
@@ -55,17 +131,129 @@
       "source": null,
       "minSigns": 2,
       "signs": [
-        { "id": "spo2-low", "type": "measure", "measure": "spo2", "side": "below", "days": 1, "label": "Oxygen saturation below your baseline" },
-        { "id": "rr-up", "type": "measure", "measure": "respiratoryRate", "side": "above", "days": 1, "label": "Respiratory rate above your baseline" },
-        { "id": "hr-up", "type": "measure", "measure": "heartRate", "side": "above", "days": 1, "label": "Resting heart rate above your baseline" }
+        {
+          "id": "spo2-low",
+          "type": "measure",
+          "measure": "spo2",
+          "side": "below",
+          "days": 1,
+          "label": "Oxygen saturation below your baseline"
+        },
+        {
+          "id": "rr-up",
+          "type": "measure",
+          "measure": "respiratoryRate",
+          "side": "above",
+          "days": 1,
+          "label": "Respiratory rate above your baseline"
+        },
+        {
+          "id": "hr-up",
+          "type": "measure",
+          "measure": "heartRate",
+          "side": "above",
+          "days": 1,
+          "label": "Resting heart rate above your baseline"
+        }
       ],
       "plan": null
     }
   ],
   "demo": {
     "_note": "FICTIONAL demo scenarios, to record the story in minutes. Dates are relative to today. health lists the check-ups up to today (today included); other measures use healthDefaults.",
-    "healthDefaults": { "bloodPressure": 116, "bloodPressureDiastolic": 74, "temperature": 36.6 },
+    "healthDefaults": {
+      "bloodPressure": 116,
+      "bloodPressureDiastolic": 74,
+      "temperature": 36.6,
+      "spo2": 97,
+      "respiratoryRate": 14
+    },
     "scenarios": [
+      {
+        "id": "roadmap",
+        "title": "Day 47 · preventive roadmap",
+        "description": "Seven mission days settling a little above pre-flight heart rate, then a short night today with dark urine and high stress. The roadmap compares today with both baselines.",
+        "health": [
+          {
+            "sleep": 6.6,
+            "heartRate": 66,
+            "respiratoryRate": 14,
+            "bloodPressure": 117,
+            "bloodPressureDiastolic": 75
+          },
+          {
+            "sleep": 6.4,
+            "heartRate": 67,
+            "respiratoryRate": 15,
+            "bloodPressure": 118,
+            "bloodPressureDiastolic": 75
+          },
+          {
+            "sleep": 6.5,
+            "heartRate": 67,
+            "respiratoryRate": 14,
+            "bloodPressure": 116,
+            "bloodPressureDiastolic": 74
+          },
+          {
+            "sleep": 6.3,
+            "heartRate": 68,
+            "respiratoryRate": 15,
+            "bloodPressure": 118,
+            "bloodPressureDiastolic": 76
+          },
+          {
+            "sleep": 6.4,
+            "heartRate": 67,
+            "respiratoryRate": 14,
+            "bloodPressure": 117,
+            "bloodPressureDiastolic": 75
+          },
+          {
+            "sleep": 6.2,
+            "heartRate": 68,
+            "respiratoryRate": 15,
+            "bloodPressure": 119,
+            "bloodPressureDiastolic": 76
+          },
+          {
+            "sleep": 6.3,
+            "heartRate": 67,
+            "respiratoryRate": 15,
+            "bloodPressure": 118,
+            "bloodPressureDiastolic": 75
+          },
+          {
+            "sleep": 5.1,
+            "heartRate": 72,
+            "respiratoryRate": 16,
+            "bloodPressure": 121,
+            "bloodPressureDiastolic": 78,
+            "temperature": 36.8,
+            "spo2": 96
+          }
+        ],
+        "healthDetailsToday": {
+          "urine": "Dark yellow",
+          "stool": "Normal for me"
+        },
+        "previousDays": {
+          "behavioral": {
+            "mood": 3,
+            "stress": 3,
+            "rest": 3
+          },
+          "water": 7,
+          "allManualSteps": false
+        },
+        "today": {
+          "behavioral": {
+            "mood": 3,
+            "stress": 4,
+            "rest": 2
+          }
+        }
+      },
       {
         "id": "day-1",
         "title": "Day 1 · signs appear",
@@ -75,29 +263,83 @@
         "id": "day-3",
         "title": "Day 3 · plan under way",
         "description": "Sleep debt plan started 2 days ago. Today's behavioral check-in and today's plan steps are left for the camera.",
-        "plan": { "pattern": "sleep-debt", "startedDaysAgo": 2 },
+        "plan": {
+          "pattern": "sleep-debt",
+          "startedDaysAgo": 2
+        },
         "health": [
-          { "sleep": 5.6, "heartRate": 69 },
-          { "sleep": 5.9, "heartRate": 68 },
-          { "sleep": 6.1, "heartRate": 67 }
+          {
+            "sleep": 5.6,
+            "heartRate": 69
+          },
+          {
+            "sleep": 5.9,
+            "heartRate": 68
+          },
+          {
+            "sleep": 6.1,
+            "heartRate": 67
+          }
         ],
-        "previousDays": { "behavioral": { "mood": 3, "stress": 3, "rest": 3 }, "water": 8, "allManualSteps": true },
-        "today": { "behavioral": null }
+        "previousDays": {
+          "behavioral": {
+            "mood": 3,
+            "stress": 3,
+            "rest": 3
+          },
+          "water": 8,
+          "allManualSteps": true
+        },
+        "today": {
+          "behavioral": null
+        }
       },
       {
         "id": "day-5",
         "title": "Day 5 · back within baseline",
         "description": "Last day of the plan; the pattern is no longer active. Today's plan steps are left for the camera: marking the last one closes the plan.",
-        "plan": { "pattern": "sleep-debt", "startedDaysAgo": 4 },
+        "plan": {
+          "pattern": "sleep-debt",
+          "startedDaysAgo": 4
+        },
         "health": [
-          { "sleep": 5.6, "heartRate": 68 },
-          { "sleep": 6.1, "heartRate": 66 },
-          { "sleep": 6.6, "heartRate": 65 },
-          { "sleep": 6.9, "heartRate": 64 },
-          { "sleep": 7.1, "heartRate": 63 }
+          {
+            "sleep": 5.6,
+            "heartRate": 68
+          },
+          {
+            "sleep": 6.1,
+            "heartRate": 66
+          },
+          {
+            "sleep": 6.6,
+            "heartRate": 65
+          },
+          {
+            "sleep": 6.9,
+            "heartRate": 64
+          },
+          {
+            "sleep": 7.1,
+            "heartRate": 63
+          }
         ],
-        "previousDays": { "behavioral": { "mood": 3, "stress": 3, "rest": 3 }, "water": 8, "allManualSteps": true },
-        "today": { "behavioral": { "mood": 4, "stress": 2, "rest": 4 } }
+        "previousDays": {
+          "behavioral": {
+            "mood": 3,
+            "stress": 3,
+            "rest": 3
+          },
+          "water": 8,
+          "allManualSteps": true
+        },
+        "today": {
+          "behavioral": {
+            "mood": 4,
+            "stress": 2,
+            "rest": 4
+          }
+        }
       }
     ]
   }

@@ -32,3 +32,36 @@
   /* Sombra só no que flutua: chat, diálogo, botão da IA */
   --float-shadow: 0 12px 32px rgb(2 8 24 / 0.55), 0 2px 6px rgb(2 8 24 / 0.4);
 }
+
+/*
+  v3 (cores): paleta completa do guia do Space Apps, em cores SÓLIDAS (sem degradê).
+  Cada cartão leva a cor do que mostra no ícone; o estado continua com ícone e palavra.
+  Selos de estado sólidos: amarelo com texto Deep Blue (15,5:1) e laranja escuro com texto branco (4,7:1).
+*/
+:root {
+  --c-deep: #07173f;
+  --c-electric: #0042a6;
+  --c-neon-blue: #0960e1;
+  --c-yonder: #2e96f5;
+  --c-yellow: #eafe07;
+  --c-rocket: #e43700;
+  --c-rocket-600: #d93400;
+  --c-martian: #8e1100;
+}
+:root,
+[data-theme="deep"] {
+  --attention-tint: var(--c-yellow);
+  --attention-ink: var(--c-deep);
+  --flag-tint: var(--c-rocket-600);
+  --flag-badge-ink: #ffffff;
+  /* Fundo da página: segue a saúde de hoje (data-health no <html>, definido pelo App). */
+  --stage: var(--ground);
+}
+
+/* Alarme geral: azul normal; laranja com algumas medidas fora; vermelho com muitas. */
+html[data-health="watch"] {
+  --stage: #b52a00;
+}
+html[data-health="alert"] {
+  --stage: #8e1100;
+}

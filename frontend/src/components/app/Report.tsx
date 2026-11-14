@@ -28,12 +28,12 @@ export function ReportCompact({
   const items = reportItems(vitals)
   const flagged = items.filter((v) => v.status === 'flagged').length
   return (
-    <Panel aria-labelledby="report-ground" className={cn('gap-3', className)}>
+    <Panel aria-labelledby="report-ground" accent={flagged > 0 ? 'flagged' : 'baseline'} className={cn('gap-3', className)}>
       <PanelHeader
         id="report-ground"
         icon={<Send />}
+        tone="red"
         title="Report"
-        subtitle="For your flight surgeon"
         aside={
           <Button variant="ghost" size="sm" className="-mt-2 -mr-3 text-interactive" onClick={onOpen}>
             Open report

@@ -6,7 +6,7 @@ import type { PlanView } from '@/lib/plans'
 import { href } from '@/lib/route'
 import { WATER_GOAL, WATER_SERVING_ML } from '@/lib/water'
 import { cn } from '@/lib/utils'
-import { Dot, Dotted } from './Dot'
+import { Dotted } from './Dot'
 import { Ring } from './GameBits'
 import { Panel, PanelHeader } from './Panel'
 
@@ -39,9 +39,7 @@ export const RoutineCard = forwardRef<
   const water = today.water
   const waterDone = water >= WATER_GOAL
   const bonusText = [
-    today.points.bonus > 0
-      ? `Full routine +${today.points.bonus}`
-      : `Full routine +${GAME.points.fullRoutineBonus} when all 3 are done`,
+    today.points.bonus > 0 ? `Full routine +${today.points.bonus}` : null,
     today.points.streak > 0 ? `Streak ${today.streak} ${today.streak === 1 ? 'day' : 'days'} +${today.points.streak}` : null,
   ].filter(Boolean)
 
@@ -50,6 +48,7 @@ export const RoutineCard = forwardRef<
       <PanelHeader
         id="routine-title"
         icon={<ListChecks />}
+        tone="yellow"
         title="Today's routine"
         aside={<Ring value={today.routineTotal} max={MAX_DAY_POINTS} label={`${today.routineTotal} of ${MAX_DAY_POINTS} routine points today`} />}
       />
@@ -61,12 +60,7 @@ export const RoutineCard = forwardRef<
       <div className="rounded-lg bg-surface-2/60 p-3">
         <div className="flex items-center gap-2.5">
           <Droplet className={cn('size-4.5 shrink-0', waterDone ? 'text-interactive' : 'text-ink-soft')} aria-hidden />
-          <span className="flex-1 text-[15px]">
-            Water
-            <span className="text-sm text-ink-soft">
-              <Dot />+{GAME.points.waterServing} each
-            </span>
-          </span>
+          <span className="flex-1 text-[15px]">Water</span>
           <span className="font-mono text-sm" aria-live="polite">
             <span className="text-ink">{water}</span>
             <span className="text-ink-soft"> of {WATER_GOAL}</span>
@@ -78,7 +72,7 @@ export const RoutineCard = forwardRef<
           aria-hidden
         >
           {Array.from({ length: WATER_GOAL }, (_, i) => (
-            <span key={i} className={cn('h-1.5 rounded-full', i < water ? 'bg-interactive' : 'bg-surface-3')} />
+            <span key={i} className={cn('h-1.5 rounded-full', i < water ? 'bg-sa-yonder' : 'bg-surface-3')} />
           ))}
         </div>
         <div className="mt-2 flex items-center gap-2">
@@ -95,11 +89,7 @@ export const RoutineCard = forwardRef<
           >
             <Minus aria-hidden />
           </Button>
-          <span className="ml-auto text-right text-xs leading-tight text-ink-soft">
-            Demonstration
-            <br />
-            goal
-          </span>
+          <span className="ml-auto text-xs text-ink-soft" title="Demonstration goal, no clinical source">Demo goal</span>
         </div>
       </div>
       {plan?.today && (
@@ -115,9 +105,11 @@ export const RoutineCard = forwardRef<
           <ArrowRight className="size-4 text-ink-soft" aria-hidden />
         </a>
       )}
-      <p className="text-xs text-ink-soft">
-        <Dotted text={bonusText.join(' · ')} />
-      </p>
+      {(today.points.bonus > 0 || today.points.streak > 0) && (
+        <p className="text-xs text-ink-soft">
+          <Dotted text={bonusText.join(' · ')} />
+        </p>
+      )}
     </Panel>
   )
 })

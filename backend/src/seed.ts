@@ -7,7 +7,7 @@ export async function seedDemo(pool: pg.Pool, password: string) {
     ['crew-03', 'crew03', 'female', 'Tripulante fictício 03'],
   ]) {
     const profile = { id, displayName, bodyModel, missionDay: 47, source: 'simulated',
-      baseline: { heartRate: 62, bloodPressure: 116, bloodPressureDiastolic: 74, sleep: 7.2, temperature: 36.6 } }
+      baseline: { heartRate: 62, bloodPressure: 116, bloodPressureDiastolic: 74, sleep: 7.2, temperature: 36.6, spo2: 97, respiratoryRate: 14 } }
     await pool.query('INSERT INTO crew(id, username, password_hash, profile) VALUES($1,$2,$3,$4) ON CONFLICT(id) DO NOTHING',
       [id, username, await hashPassword(password), profile])
   }

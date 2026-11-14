@@ -15,7 +15,9 @@ interface Scenario {
   title: string
   description: string
   plan?: { pattern: string; startedDaysAgo: number }
-  health?: { sleep: number; heartRate: number }[]
+  health?: Record<string, number>[]
+  /** Relato de urina e fezes no check-up de hoje. */
+  healthDetailsToday?: { urine?: string; stool?: string }
   previousDays?: { behavioral: Record<string, number>; water: number; allManualSteps: boolean }
   today?: { behavioral: Record<string, number> | null }
 }
@@ -43,7 +45,7 @@ export function buildScenario(id: string, now = new Date()): ScenarioData {
 
   s.health.forEach((h, i) => {
     const day = addDays(today, i - (n - 1))
-    checkIns.push({ kind: 'health', at: at(day, '07:30'), vitals: { ...DEMO.healthDefaults, ...h } })
+    checkIns.push({ kind: 'health', at: at(day, '07:30'), vitals: { ...DEMO.healthDefaults, ...h }, ...(day === today && s.healthDetailsToday ? { healthDetails: s.healthDetailsToday } : {}) })
     if (day !== today && s.previousDays) {
       checkIns.push({ kind: 'behavioral', at: at(day, '07:40'), behavioral: s.previousDays.behavioral })
       water[day] = s.previousDays.water

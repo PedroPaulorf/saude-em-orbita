@@ -4,7 +4,6 @@ import { behavioralQuestions } from '@/lib/health'
 import { href } from '@/lib/route'
 import { utcTime } from '@/lib/utils'
 import type { Status, Vital } from '@/types'
-import { Dot } from './Dot'
 import { Panel, PanelHeader } from './Panel'
 import { StatusBadge } from './StatusBadge'
 
@@ -13,14 +12,12 @@ function TodayState({ doneAt }: { doneAt?: string }) {
   return doneAt ? (
     <span className="inline-flex items-center gap-1.5 text-ink-soft">
       <CircleCheck className="size-4 text-interactive" aria-hidden />
-      Done today
-      <Dot className="mx-1.5" />
-      <span className="font-mono">{utcTime(doneAt)}</span>
+      Done <span className="font-mono">{utcTime(doneAt).replace(' UTC', '')}</span>
     </span>
   ) : (
     <span className="inline-flex items-center gap-1.5 text-ink-soft">
       <CircleDashed className="size-4" aria-hidden />
-      Pending today
+      Pending
     </span>
   )
 }
@@ -52,11 +49,13 @@ export function HealthCheckUpCard({
 }) {
   // As medidas fora da linha de base aparecem primeiro.
   const lines = [...vitals].sort((a, b) => SEVERITY[a.status] - SEVERITY[b.status]).slice(0, 3)
+  const worst = lines[0]?.observed !== false ? lines[0]?.status ?? 'baseline' : 'baseline'
   return (
-    <Panel aria-labelledby="health-checkup" className={className}>
+    <Panel aria-labelledby="health-checkup" accent={doneAt ? worst : 'baseline'} className={className}>
       <PanelHeader
         id="health-checkup"
         icon={<HeartPulse />}
+        tone="orange"
         title="Health check-up"
         subtitle={<TodayState doneAt={doneAt} />}
       />
@@ -99,6 +98,7 @@ export function BehavioralCheckInCard({
       <PanelHeader
         id="behavioral-checkin"
         icon={<Smile />}
+        tone="blue"
         title="Behavioral check-in"
         subtitle={<TodayState doneAt={doneAt} />}
       />
@@ -124,7 +124,6 @@ export function BehavioralCheckInCard({
           )
         })}
       </ul>
-      <p className="text-xs text-ink-soft">A self-report, not a diagnosis. It does not replace your psychologist.</p>
       <div className="mt-auto">
         <StartButton done={!!doneAt} primary={primary} to={href('/check/behavioral')} label="behavioral check-in" />
       </div>

@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import { FEMALE_FRONT, MALE_FRONT, type BodyPaths } from '@/data/body-paths'
+import { FEMALE_BACK, MALE_BACK } from '@/data/body-paths-back'
 import { REGION_NAMES } from '@/lib/present'
 import { cn } from '@/lib/utils'
 import type { BodyRegion, BodyRegionId, Status } from '@/types'
@@ -13,6 +14,7 @@ import { StatusBadge } from './StatusBadge'
 */
 
 type Side = 'left' | 'right' | 'common'
+export type BodyView = 'front' | 'back'
 const REGION_PARTS: Record<BodyRegionId, { slugs: string[]; side: Side | 'both' }> = {
   head: { slugs: ['head'], side: 'both' },
   chest: { slugs: ['chest'], side: 'both' },
@@ -22,8 +24,23 @@ const REGION_PARTS: Record<BodyRegionId, { slugs: string[]; side: Side | 'both' 
   rightLeg: { slugs: ['adductors', 'quadriceps', 'knees', 'tibialis', 'calves', 'ankles', 'feet'], side: 'left' },
   leftLeg: { slugs: ['adductors', 'quadriceps', 'knees', 'tibialis', 'calves', 'ankles', 'feet'], side: 'right' },
 }
+/**
+ * Costas: as mesmas regiões do app, com as partes de trás. De costas, o lado esquerdo da pessoa fica à
+ * esquerda de quem olha, então os lados se invertem em relação à frente.
+ */
+const REGION_PARTS_BACK: Record<BodyRegionId, { slugs: string[]; side: Side | 'both' }> = {
+  head: { slugs: ['head', 'hair'], side: 'both' },
+  chest: { slugs: ['upper-back', 'trapezius'], side: 'both' },
+  core: { slugs: ['lower-back', 'gluteal'], side: 'both' },
+  rightArm: { slugs: ['deltoids', 'triceps', 'forearm', 'hands'], side: 'right' },
+  leftArm: { slugs: ['deltoids', 'triceps', 'forearm', 'hands'], side: 'left' },
+  rightLeg: { slugs: ['adductors', 'hamstring', 'calves', 'ankles', 'feet'], side: 'right' },
+  leftLeg: { slugs: ['adductors', 'hamstring', 'calves', 'ankles', 'feet'], side: 'left' },
+}
+
 /** Partes sem região do app: desenhadas neutras, sem clique. */
 const NEUTRAL = ['hair', 'neck', 'trapezius']
+const NEUTRAL_BACK = ['neck']
 
 const ORDER: BodyRegionId[] = ['head', 'chest', 'core', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg']
 
@@ -33,6 +50,27 @@ interface Layout {
   box: { x: number; y: number; w: number; h: number }
   anchors: Partial<Record<BodyRegionId, { x: number; y: number; side: 'left' | 'right' }>>
 }
+const LAYOUTS_BACK: Record<'male' | 'female', Layout> = {
+  male: {
+    paths: MALE_BACK,
+    box: { x: 764, y: 90, w: 640, h: 1265 },
+    anchors: {
+      head: { x: 1084, y: 185, side: 'right' },
+      chest: { x: 1030, y: 430, side: 'left' },
+      core: { x: 1120, y: 560, side: 'right' },
+    },
+  },
+  female: {
+    paths: FEMALE_BACK,
+    box: { x: 817, y: -4, w: 651, h: 1440 },
+    anchors: {
+      head: { x: 1150, y: 150, side: 'right' },
+      chest: { x: 1090, y: 420, side: 'left' },
+      core: { x: 1175, y: 560, side: 'right' },
+    },
+  },
+}
+
 const LAYOUTS: Record<'male' | 'female', Layout> = {
   male: {
     paths: MALE_FRONT,
@@ -54,8 +92,8 @@ const LAYOUTS: Record<'male' | 'female', Layout> = {
   },
 }
 
-function pathsFor(paths: BodyPaths, region: BodyRegionId): string[] {
-  const { slugs, side } = REGION_PARTS[region]
+function pathsFor(paths: BodyPaths, region: BodyRegionId, view: BodyView = 'front'): string[] {
+  const { slugs, side } = (view === 'back' ? REGION_PARTS_BACK : REGION_PARTS)[region]
   return paths.parts
     .filter((p) => slugs.includes(p.slug))
     .flatMap((p) => (side === 'both' ? [...(p.common ?? []), ...(p.left ?? []), ...(p.right ?? [])] : (p[side] ?? [])))
@@ -63,8 +101,8 @@ function pathsFor(paths: BodyPaths, region: BodyRegionId): string[] {
 
 const FILL: Record<Status, string> = {
   baseline: 'fill-[rgb(169_189_230/0.16)] stroke-[rgb(169_189_230/0.35)] hover:fill-[rgb(169_189_230/0.28)]',
-  attention: 'fill-[rgb(234_254_7/0.30)] stroke-brand hover:fill-[rgb(234_254_7/0.42)]',
-  flagged: 'fill-[rgb(228_55_0/0.55)] stroke-[#ff6a3d] hover:fill-[rgb(228_55_0/0.7)]',
+  attention: 'fill-sa-yellow stroke-sa-deep hover:fill-[#f4ff6a]',
+  flagged: 'fill-sa-rocket stroke-white hover:fill-[#ff5a1f]',
 }
 
 /** Texto de estado sem o prefixo ("Flagged for ground · −2.1 h" → "−2.1 h"). */
@@ -111,6 +149,7 @@ export function BodyAvatar({
   selected,
   onSelect,
   gender = 'male',
+  view = 'front',
   compact = false,
   className,
 }: {
@@ -118,10 +157,13 @@ export function BodyAvatar({
   selected?: BodyRegionId | null
   onSelect?: (id: BodyRegionId) => void
   gender?: 'male' | 'female'
+  /** Frente ou costas. */
+  view?: BodyView
   compact?: boolean
   className?: string
 }) {
-  const { paths, box, anchors } = LAYOUTS[gender]
+  const { paths, box, anchors } = (view === 'back' ? LAYOUTS_BACK : LAYOUTS)[gender]
+  const neutral = view === 'back' ? NEUTRAL_BACK : NEUTRAL
   const byId = new Map(regions.map((r) => [r.id, r]))
   const labelled = regions.filter((r) => r.name && anchors[r.id])
   // A figura ganha uma margem de cada lado para as linhas-guia chegarem até a coluna dos rótulos.
@@ -157,9 +199,9 @@ export function BodyAvatar({
           {/* brilho radial atrás da figura */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-[8%_14%] rounded-full bg-[radial-gradient(closest-side,rgb(46_150_245/0.22),transparent)]"
+            className="pointer-events-none absolute inset-[8%_14%] hidden rounded-full"
           />
-          <svg viewBox={vb} className="relative size-full overflow-visible" role="group" aria-label="Body map" data-body-model={gender}>
+          <svg viewBox={vb} className="relative size-full overflow-visible" role="group" aria-label={view === 'back' ? 'Body map, back view' : 'Body map'} data-body-model={gender} data-body-view={view}>
             <path
               d={paths.outline}
               className="fill-[rgb(17_48_107/0.55)] stroke-[rgb(169_189_230/0.45)]"
@@ -167,7 +209,7 @@ export function BodyAvatar({
               vectorEffect="non-scaling-stroke"
             />
             {paths.parts
-              .filter((p) => NEUTRAL.includes(p.slug))
+              .filter((p) => neutral.includes(p.slug) && !(view === 'back' && p.slug === 'hair'))
               .flatMap((p) => [...(p.common ?? []), ...(p.left ?? []), ...(p.right ?? [])])
               .map((d) => (
                 <path key={d} d={d} className="fill-[rgb(169_189_230/0.08)]" />
@@ -192,7 +234,7 @@ export function BodyAvatar({
                     isSelected && 'is-selected',
                   )}
                 >
-                  {pathsFor(paths, id).map((d) => (
+                  {pathsFor(paths, id, view).map((d) => (
                     <path
                       key={d}
                       d={d}

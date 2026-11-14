@@ -62,6 +62,7 @@ export function SpaceWeatherCompact({
       <PanelHeader
         id="space-weather"
         icon={<Sun />}
+        tone="sky"
         title="Space weather"
         aside={
           <Button variant="ghost" size="sm" className="-mt-2 -mr-3 text-interactive" onClick={onDetails}>
@@ -95,8 +96,7 @@ export function SpaceWeatherCompact({
           Simulated
         </a>
       </div>
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
-        <AgeLine state={state} />
+      <div className="mt-auto">
         <LiveTag href={DONKI_PAGE} />
       </div>
     </Panel>

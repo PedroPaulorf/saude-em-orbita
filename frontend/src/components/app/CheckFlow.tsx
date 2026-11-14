@@ -15,8 +15,10 @@ export function CheckFlow({
   total,
   onBack,
   onSubmit,
+  onSkip,
   nextLabel,
   nextDisabled,
+  icon,
   children,
 }: {
   title: string
@@ -25,8 +27,12 @@ export function CheckFlow({
   total: number
   onBack: () => void
   onSubmit: () => void
+  /** Sem medida hoje: segue sem guardar esta. */
+  onSkip?: () => void
   nextLabel: string
   nextDisabled?: boolean
+  /** Ícone da etapa, num quadrado laranja. */
+  icon?: ReactNode
   children: ReactNode
 }) {
   function submit(e: FormEvent) {
@@ -57,14 +63,26 @@ export function CheckFlow({
         noValidate
         className="flex flex-col gap-6 rounded-xl border border-hairline bg-surface-1 p-5 md:p-8"
       >
+        {icon && (
+          <span aria-hidden className="grid size-12 place-items-center rounded-lg bg-sa-rocket-600 text-white [&_svg]:size-6">
+            {icon}
+          </span>
+        )}
         {children}
         <div className="flex items-center justify-between gap-3 border-t border-hairline pt-5">
           <Button type="button" variant="outline" onClick={onBack}>
             {step === 0 ? 'Cancel' : 'Back'}
           </Button>
-          <Button type="submit" disabled={nextDisabled}>
-            {nextLabel}
-          </Button>
+          <div className="flex items-center gap-2">
+            {onSkip && (
+              <Button type="button" variant="ghost" onClick={onSkip} className="text-ink-soft">
+                Skip
+              </Button>
+            )}
+            <Button type="submit" disabled={nextDisabled}>
+              {nextLabel}
+            </Button>
+          </div>
         </div>
       </form>
     </div>
@@ -162,7 +180,7 @@ export function ScaleChoice({
             className={cn(
               'h-16 rounded-xl border font-mono text-2xl transition-colors',
               value === n
-                ? 'border-ink bg-panel text-ink'
+                ? 'border-transparent bg-sa-neon-blue text-white'
                 : 'border-hairline-strong bg-ground text-ink-soft hover:bg-surface-2 hover:text-ink',
             )}
           >
@@ -179,7 +197,7 @@ export function ScaleChoice({
 }
 
 /** Confirmação curta depois de salvar: "{status}" e o resumo. */
-export function CheckSaved({ title, status, children }: { title: string; status: string; children: ReactNode }) {
+export function CheckSaved({ title, status, children, action }: { title: string; status: string; children: ReactNode; action?: ReactNode }) {
   return (
     <div className="mx-auto w-full max-w-xl px-4 pt-8 pb-10 md:pt-14">
       <section
@@ -196,9 +214,11 @@ export function CheckSaved({ title, status, children }: { title: string; status:
           </div>
         </div>
         {children}
-        <Button asChild className="self-start no-underline">
-          <a href={href('/')}>Back to Home</a>
-        </Button>
+        {action ?? (
+          <Button asChild className="self-start no-underline">
+            <a href={href('/')}>Back to Home</a>
+          </Button>
+        )}
       </section>
     </div>
   )

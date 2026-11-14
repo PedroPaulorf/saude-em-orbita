@@ -9,8 +9,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Amarelo: uma ação principal por tela.
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        // Laranja sólido: uma ação principal por tela.
+        default: "bg-sa-rocket-600 font-bold text-white hover:bg-sa-rocket",
         destructive: "bg-destructive text-white hover:bg-destructive/90",
         outline: "border border-hairline-strong bg-transparent text-ink hover:bg-surface-2",
         secondary: "border border-hairline bg-surface-2 text-ink hover:bg-surface-3",

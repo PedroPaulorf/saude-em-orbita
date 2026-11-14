@@ -6,7 +6,7 @@ import { href, type Path } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import type { Connection } from '@/types'
 import { CompanionButton } from './CompanionButton'
-import { Dot } from './Dot'
+import type { Line } from '@/lib/companion'
 
 const TABS: { path: Path; label: string; short: string; Icon: LucideIcon }[] = [
   { path: '/', label: 'Home', short: 'Home', Icon: House },
@@ -26,10 +26,17 @@ const CONNECTION_TEXT: Record<Connection, string> = {
   online: 'Server synced',
 }
 
-/** Estado da comunicação com o solo: ponto + palavra, nunca só cor. */
-function ConnectionStatus({ state }: { state: Connection }) {
+/** Estado da comunicação com o solo: ponto + palavra, nunca só cor. Clicar sincroniza. */
+function ConnectionStatus({ state, syncing, detail, onSync }: { state: Connection; syncing?: boolean; detail?: string; onSync?: () => void }) {
   return (
-    <span role="status" className="hidden items-center gap-2 font-mono text-[13px] text-ink-soft sm:inline-flex">
+    <button
+      type="button"
+      onClick={onSync}
+      disabled={syncing}
+      title={`${detail ?? CONNECTION_TEXT[state]}. Select to sync now. Server sync does not send reports to Earth.`}
+      className="inline-flex h-9 items-center gap-2 rounded-full px-2 font-mono text-[13px] text-ink-soft hover:bg-surface-1 hover:text-ink disabled:opacity-70"
+    >
+      <span role="status" className="inline-flex items-center gap-2">
       <span
         aria-hidden
         className={cn(
@@ -37,8 +44,9 @@ function ConnectionStatus({ state }: { state: Connection }) {
           state === 'offline' ? 'border-ink-soft' : 'border-interactive bg-interactive',
         )}
       />
-      {CONNECTION_TEXT[state]}
-    </span>
+      {syncing ? 'Syncing' : CONNECTION_TEXT[state]}
+      </span>
+    </button>
   )
 }
 
@@ -66,24 +74,31 @@ export function SimulatedChip({ className, onClick }: { className?: string; onCl
 
 export function AppShell({
   path,
-  who,
   missionDay,
   connection,
+  syncing,
+  syncDetail,
+  onSync,
   headerExtra,
   companionOpen,
+  companionLines = [],
   onToggleCompanion,
   companionPanel,
   onOpenDemoData,
   children,
 }: {
   path: Path
-  who: string
   missionDay: number
   connection: Connection
+  syncing?: boolean
+  syncDetail?: string
+  onSync?: () => void
   /** Chip de rank e pontos. */
   headerExtra?: ReactNode
   /** Painel do companheiro aberto? O painel é desenhado pelo App, aqui só o botão e o foco. */
   companionOpen?: boolean
+  /** Frases da barra do companheiro. */
+  companionLines?: Line[]
   onToggleCompanion?: () => void
   companionPanel?: ReactNode
   onOpenDemoData?: () => void
@@ -100,7 +115,7 @@ export function AppShell({
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen pb-24 md:pb-0">
+      <div className="min-h-screen pb-40 md:pb-28">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-surface-2 focus:px-3 focus:py-2"
@@ -142,27 +157,18 @@ export function AppShell({
             </nav>
 
             <div className="ml-auto flex min-w-0 items-center gap-3 md:gap-5">
-              <span className="hidden truncate text-sm text-ink-soft xl:inline">
-                {who}
-                <Dot />
-                Mission day <span className="font-mono text-ink">{missionDay}</span>
+              <span className="hidden text-sm font-semibold text-ink sm:inline">
+                Day <span className="font-mono">{missionDay}</span>
               </span>
-              {headerExtra && <span className="hidden lg:inline-flex">{headerExtra}</span>}
+              {headerExtra && <span className="hidden items-center gap-2 lg:inline-flex">{headerExtra}</span>}
               <SimulatedChip onClick={onOpenDemoData} />
-              <ConnectionStatus state={connection} />
+              <ConnectionStatus state={connection} syncing={syncing} detail={syncDetail} onSync={onSync} />
             </div>
           </div>
         </header>
 
-        {/* Abaixo de 1280 px: tripulante (e, abaixo de 1024 px, o chip de rank) numa segunda linha */}
-        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-2 px-4 pt-3 text-sm text-ink-soft md:px-8 xl:hidden">
-          <span>
-            {who}
-            <Dot />
-            Mission day <span className="font-mono text-ink">{missionDay}</span>
-          </span>
-          {headerExtra && <span className="lg:hidden">{headerExtra}</span>}
-        </div>
+        {/* Abaixo de 1024 px: o chip de rank e "Log out" numa segunda linha */}
+        {headerExtra && <div className="mx-auto flex max-w-[1360px] items-center justify-end gap-2 px-4 pt-3 md:px-8 lg:hidden">{headerExtra}</div>}
 
         <main id="main" tabIndex={-1} className="outline-none">
           {children}
@@ -192,7 +198,7 @@ export function AppShell({
           </ul>
         </nav>
 
-        <CompanionButton ref={companionButton} expanded={companionOpen} onClick={onToggleCompanion} />
+        <CompanionButton ref={companionButton} expanded={companionOpen} lines={companionLines} onClick={onToggleCompanion} />
         {companionOpen && companionPanel}
         <Toaster position="top-center" offset={{ top: 76 }} mobileOffset={{ top: 76 }} />
       </div>
