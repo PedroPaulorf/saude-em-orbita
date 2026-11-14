@@ -1,0 +1,50 @@
+<!-- @dsCard group="Screens" height=700 width=1200 -->
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@700;900&family=Overpass:wght@400;600;700&family=Fira+Code:wght@400;700&display=swap">
+<style>html,body{margin:0}</style></head><body>
+<div class="h7">
+<header class="h7-topbar"><span class="h7-topbar__name">Health7</span><span class="h7-topbar__who">Crew member 02 · Mission day 47</span><span class="h7-pill">Offline</span></header>
+<main class="h7-screen">
+  <div class="h7-row" style="justify-content:space-between"><h1 class="h7-h1">Today's check-up</h1><button class="h7-btn h7-btn--primary">Start check-in</button></div>
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:var(--space-6);align-items:start">
+    <section class="h7-stack"><article class="h7-card h7-vital h7-vital--row">
+  <div><div class="h7-label">Heart rate</div><div class="h7-meta">baseline 62 · <b>+9</b></div></div>
+  <svg class="h7-spark" viewBox="0 0 120 40" role="img" aria-label="Heart rate, last 7 days against baseline"><line class="h7-spark__base" x1="0" x2="120" y1="28" y2="28"/><polyline class="h7-spark__line" points="4,30 22,28 40,31 58,27 76,24 94,16 112,10"/><circle class="h7-spark__dot" cx="112" cy="10" r="4"/></svg>
+  <div style="text-align:right"><div class="h7-vital__value" style="justify-content:flex-end"><span class="h7-reading">71</span><span class="h7-meta">bpm</span></div><span class="h7-badge h7-badge--attention"><svg class="h7-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Attention</span></div>
+</article><article class="h7-card h7-vital h7-vital--row">
+  <div><div class="h7-label">Blood pressure</div><div class="h7-meta">baseline 116/74 · <b>+2</b></div></div>
+  <svg class="h7-spark" viewBox="0 0 120 40" role="img" aria-label="Blood pressure, last 7 days against baseline"><line class="h7-spark__base" x1="0" x2="120" y1="21" y2="21"/><polyline class="h7-spark__line" points="4,22 22,20 40,23 58,21 76,22 94,19 112,20"/><circle class="h7-spark__dot" cx="112" cy="20" r="4"/></svg>
+  <div style="text-align:right"><div class="h7-vital__value" style="justify-content:flex-end"><span class="h7-reading">118/76</span><span class="h7-meta">mmHg</span></div><span class="h7-badge"><svg class="h7-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Within baseline</span></div>
+</article><article class="h7-card h7-vital h7-vital--row">
+  <div><div class="h7-label">Sleep</div><div class="h7-meta">baseline 7.2 · <b>−2.1</b></div></div>
+  <svg class="h7-spark" viewBox="0 0 120 40" role="img" aria-label="Sleep, last 7 days against baseline"><line class="h7-spark__base" x1="0" x2="120" y1="13" y2="13"/><polyline class="h7-spark__line" points="4,12 22,14 40,13 58,20 76,26 94,30 112,33"/><circle class="h7-spark__dot" cx="112" cy="33" r="4"/></svg>
+  <div style="text-align:right"><div class="h7-vital__value" style="justify-content:flex-end"><span class="h7-reading">5.1</span><span class="h7-meta">h</span></div><span class="h7-badge h7-badge--flagged"><svg class="h7-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M4.9 19.1a10 10 0 0 1 0-14.2"/><path d="M19.1 4.9a10 10 0 0 1 0 14.2"/></svg>Flagged for ground</span></div>
+</article><article class="h7-card h7-vital h7-vital--row">
+  <div><div class="h7-label">Temperature</div><div class="h7-meta">baseline 36.6 · <b>+0.1</b></div></div>
+  <svg class="h7-spark" viewBox="0 0 120 40" role="img" aria-label="Temperature, last 7 days against baseline"><line class="h7-spark__base" x1="0" x2="120" y1="20" y2="20"/><polyline class="h7-spark__line" points="4,20 22,21 40,19 58,20 76,21 94,20 112,19"/><circle class="h7-spark__dot" cx="112" cy="19" r="4"/></svg>
+  <div style="text-align:right"><div class="h7-vital__value" style="justify-content:flex-end"><span class="h7-reading">36.7</span><span class="h7-meta">°C</span></div><span class="h7-badge"><svg class="h7-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Within baseline</span></div>
+</article><div class="h7-row"><span class="h7-badge h7-badge--simulated">Simulated</span><span class="h7-badge h7-badge--demo">Demonstration rule</span></div></section>
+    <section class="h7-stack"><article class="h7-card">
+  <div class="h7-card__head"><h3 class="h7-h3">Space weather now</h3><span class="h7-badge h7-badge--live">Live NASA data</span></div>
+  <div class="h7-event"><span class="h7-event__code">FLR</span><span>Solar flare, class M2.4</span><span class="h7-meta">09:42 UTC</span></div>
+  <div class="h7-event"><span class="h7-event__code">SEP</span><span>No particle event in the last 24 h</span><span class="h7-meta">—</span></div>
+  <hr class="h7-card__rule">
+  <p class="h7-sm">Reports solar events, not the dose you received. <a class="h7-link" href="#">Source: NASA DONKI</a></p>
+</article><article class="h7-card">
+  <div class="h7-card__head"><h3 class="h7-h3">Report for ground</h3><span class="h7-pill h7-pill--queued">Saved for downlink</span></div>
+  <div class="h7-report__row">
+  <div><div class="h7-label">Sleep</div><div class="h7-meta">5.1 h · baseline 7.2</div></div><span class="h7-badge h7-badge--flagged"><svg class="h7-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M4.9 19.1a10 10 0 0 1 0-14.2"/><path d="M19.1 4.9a10 10 0 0 1 0 14.2"/></svg>Flagged for ground</span>
+  <p class="h7-sm h7-report__rule">Rule: below baseline for 3 nights in a row.</p>
+</div>
+  <hr class="h7-card__rule">
+  <div class="h7-report__row">
+  <div><div class="h7-label">Heart rate</div><div class="h7-meta">71 bpm · baseline 62</div></div><span class="h7-badge h7-badge--attention"><svg class="h7-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Attention</span>
+  <p class="h7-sm h7-report__rule">Rule: resting value above baseline today.</p>
+</div>
+  <div class="h7-row"><span class="h7-badge h7-badge--demo">Demonstration rule</span><span class="h7-badge h7-badge--simulated">Simulated</span></div>
+</article></section>
+  </div>
+</main>
+</div>
+</body></html>

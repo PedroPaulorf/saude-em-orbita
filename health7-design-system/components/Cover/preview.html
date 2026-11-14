@@ -1,0 +1,49 @@
+<!-- @dsCard height=320 -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@900&family=Overpass:wght@400&display=swap">
+<style>
+  html, body { margin: 0; }
+  .cover { position: relative; width: 960px; height: 320px; background: var(--ground); overflow: hidden; }
+  .cover svg { position: absolute; inset: 0; display: block; }
+  .slab { fill: var(--panel); rx: var(--radius-md); }
+  .planet { fill: var(--on-panel); }
+  .moon { fill: var(--accent); }
+  .mark { fill: var(--alert-mark); }
+  .ring { fill: none; stroke: var(--on-panel); stroke-width: 2; opacity: .25; }
+  .text { position: absolute; left: var(--space-12); bottom: var(--space-8); width: 432px; }
+  .name { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 96px; line-height: .95; color: var(--ink); }
+  .tag { margin: var(--space-4) 0 0; font-family: var(--font-sans); font-weight: 400; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <!--
+    blocks: panel (Electric Blue) 456x272 bleeding off the right edge, on-panel disc r=48, accent (Neon Yellow) disc r=12, alert-mark (Rocket Red) disc r=8
+    arrangement: one wide blue slab with a planet at its centre and two small satellites on the rings
+    pattern: orbits — the guide's own patterns abstract orbits, screened to 25% over a blue; five concentric rings
+    scales: ring pitch space-8 (32px), slab inset space-6 (24px), slab corners radius-md, discs are half-side rounds
+  -->
+  <svg viewBox="0 0 960 320" width="960" height="320" aria-hidden="true">
+    <defs><clipPath id="c"><rect x="528" y="24" width="456" height="272" rx="8"/></clipPath></defs>
+    <rect class="slab" x="528" y="24" width="456" height="272"/>
+    <g clip-path="url(#c)">
+      <circle class="ring" cx="760" cy="160" r="80"/>
+      <circle class="ring" cx="760" cy="160" r="112"/>
+      <circle class="ring" cx="760" cy="160" r="144"/>
+      <circle class="ring" cx="760" cy="160" r="176"/>
+      <circle class="ring" cx="760" cy="160" r="208"/>
+      <circle class="planet" cx="760" cy="160" r="48"/>
+      <circle class="moon" cx="857" cy="104" r="12"/>
+      <circle class="mark" cx="635" cy="232" r="8"/>
+    </g>
+  </svg>
+  <div class="text">
+    <p class="name">Health7</p>
+    <p class="tag">Check-up diário offline, relatório claro para o solo.</p>
+  </div>
+</div>
+</body>
+</html>

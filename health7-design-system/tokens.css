@@ -1,0 +1,51 @@
+/* Health7 — generated from tokens.json */
+:root, [data-theme="deep"] {
+  --ground: #07173f;
+  --panel: #0042a6;
+  --on-panel: #ffffff;
+  --deep: #07173f;
+  --ink: #ffffff;
+  --ink-muted: #2e96f5;
+  --line: #2e96f5;
+  --line-subtle: #0042a6;
+  --accent: #eafe07;
+  --on-accent: #07173f;
+  --link: #eafe07;
+  --inverse: #ffffff;
+  --on-inverse: #07173f;
+  --alert: #8e1100;
+  --on-alert: #ffffff;
+  --alert-mark: #e43700;
+}
+[data-theme="white"] {
+  --ground: #ffffff;
+  --panel: #0042a6;
+  --on-panel: #ffffff;
+  --deep: #07173f;
+  --ink: #07173f;
+  --ink-muted: #0042a6;
+  --line: #07173f;
+  --line-subtle: #2e96f5;
+  --accent: #eafe07;
+  --on-accent: #07173f;
+  --link: #0960e1;
+  --inverse: #07173f;
+  --on-inverse: #ffffff;
+  --alert: #8e1100;
+  --on-alert: #ffffff;
+  --alert-mark: #e43700;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 999px;
+  --font-display: "Fira Sans", system-ui, sans-serif;
+  --font-sans: Overpass, system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+}
