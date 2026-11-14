@@ -61,5 +61,44 @@
       ],
       "plan": null
     }
-  ]
+  ],
+  "demo": {
+    "_note": "FICTIONAL demo scenarios, to record the story in minutes. Dates are relative to today. health lists the check-ups up to today (today included); other measures use healthDefaults.",
+    "healthDefaults": { "bloodPressure": 116, "bloodPressureDiastolic": 74, "temperature": 36.6 },
+    "scenarios": [
+      {
+        "id": "day-1",
+        "title": "Day 1 · signs appear",
+        "description": "Clears check-ups, water and plans. The starting state: sleep debt shows up."
+      },
+      {
+        "id": "day-3",
+        "title": "Day 3 · plan under way",
+        "description": "Sleep debt plan started 2 days ago. Today's behavioral check-in and today's plan steps are left for the camera.",
+        "plan": { "pattern": "sleep-debt", "startedDaysAgo": 2 },
+        "health": [
+          { "sleep": 5.6, "heartRate": 69 },
+          { "sleep": 5.9, "heartRate": 68 },
+          { "sleep": 6.1, "heartRate": 67 }
+        ],
+        "previousDays": { "behavioral": { "mood": 3, "stress": 3, "rest": 3 }, "water": 8, "allManualSteps": true },
+        "today": { "behavioral": null }
+      },
+      {
+        "id": "day-5",
+        "title": "Day 5 · back within baseline",
+        "description": "Last day of the plan; the pattern is no longer active. Today's plan steps are left for the camera: marking the last one closes the plan.",
+        "plan": { "pattern": "sleep-debt", "startedDaysAgo": 4 },
+        "health": [
+          { "sleep": 5.6, "heartRate": 68 },
+          { "sleep": 6.1, "heartRate": 66 },
+          { "sleep": 6.6, "heartRate": 65 },
+          { "sleep": 6.9, "heartRate": 64 },
+          { "sleep": 7.1, "heartRate": 63 }
+        ],
+        "previousDays": { "behavioral": { "mood": 3, "stress": 3, "rest": 3 }, "water": 8, "allManualSteps": true },
+        "today": { "behavioral": { "mood": 4, "stress": 2, "rest": 4 } }
+      }
+    ]
+  }
 }

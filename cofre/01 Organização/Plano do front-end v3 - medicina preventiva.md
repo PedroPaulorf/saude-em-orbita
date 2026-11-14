@@ -311,3 +311,10 @@ Registrado pelo agente de código (Claude Opus), em 14/11.
 - O limite de 600 mSv usa o link que o plano conferiu em 14/11 (NASA-STD-3001, volume 1, 4.8.2 [V1 4030]). Não abri o link de novo.
 - RadLab real (o extra da seção 7) não foi feito.
 
+**Fase 5**
+- O cenário "Day 5" também grava o check-in comportamental de hoje. Sem ele, o passo automático "Do both check-ups" do último dia nunca fecharia e o plano não terminaria ao marcar os passos manuais. No "Day 3", o check-in de hoje fica para a câmera, como o plano pede.
+- Nos dias anteriores dos cenários, as outras medidas do check-up usam valores de linha de base (`healthDefaults`: pressão 116/74, temperatura 36,6), o check-in comportamental é 3, 3, 3 e a água fica na meta (8). Com isso os dias anteriores do plano aparecem completos.
+- Ao carregar um cenário, a página recarrega para todos os dados serem relidos: "Day 1" abre na Home, os outros na aba Prevention. O chat não é apagado.
+- Os pontos dos dias anteriores contam, então o "Day 5" já abre com cerca de 3.600 pontos (Pilot).
+- O chip "Simulated data" virou botão (com área de toque de 44 px) e abre o diálogo "Demo data".
+

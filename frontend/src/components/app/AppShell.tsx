@@ -43,16 +43,24 @@ function ConnectionStatus({ state }: { state: Connection }) {
 }
 
 /** "Simulated data": uma vez por tela, no cabeçalho, em vez de um selo por cartão. */
-export function SimulatedChip({ className }: { className?: string }) {
-  return (
+export function SimulatedChip({ className, onClick }: { className?: string; onClick?: () => void }) {
+  const chip = (
     <span
       className={cn(
         'inline-flex items-center rounded-full border border-dashed border-ink-soft/60 px-2.5 py-0.5 text-xs font-semibold text-ink-soft',
+        onClick && 'group-hover:border-ink-soft group-hover:text-ink',
         className,
       )}
     >
       Simulated data
     </span>
+  )
+  if (!onClick) return chip
+  // Abre o diálogo "Demo data" (cenários para gravar o vídeo). Área de toque de 44 px em volta do chip.
+  return (
+    <button type="button" onClick={onClick} aria-haspopup="dialog" className="group inline-flex min-h-11 items-center" title="Demo data">
+      {chip}
+    </button>
   )
 }
 
@@ -65,6 +73,7 @@ export function AppShell({
   companionOpen,
   onToggleCompanion,
   companionPanel,
+  onOpenDemoData,
   children,
 }: {
   path: Path
@@ -77,6 +86,7 @@ export function AppShell({
   companionOpen?: boolean
   onToggleCompanion?: () => void
   companionPanel?: ReactNode
+  onOpenDemoData?: () => void
   children: ReactNode
 }) {
   const active = activeTab(path)
@@ -138,7 +148,7 @@ export function AppShell({
                 Mission day <span className="font-mono text-ink">{missionDay}</span>
               </span>
               {headerExtra && <span className="hidden lg:inline-flex">{headerExtra}</span>}
-              <SimulatedChip />
+              <SimulatedChip onClick={onOpenDemoData} />
               <ConnectionStatus state={connection} />
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { AppShell } from '@/components/app/AppShell'
 import { ChatPanel } from '@/components/app/ChatPanel'
+import { DemoDataDialog } from '@/components/app/DemoDataDialog'
 import { ScreenBoundary, ScreenSkeleton } from '@/components/app/ScreenStates'
 import { GameEvents, RankChip } from '@/components/app/GameBits'
 import { crew } from '@/lib/health'
@@ -24,6 +25,7 @@ export default function App() {
   useCheckInsVersion()
   const game = useGame()
   const [companionOpen, setCompanionOpen] = useState(false)
+  const [demoOpen, setDemoOpen] = useState(false)
 
   // Tela nova começa do topo (o Detailed stats rola sozinho até o painel quando precisa).
   useEffect(() => {
@@ -67,11 +69,13 @@ export default function App() {
       connection={connection}
       headerExtra={<RankChip game={game} />}
       companionOpen={companionOpen}
+      onOpenDemoData={() => setDemoOpen(true)}
       onToggleCompanion={() => setCompanionOpen((o) => !o)}
       companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
     >
       <ScreenBoundary resetKey={route.path}>{screen}</ScreenBoundary>
       <GameEvents game={game} />
+      <DemoDataDialog open={demoOpen} onOpenChange={setDemoOpen} />
     </AppShell>
   )
 }
