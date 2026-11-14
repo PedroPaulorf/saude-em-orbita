@@ -359,3 +359,17 @@ Registrados durante a implementação (14/11).
 | 19 | Concordância | Tabela no README | Em `dados/README.md`, junto do gabarito; o teste falha se a tabela mudar | 159 de 180 dias (88%); 19 dos 21 desacordos são o motor mais cauteloso. Os 2 restantes são os dias 13 e 15 do NX-06, que o gabarito marca ESCALATE sem red flag |
 | 20 | Versão da regra | Registrar em `medical_rules` | O servidor registra `health7-nexus-2026-11-14-v1` na subida, ao lado da versão antiga, que não muda | Testes no front conferem que limiares, pesos e versão batem com `medical.ts` |
 
+### Fase 3: telas (ajustes 1 a 5 da seção 9)
+
+| # | Onde | O plano dizia | O que foi feito | Por quê |
+|---|---|---|---|---|
+| 21 | Padrões | Avaliados por `prevention.ts` | As seis condições são avaliadas **sobre o resultado do motor** (`patternsFromMonitor`): a medida conta contra a mesma linha de base que decide o estado | Um avaliador só; padrão e estado nunca se contradizem. `usePatterns()`, o chat e o relatório passam a usar o motor |
+| 22 | `conditions.json` | Seis condições e o tipo `symptom` | Mais o tipo `cognitive` (C18), `required` (C16 sem desconforto no flanco não ativa; C05, C06 e C09 precisam do sintoma) e `missionDayMax: 7` na C06 | Sem isso a C16 acenderia em qualquer desidratação e a C06 no dia 20 |
+| 23 | Título do padrão | Texto seguro inteiro | O título é o texto seguro; o nome da condição fica só em `condition`, uso interno | Regra "nunca o nome sozinho". **Para a equipe:** o texto da C16 traz a palavra "diagnosis" ("imaging/lab needed for diagnosis"), da lista proibida do v3. Mantido sem reescrever; decidir se a pesquisa troca a frase |
+| 24 | Planos de 5 dias | Decisão 8 em aberto | Cada condição tem um plano com os passos da tabela da seção 8; em ESCALATE não se sugere plano | "Start plan" continua funcionando até a equipe decidir a decisão 8 |
+| 25 | Fundo da página | Já segue as cores | Passa a seguir o estado do motor (STABLE azul, WATCH e PERSISTENT laranja, ESCALATE vermelho) | Antes seguia a avaliação contra o pré-voo, que pinta de laranja a adaptação normal (massa do NX-02) |
+| 26 | Sessão | — | Busca também `/me/environment` (não fatal) para o contexto de cabine do motor | Ambiente é contexto; falha não derruba a sincronização |
+| 27 | "Notify ground" | Só registra o horário | Guarda o horário por conta e dia neste aparelho e mostra "Ground notified at …" | Demo, sem n8n (fase 5) |
+| 28 | Companheiro | Frase quando o estado sobe | Estado subiu: "I noticed a change in your hydration…"; continua igual: "…is still off your baseline"; ESCALATE: aponta para a faixa, sem IA | O tema vem do padrão ativo ou, sem padrão, da medida principal |
+| 29 | Relatório e plano | — | Textos ajustados para títulos que agora são frases ("Early-sign pattern: …") | Os títulos antigos eram nomes curtos |
+

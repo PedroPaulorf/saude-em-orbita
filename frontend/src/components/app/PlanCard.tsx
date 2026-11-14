@@ -63,7 +63,7 @@ export function PlanSuggestion({ pattern, blockedBy }: { pattern: PatternResult;
   return (
     <Shell>
       <p className="text-ink">
-        <span className="font-mono">{plan.days}</span> days of routine steps for <span className="font-semibold">{pattern.def.title.toLowerCase()}</span>.
+        <span className="font-mono">{plan.days}</span> days of routine steps while this pattern is active: <span className="font-semibold">{pattern.def.title}</span>
       </p>
       <ol className="grid gap-1.5">
         {plan.steps.map((s) => (

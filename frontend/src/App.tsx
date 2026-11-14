@@ -7,7 +7,10 @@ import { GameEvents, RankChip } from '@/components/app/GameBits'
 import { Button } from '@/components/ui/button'
 import { navigate, useRoute } from '@/lib/route'
 import { getTodayVitals } from '@/lib/health'
-import { healthLevel } from '@/lib/present'
+import { healthLevel, type HealthLevel } from '@/lib/present'
+import { stateRank, type MonitorState } from '@/lib/monitor'
+import { useMonitor } from '@/lib/useMonitor'
+import { usePatterns } from '@/lib/usePrevention'
 import { companionLines } from '@/lib/companion'
 import { WATER_GOAL } from '@/lib/water'
 import { session, type SessionState } from '@/lib/session'
@@ -51,10 +54,19 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   useEffect(() => { window.scrollTo({ top: 0 }) }, [route.path])
   // Fundo da página na cor da saúde de hoje: azul, laranja ou vermelho (styles/theme.css).
   const vitals = useMemo(() => getTodayVitals(profile, state.checkins), [profile, state.checkins])
-  const level = healthLevel(vitals)
+  // O fundo segue o estado do motor de monitoramento; sem motor, a avaliação das medidas de hoje.
+  const monitor = useMonitor()
+  const level: HealthLevel = monitor ? LEVEL[monitor.state] : healthLevel(vitals)
+  const patterns = usePatterns()
+  // Frase do companheiro quando o estado não é estável; "rose": subiu desde o dia anterior.
+  const previous = monitor?.history.at(-2)
+  const changeState = monitor && monitor.state !== 'STABLE' ? monitor.state : undefined
+  const changeRose = !!monitor && (!previous || stateRank(monitor.state) > stateRank(previous.state))
+  const changeTopic = topicOf(patterns.find((p) => p.active)?.def.id, monitor?.signals.find((s) => s.kind === 'measure')?.metric)
   const lines = useMemo(
-    () => companionLines({ name: profile.displayName, vitals, healthDone: game.today.healthDone, moodDone: game.today.behavioralDone, water: game.today.water, waterGoal: WATER_GOAL }),
-    [profile.displayName, vitals, game.today.healthDone, game.today.behavioralDone, game.today.water],
+    () => companionLines({ name: profile.displayName, vitals, healthDone: game.today.healthDone, moodDone: game.today.behavioralDone, water: game.today.water, waterGoal: WATER_GOAL,
+      change: changeState ? { state: changeState, rose: changeRose, topic: changeTopic } : undefined }),
+    [profile.displayName, vitals, game.today.healthDone, game.today.behavioralDone, game.today.water, changeState, changeRose, changeTopic],
   )
   useEffect(() => {
     document.documentElement.dataset.health = level
@@ -79,7 +91,8 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
       syncDetail={state.syncing ? 'Syncing with server' : pending ? `${pending} check-in${pending === 1 ? '' : 's'} queued on this device` : state.historyLoaded ? 'History synced with server' : 'Server history unavailable'}
       headerExtra={<><RankChip game={game} /><Button variant="ghost" size="sm" onClick={() => { navigate('/'); void session.logout() }}>Log out</Button></>}
       companionOpen={companionOpen} companionLines={lines} onOpenDemoData={() => setDemoOpen(true)} onToggleCompanion={() => setCompanionOpen(o => !o)}
-      companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}>
+      companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
+      escalate={monitor?.state === 'ESCALATE' ? { date: monitor.date, day: monitor.day, reasons: monitor.reasons } : null}>
       {(state.error || rejected > 0) && (
         <p role="alert" className="mx-auto max-w-[1360px] px-4 pt-3 text-sm font-semibold text-flag-ink md:px-8">
           {state.error}{state.error && rejected ? ' · ' : ''}{rejected ? `${rejected} rejected record${rejected === 1 ? '' : 's'} require review` : ''}
@@ -91,3 +104,19 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
     </AppShell>
   )
 }
+
+const LEVEL: Record<MonitorState, HealthLevel> = { STABLE: 'calm', WATCH: 'watch', 'PERSISTENT CHANGE': 'watch', ESCALATE: 'alert' }
+
+/** Assunto da frase do companheiro: o padrão ativo da pesquisa ou, sem padrão, a medida principal. */
+function topicOf(pattern?: string, metric?: string) {
+  if (pattern === 'C12' || pattern === 'C16' || pattern === 'C06') return 'hydration'
+  if (pattern === 'C18') return 'sleep'
+  if (pattern === 'C05') return 'headaches'
+  if (pattern === 'C09') return 'breathing and temperature'
+  if (metric === 'urinations24h' || metric === 'bodyMass') return 'hydration'
+  if (metric === 'sleep') return 'sleep'
+  if (metric === 'temperature' || metric === 'respiratoryRate' || metric === 'spo2') return 'breathing and temperature'
+  if (metric === 'heartRate' || metric === 'bloodPressure') return 'heart rate'
+  return 'measurements'
+}
+

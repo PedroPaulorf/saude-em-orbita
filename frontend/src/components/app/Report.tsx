@@ -58,7 +58,7 @@ export function ReportCompact({
         )}
         {patterns.length > 0 && (
           <span className="block text-sm text-ink-soft">
-            {patterns.map((p) => p.def.title).join(', ')}: early-sign pattern
+            Early-sign {patterns.length === 1 ? 'pattern' : 'patterns'}: {patterns.map((p) => p.def.title).join(' ')}
           </span>
         )}
       </p>

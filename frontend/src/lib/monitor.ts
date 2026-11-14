@@ -118,6 +118,8 @@ export interface DayResult {
   adaptationWindow: boolean
   /** Há check-up neste dia? */
   observed: boolean
+  /** Houve teste cognitivo neste dia? */
+  cognitiveTested: boolean
   /** Por que o estado é este, em frases curtas. */
   reasons: string[]
 }
@@ -313,7 +315,8 @@ export function monitorSeries(input: MonitorInput): DayResult[] {
     const score = Math.min(100, Math.round(SCORE_WEIGHTS.measurePoint * points + SCORE_WEIGHTS.symptom * reported.length + SCORE_WEIGHTS.persistenceDay * persistence))
     const order = { 'red-flag': 0, measure: 1, cognitive: 2, symptom: 3, drift: 4 }
     signals.sort((a, b) => order[a.kind] - order[b.kind] || b.points - a.points || b.days - a.days)
-    results.push({ date, day, state, score, signals, measuresOff, symptoms: reported, redFlag, adaptationWindow, observed: values.has(date), reasons })
+    const cognitiveTested = (input.cognitive ?? []).some((r) => r.at.slice(0, 10) === date)
+    results.push({ date, day, state, score, signals, measuresOff, symptoms: reported, redFlag, adaptationWindow, observed: values.has(date), cognitiveTested, reasons })
   }
   return results
 }
@@ -326,12 +329,15 @@ export function monitor(input: MonitorInput): MonitorResult {
   const last = history.at(-1)
   const current: DayResult = last?.date === todayKey ? last : {
     date: todayKey, day: input.profile.missionDay, state: 'STABLE', score: 0, signals: [], measuresOff: 0, symptoms: [], redFlag: false,
-    adaptationWindow: input.profile.missionDay <= ADAPTATION_DAYS, observed: false, reasons: ['No check-up on this day'],
+    adaptationWindow: input.profile.missionDay <= ADAPTATION_DAYS, observed: false, cognitiveTested: false, reasons: ['No check-up on this day'],
   }
   const env = (input.environment ?? []).filter((e) => e.at.slice(0, 10) === todayKey).sort((a, b) => a.at.localeCompare(b.at)).at(-1)
   const guide = STATE_GUIDE[current.state]
   return { ...current, ...guide, environment: env ? environmentLoad(env) : null, ruleVersion: MONITOR_RULE_VERSION, notice: MONITOR_NOTICE, history }
 }
+
+/** Um sinal em texto curto: "heart rate +7 bpm vs in-flight 61"; o red flag vai só com o motivo. */
+export const signalText = (s: MonitorSignal) => (s.kind === 'red-flag' ? s.text : `${s.label.toLowerCase()} ${s.text}`)
 
 /** Os dois sinais principais, para notas e frases curtas ("Urinations −3 per day · Heart rate +7 bpm"). */
 export function topSignals(result: Pick<DayResult, 'signals'>, n = 2) {

@@ -20,6 +20,7 @@ import type { Connection } from '@/types'
 import type { Profile } from '@/lib/api'
 import type { CheckIn } from '@/lib/storage'
 import { useRoadmapInput } from '@/lib/useRoadmapInput'
+import { useMonitor } from '@/lib/useMonitor'
 
 /*
   Prevention (plano v3, seção 6): a tese do projeto. Junta as medidas, compara com padrões de sinais
@@ -28,8 +29,10 @@ import { useRoadmapInput } from '@/lib/useRoadmapInput'
 */
 export function Prevention({ game, connection, params, profile, checkins }: { game: GameSummary; connection: Connection; params?: URLSearchParams; profile: Profile; checkins: CheckIn[] }) {
   const roadmapInput = useRoadmapInput(profile, checkins)
+  const monitor = useMonitor()
   const patterns = usePatterns()
-  const active = patterns.filter((p) => p.active)
+  // No máximo dois padrões compatíveis na tela (seção 7, passo 5).
+  const active = patterns.filter((p) => p.active).slice(0, 2)
   const inactive = patterns.filter((p) => !p.active)
   const running = useActivePlan()
   const views = usePlanViews()
@@ -65,7 +68,9 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
     ? views.filter((v) => v.finished && v.plan.endedDay === today && v.plan.outcome !== 'ended-early').at(-1)
     : undefined
   const past = views.filter((v) => v.finished && v !== justFinished)
-  const suggestion = active.find((p) => p.def.id !== running?.pattern.id && !(justFinished && p.def.id === justFinished.pattern.id))
+  // Em ESCALATE não se sugere plano de rotina: fica só o protocolo.
+  const suggestion = monitor?.state === 'ESCALATE' ? undefined
+    : active.find((p) => p.def.id !== running?.pattern.id && !(justFinished && p.def.id === justFinished.pattern.id))
 
   function endPlan() {
     if (running) closePlan(running.plan.id, 'ended-early', today)
@@ -75,7 +80,7 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
   return (
     <div className="mx-auto max-w-[1360px] px-4 pt-4 pb-8 md:px-8">
       <h1 className="mb-4 font-display text-2xl font-semibold">Prevention</h1>
-      <RoadmapPanel input={roadmapInput} className="mb-4" />
+      <RoadmapPanel input={roadmapInput} monitor={monitor} className="mb-4" />
 
       {/* Celular: padrões, plano, radiação, planos anteriores (ordem do plano v3).
           Desktop: padrões e radiação à esquerda, plano à direita. As colunas são "contents" no celular. */}
@@ -160,10 +165,10 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
               How this works
             </h2>
             <ul className="grid list-disc gap-1.5 pl-5 text-sm text-ink-soft">
-              <li>Each sign is one measure or answer compared with your own baseline, using the rule written next to it.</li>
-              <li>A pattern is active when enough of its signs are present on the same day.</li>
-              <li>It is not a diagnosis. Your flight surgeon reviews every active pattern.</li>
-              <li>The patterns are demonstration rules with no clinical source yet.</li>
+              <li>The monitoring rule compares each measure with your pre-flight baseline and the median of your recent days in flight.</li>
+              <li>The state comes from the rule: how many measures are off and for how many days. The score, from 0 to 100, shows how large the change is. It is not a probability.</li>
+              <li>The patterns are the six conditions of the NEXUS-Med research, in the research&apos;s own wording. A pattern never changes the state on its own.</li>
+              <li>It is not a diagnosis. Your flight surgeon reviews every active pattern. Demonstration rule, values anchored in published spaceflight data.</li>
             </ul>
           </section>
         </div>

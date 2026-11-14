@@ -1,55 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import tripulantes from '../../../dados/derivados/tripulantes.json'
-import diario from '../../../dados/derivados/diario.json'
 import gabarito from '../../../dados/derivados/gabarito.json'
 import estados from '../../../dados/derivados/estados.json'
 import medical from '../../../backend/src/medical.ts?raw'
 import type { Profile, Symptom } from '@/lib/api'
+import { crew, fixture } from '@/lib/nexus.fixture'
 import { configForProfile } from '@/lib/health'
-import type { CheckInInput } from '@/lib/storage'
-import { MONITOR_RULE_VERSION, monitor, monitorSeries, SCORE_WEIGHTS, STATE_GUIDE, STATES, URINATIONS_RULE, type DayResult, type MonitorInput, type MonitorState } from '@/lib/monitor'
+import { MONITOR_RULE_VERSION, monitor, monitorSeries, SCORE_WEIGHTS, STATE_GUIDE, STATES, URINATIONS_RULE, type DayResult, type MonitorState } from '@/lib/monitor'
 
 /*
   Calibração do motor contra a pesquisa NEXUS-Med (dados/derivados, gerado por dados/scripts/exportar.py).
   O gabarito (alert_state) foi rotulado à mão, por caso: o motor NÃO é ajustado para decorá-lo.
   Os critérios de "pronto" são os da seção 7 do plano; a tabela de concordância está em dados/README.md.
 */
-const crew: { crewId: string; baseline: Record<string, number> }[] = tripulantes.items
-const diary: { crewId: string; day: number; vitals: Record<string, number>; urinations24h: number; stools24h: number; redFlag: boolean; symptoms: { label: string; bodyPart: string; severity: number }[] }[] = diario.items
 const answers = gabarito.items as { crewId: string; day: number; alertState: MonitorState; healthChangeScore: number }[]
-
-const START = Date.parse('2026-10-01T00:00:00Z')
-const dateOf = (day: number) => new Date(START + (day - 1) * 86400000).toISOString().slice(0, 10)
-
-/** As mesmas entradas que `npm run import:nexus` grava: um check-up por dia e um episódio de sintoma por rótulo. */
-export function fixture(crewId: string, todayDay = 30): MonitorInput {
-  const c = crew.find((x) => x.crewId === crewId)!
-  const days = diary.filter((d) => d.crewId === crewId && d.day <= todayDay).sort((a, b) => a.day - b.day)
-  const checkins: CheckInInput[] = days.map((d) => ({
-    clientId: `nexus-${crewId}-d${d.day}`, at: `${dateOf(d.day)}T06:00:00.000Z`, vitals: d.vitals, behavioral: {},
-    healthDetails: { urinations24h: d.urinations24h, stools24h: d.stools24h, ...(d.redFlag ? { redFlag: true } : {}) },
-    sync: 'saved',
-  }))
-  const symptoms: Symptom[] = []
-  const active = new Map<string, Symptom>()
-  for (const d of days) {
-    const at = `${dateOf(d.day)}T06:05:00.000Z`
-    for (const [label, s] of [...active]) if (!d.symptoms.some((x) => x.label === label)) {
-      s.events.push({ id: `${s.id}-r`, at, receivedAt: at, type: 'resolution' }); s.status = 'resolved'; active.delete(label)
-    }
-    for (const x of d.symptoms) {
-      const open = active.get(x.label)
-      if (open) open.events.push({ id: `${open.id}-${d.day}`, at, receivedAt: at, type: 'evolution', severity: x.severity })
-      else {
-        const s: Symptom = { id: `${crewId}-${x.label}-${d.day}`, at, label: x.label, bodyPart: x.bodyPart, severity: x.severity, status: 'active',
-          events: [{ id: `${crewId}-${x.label}-${d.day}-s`, at, receivedAt: at, type: 'start', severity: x.severity }] }
-        symptoms.push(s); active.set(x.label, s)
-      }
-    }
-  }
-  const { heightCm: _h, ...baseline } = c.baseline
-  return { profile: { missionDay: todayDay, baseline }, checkins, symptoms, today: new Date(`${dateOf(todayDay)}T12:00:00Z`) }
-}
 
 const series = Object.fromEntries(crew.map((c) => [c.crewId, monitorSeries(fixture(c.crewId))])) as Record<string, DayResult[]>
 const stateOn = (crewId: string, day: number) => series[crewId].find((d) => d.day === day)!.state
