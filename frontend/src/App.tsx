@@ -50,7 +50,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const connection: Connection = pending ? 'queued' : state.error || !state.historyLoaded ? 'offline' : 'online'
   let screen
   switch (route.path) {
-    case '/data': screen = <MedicalData state={state} />; break
+    case '/data': screen = <MedicalData state={state} section={route.params.get('section')} />; break
     case '/prevention': screen = <Prevention game={game} connection={connection} params={route.params} />; break
     case '/progress': screen = <Suspense fallback={<ScreenSkeleton label="Loading progress" />}><ProgressScreen game={game} /></Suspense>; break
     case '/stats': screen = <DetailedStats params={route.params} profile={profile} checkins={state.checkins} symptoms={state.symptoms} truncated={state.truncated} historyLoaded={state.historyLoaded} />; break

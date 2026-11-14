@@ -23,7 +23,7 @@ function Observations({ items }: { items: MedicalObservation[] }) {
   </li>)}</ul>
 }
 
-export function MedicalData({ state }: { state: SessionState }) {
+export function MedicalData({ state, section }: { state: SessionState; section?: string | null }) {
   const owner = state.profile!.id
   const pending = state.checkins.filter(c => c.sync === 'pending').length
   const saved = state.checkins.filter(c => c.sync === 'saved')
@@ -39,6 +39,12 @@ export function MedicalData({ state }: { state: SessionState }) {
     requestAbort.current = controller
     return () => { controller.abort() }
   }, [])
+  useEffect(() => {
+    const id = section === 'sources' ? 'research-sources' : section === 'mission' ? 'mission-scenarios' : null
+    if (!id) return
+    const frame = requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }))
+    return () => cancelAnimationFrame(frame)
+  }, [section])
 
   async function perform(action: (signal: AbortSignal) => Promise<void>) {
     const signal = requestAbort.current!.signal
@@ -91,7 +97,7 @@ export function MedicalData({ state }: { state: SessionState }) {
         </details>)}
       </details>
     </Panel>
-    <Panel>
+    <Panel id="research-sources" className="scroll-mt-24">
       <PanelHeader title="NASA research references" />
       <p className="text-sm text-ink-soft">Architecture and methodology references. They do not validate the demonstration thresholds, prevention patterns or chat.</p>
       <ul className="grid gap-3">{references.map(ref => <li key={ref.id}>
@@ -100,7 +106,7 @@ export function MedicalData({ state }: { state: SessionState }) {
       </li>)}</ul>
       <p className="text-xs text-ink-soft">Summaries are included with the app; opening the original NTRS documents needs a connection.</p>
     </Panel>
-    <Panel>
+    <Panel id="mission-scenarios" className="scroll-mt-24">
       <PanelHeader title="Educational mission scenario" subtitle="Inspired by Monte Carlo methodology; not NASA IMM." />
       <p className="text-sm text-ink-soft">Hypothetical independent events with a constant rate and one resource unit per event. These numbers are not medical incidence data. This scenario is separate from your check-ups.</p>
       <form onSubmit={event => { event.preventDefault(); void runSimulation() }} className="grid gap-3 sm:grid-cols-2">

@@ -4,6 +4,17 @@ O Health7 usa **PostgreSQL**, login com cookie de sessão e histórico separado 
 
 Esta integração amplia as estruturas existentes de Pessoa, Saúde e Ambiente. Não cria um segundo banco SQLite nem uma fila paralela, e não usa `crew-02` fixo ou chave compartilhada no navegador.
 
+## Onde aparece na interface
+
+- **Detailed stats / Today's measures:** mostra método de coleta, qualidade registrada, horário UTC e sincronização de cada medição. Não apresenta o instrumento da configuração como se fosse procedência confirmada daquele registro.
+- **Painel da região:** “Why this state?” explica a comparação e os limiares da avaliação salva. Versões e identificadores ficam em “Assessment record”.
+- **Personal records:** “Measurement details” preserva a linha de base e a avaliação de cada data, inclusive o aviso de avaliação retrospectiva. A referência atual do perfil é apresentada separadamente. Sem snapshot, o histórico não inventa uma avaliação antiga.
+- **Report:** inclui procedência e detalhes das avaliações das medidas sinalizadas; as demais medidas registradas ficam em uma seção recolhida. Prévias locais são identificadas explicitamente.
+- **Sources & methodology:** link no rodapé das estatísticas para as referências de arquitetura e seus limites.
+- **Progress / Mission planning:** acesso ao simulador educativo em seção separada das medições pessoais.
+
+Quando existe um snapshot correspondente ao valor e horário da medição, o painel e o relatório usam seu estado e sua linha de base preservados. Sem snapshot, a comparação de hoje é uma prévia local com a referência atual; não é apresentada como avaliação arquivada. A mudança posterior de uma linha de base pessoal não reclassifica silenciosamente uma avaliação já salva.
+
 ## Executar
 
 Requer Node.js 24 ou superior e PostgreSQL. Siga `backend/README.md` para configurar `DATABASE_URL`, contas fictícias (`DEMO_PASSWORD`) e `CORS_ORIGINS`. Não sobrescreva um `.env` já preenchido.

@@ -8,8 +8,9 @@ import { href } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import type { BodyRegion, BodyRegionId, Vital } from '@/types'
 import { Clamped } from './Clamped'
-import { DemoTag, LiveTag } from './SourceTag'
+import { LiveTag } from './SourceTag'
 import { StatusBadge } from './StatusBadge'
+import { AssessmentDetails, MeasurementProvenance } from './MeasurementDetails'
 
 const RISKS = new Map(hrp.risks.map((r) => [r.id, r]))
 
@@ -86,12 +87,11 @@ function LinkedMeasure({ v }: { v: Vital }) {
           baseline {v.baseline} · {v.delta}
         </span>
       </p>
-      {v.rule && (
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="text-sm text-ink-soft">{v.rule}</p>
-          <DemoTag />
-        </div>
-      )}
+      {v.observed !== false && <>
+        <MeasurementProvenance provenance={v.provenance} at={v.at} sync={v.recordSync} />
+        <p className="text-xs text-ink-soft">{v.assessment ? 'Assessment saved with this record' : 'Local comparison preview'}</p>
+        <AssessmentDetails assessment={v.assessment} localRule={v.assessment ? undefined : v.rule} recordId={v.recordId} clientId={v.clientId} />
+      </>}
     </li>
   )
 }

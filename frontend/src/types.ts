@@ -1,3 +1,5 @@
+import type { MedicalObservation, Provenance } from './lib/medical-types'
+
 /** Estado de uma medida em relação à linha de base da pessoa. Não crie um quarto estado. */
 export type Status = 'baseline' | 'attention' | 'flagged'
 
@@ -13,6 +15,11 @@ export type VitalId = 'heartRate' | 'bloodPressure' | 'sleep' | 'temperature' | 
 export type VitalInput = 'manual' | 'device'
 
 export interface Vital {
+  assessment?: MedicalObservation
+  provenance?: Provenance
+  recordSync?: 'pending' | 'saved' | 'rejected'
+  recordId?: string
+  clientId?: string
   comparable?: boolean
   observed?: boolean
   at?: string

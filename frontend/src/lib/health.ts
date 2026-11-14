@@ -3,6 +3,7 @@ import type { BodyRegion, BodyRegionId, CrewMember, Status, Vital, VitalId, Vita
 import type { Profile, Symptom } from './api'
 import { loadCheckIns, type CheckInInput } from './storage'
 import { getActiveProfile } from './active-profile'
+import { assessmentFor, provenanceFor, methodLabel, isAssessmentStatus } from './measurement'
 
 export interface VitalConfig {
   id: VitalId; label: string; question: string; fieldLabel: string; unit: string; decimals: number
@@ -57,16 +58,20 @@ export function getTodayVitals(profileOrDate?: Profile | Date, records?: CheckIn
     const historyDays = days.filter(day => byDay.has(day))
     const history = historyDays.map(day => byDay.get(day)!.vitals![c.id]!)
     const latest = byDay.get(todayKey), value = latest?.vitals?.[c.id]
-    const observed = value != null, hasBaseline = Number.isFinite(c.baseline)
-    const delta = observed && hasBaseline ? value - c.baseline : Number.NaN
-    const status = evaluate(delta, c.rule), isBP = c.id === 'bloodPressure'
+    const assessment = assessmentFor(latest, c.id)
+    const baseline = assessment ? assessment.baseline ?? Number.NaN : c.baseline
+    const observed = value != null, hasBaseline = Number.isFinite(baseline) && (!assessment || isAssessmentStatus(assessment.status))
+    const delta = observed && hasBaseline ? assessment?.delta ?? value - baseline : Number.NaN
+    const status = assessment && isAssessmentStatus(assessment.status) ? assessment.status : evaluate(delta, c.rule), isBP = c.id === 'bloodPressure'
+    const provenance = provenanceFor(latest, c.id)
     return { id: c.id, label: c.label, unit: c.unit, observed, comparable: hasBaseline, at: latest?.at,
       value: !observed ? '—' : isBP ? `${fmt(value, 0)}/${latest?.vitals?.bloodPressureDiastolic ?? '—'}` : fmt(value, c.decimals),
-      baseline: isBP ? `${fmt(c.baseline, 0)}/${fmt(c.baselineDiastolic ?? Number.NaN, 0)}` : fmt(c.baseline, c.decimals),
+      baseline: isBP ? assessment ? `${fmt(baseline, 0)} systolic` : `${fmt(baseline, 0)}/${fmt(c.baselineDiastolic ?? Number.NaN, 0)}` : fmt(baseline, c.decimals),
       delta: Number.isFinite(delta) ? `${delta > 0 ? '+' : ''}${fmt(delta, c.decimals)}` : '—', status,
-      history, historyDays, baselineValue: hasBaseline ? c.baseline : undefined,
-      rule: observed && hasBaseline && status !== 'baseline' ? ruleText(c, status) : undefined,
-      source: c.source, input: c.input }
+      history, historyDays, baselineValue: hasBaseline ? baseline : undefined,
+      rule: assessment?.explanation ?? (observed && hasBaseline ? ruleText(c, status) : undefined),
+      source: observed ? methodLabel(provenance) : undefined, input: c.input,
+      assessment, provenance, recordSync: latest?.sync, recordId: latest?.id, clientId: latest?.clientId }
   })
 }
 export const STATUS_TEXT: Record<Status, string> = { baseline: 'Within baseline', attention: 'Attention', flagged: 'Flagged for ground' }
