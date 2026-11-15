@@ -17,10 +17,15 @@ export async function sync(page: Page) {
   await waitForSync(page)
 }
 
-export async function login(page: Page, username: string) {
-  await page.getByLabel('Username', { exact: true }).fill(username)
-  await page.getByLabel('Password', { exact: true }).fill(PASSWORD)
+/** Tela de entrada: escolhe o perfil na grade de tripulantes e digita a senha. */
+export async function signIn(page: Page, username: string, password = PASSWORD) {
+  await page.locator(`[data-profile="${username}"]`).click()
+  await page.getByLabel('Password', { exact: true }).fill(password)
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+}
+
+export async function login(page: Page, username: string) {
+  await signIn(page, username)
   await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
   await waitForSync(page)
 }

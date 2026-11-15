@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { login, sync, syncButton, waitForSync } from './helpers'
+import { login, signIn, sync, syncButton, waitForSync } from './helpers'
 
 // Check-up de saúde: seis medidas, uma por etapa, e por último urina e fezes (opcional).
 const HEALTH_STEPS = (sleep: string) => [
@@ -37,10 +37,14 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('login selects female avatar, head shows own sleep and switching accounts clears personal data', async ({ page }) => {
-  await page.getByLabel('Username', { exact: true }).fill('crew03')
-  await page.getByLabel('Password', { exact: true }).fill('incorrect-password')
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
-  await expect(page.getByRole('alert')).toBeVisible()
+  await signIn(page, 'crew03', 'incorrect-password')
+  await expect(page.getByRole('alert')).toHaveText('Incorrect password.')
+  await page.getByRole('button', { name: 'Choose another profile', exact: true }).click()
+  await expect(page.getByRole('alert')).toHaveCount(0)
+  // Conta fora da grade: o formulário de usuário e senha continua disponível.
+  await page.getByRole('button', { name: 'Use another account', exact: true }).click()
+  await expect(page.getByLabel('Username', { exact: true })).toBeVisible()
+  await page.keyboard.press('Escape')
   await login(page, 'crew03')
   await expect(page.locator('[data-body-model="female"]')).toBeVisible()
   await page.getByRole('button', { name: /^Head:/ }).first().click()
@@ -92,7 +96,7 @@ test('expired session clears private screens and asks for sign-in', async ({ pag
   await login(page, 'crew03')
   await page.request.post('http://127.0.0.1:3003/api/v1/auth/logout', { headers: { 'X-Requested-With': 'Health7' } })
   await syncButton(page).click()
-  await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Who’s checking in?', exact: true })).toBeVisible()
   await expect(page.locator('[data-body-model]')).toHaveCount(0)
 })
 
