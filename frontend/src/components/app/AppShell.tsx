@@ -6,6 +6,8 @@ import { href, type Path } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import type { Connection } from '@/types'
 import { CompanionButton } from './CompanionButton'
+import { EscalateBanner } from './EscalateBanner'
+import type { AlertInput } from '@/lib/alert'
 import type { Line } from '@/lib/companion'
 
 const TABS: { path: Path; label: string; short: string; Icon: LucideIcon }[] = [
@@ -85,6 +87,7 @@ export function AppShell({
   onToggleCompanion,
   companionPanel,
   onOpenDemoData,
+  escalate,
   children,
 }: {
   path: Path
@@ -102,6 +105,8 @@ export function AppShell({
   onToggleCompanion?: () => void
   companionPanel?: ReactNode
   onOpenDemoData?: () => void
+  /** Estado ESCALATE do motor de monitoramento: mostra a faixa vermelha em todas as telas. */
+  escalate?: AlertInput | null
   children: ReactNode
 }) {
   const active = activeTab(path)
@@ -166,6 +171,8 @@ export function AppShell({
             </div>
           </div>
         </header>
+
+        {escalate && <EscalateBanner key={escalate.date} alert={escalate} />}
 
         {/* Abaixo de 1024 px: o chip de rank e "Log out" numa segunda linha */}
         {headerExtra && <div className="mx-auto flex max-w-[1360px] items-center justify-end gap-2 px-4 pt-3 md:px-8 lg:hidden">{headerExtra}</div>}

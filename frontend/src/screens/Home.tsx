@@ -10,6 +10,8 @@ import { indicators, useSpaceWeather } from '@/lib/donki'
 import { getBodyRegions, getTodayVitals } from '@/lib/health'
 import { buildNotes } from '@/lib/notes'
 import { useActivePlan, usePatterns } from '@/lib/usePrevention'
+import { useMonitor } from '@/lib/useMonitor'
+import { signalText, topSignals } from '@/lib/monitor'
 import { latestCheckIn, type CheckIn } from '@/lib/storage'
 import type { Profile } from '@/lib/api'
 import { toast } from 'sonner'
@@ -43,6 +45,7 @@ export function Home({ connection, game, profile, checkins }: { connection: Conn
   const regions = useMemo(() => getBodyRegions(vitals), [vitals])
   const today = todayStatus()
   const weather = useSpaceWeather()
+  const monitor = useMonitor()
   const activePatterns = usePatterns().filter((p) => p.active)
   const plan = useActivePlan()
   const water = game.today.water
@@ -64,6 +67,7 @@ export function Home({ connection, game, profile, checkins }: { connection: Conn
     water: { servings: water, goal: WATER_GOAL },
     plan: plan?.today ? { day: plan.dayNumber, days: plan.plan.days, stepsDone: plan.today.doneCount, steps: plan.today.steps.length } : undefined,
     patterns: activePatterns.map((p) => ({ id: p.def.id, title: p.def.title, present: p.present, total: p.total, status: p.status })),
+    monitor: monitor ? { state: monitor.state, score: monitor.score, signals: topSignals(monitor).map(signalText) } : undefined,
   })
 
   function goToRoutine() {

@@ -1,0 +1,5985 @@
+{
+ "notice": "Synthetic crew profiles (NEXUS-Med research, fictional NX-01 to NX-06). Measurement values follow published spaceflight trends; environment is real NASA RR-1 telemetry re-indexed to mission day, not measured with these crew profiles.",
+ "source": "dados/NEXUS-Med_6crew_daily_30d_cases.xlsm",
+ "sheet": "02_Daily_Mission_30d",
+ "synthetic": true,
+ "items": [
+  {
+   "crewId": "NX-01",
+   "day": 1,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 70,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.8,
+    "sleep": 6.3,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 166,
+   "urinations24h": 8,
+   "stools24h": 1,
+   "symptomsText": "Mild nausea and reduced appetite.",
+   "symptoms": [
+    {
+     "label": "nausea",
+     "bodyPart": "abdomen",
+     "severity": 2
+    },
+    {
+     "label": "reduced-appetite",
+     "bodyPart": "general",
+     "severity": 2
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 25.13,
+    "relativeHumidityPct": 54.9,
+    "co2Ppm": 2660,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 0.21,
+    "sourceDate": "2014-09-21",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 2,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.5,
+    "sleep": 6.6,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 166.6,
+   "urinations24h": 8,
+   "stools24h": 1,
+   "symptomsText": "Mild nausea; no vomiting.",
+   "symptoms": [
+    {
+     "label": "nausea",
+     "bodyPart": "abdomen",
+     "severity": 2
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 24.82,
+    "relativeHumidityPct": 66.5,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.23,
+    "radiationAccumMgy": 0.44,
+    "sourceDate": "2014-09-22",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 3,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.3,
+    "sleep": 6.9,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 167.1,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "Nausea improving.",
+   "symptoms": [
+    {
+     "label": "nausea",
+     "bodyPart": "abdomen",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.93,
+    "relativeHumidityPct": 51.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 0.64,
+    "sourceDate": "2014-09-23",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 4,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.1,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 167.4,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "Symptoms nearly resolved.",
+   "symptoms": [
+    {
+     "label": "nausea",
+     "bodyPart": "abdomen",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.39,
+    "relativeHumidityPct": 35.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 0.86,
+    "sourceDate": "2014-09-24",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 5,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.4,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 167.6,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.02,
+    "relativeHumidityPct": 32.1,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.07,
+    "sourceDate": "2014-09-25",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 6,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.5,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 167.7,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.05,
+    "relativeHumidityPct": 32.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.28,
+    "sourceDate": "2014-09-26",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 7,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.6,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 167.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.13,
+    "relativeHumidityPct": 36.4,
+    "co2Ppm": 2943,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.49,
+    "sourceDate": "2014-09-27",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 8,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.7,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 167.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 40.9,
+    "co2Ppm": 2935,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 1.69,
+    "sourceDate": "2014-09-28",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 9,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.8,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 167.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.69,
+    "relativeHumidityPct": 41.4,
+    "co2Ppm": 2448,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.89,
+    "sourceDate": "2014-09-29",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 10,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.7,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 167.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 42.7,
+    "co2Ppm": 2648,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.09,
+    "sourceDate": "2014-09-30",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 11,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 59.9,
+    "sleep": 7.6,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 167.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.55,
+    "relativeHumidityPct": 43.5,
+    "co2Ppm": 3056,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.3,
+    "sourceDate": "2014-10-01",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 12,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 59.9,
+    "sleep": 7.5,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 167.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.29,
+    "relativeHumidityPct": 44.2,
+    "co2Ppm": 3367,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.51,
+    "sourceDate": "2014-10-02",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 13,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 59.8,
+    "sleep": 7.4,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.48,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3604,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.72,
+    "sourceDate": "2014-10-03",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 14,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 59.9,
+    "sleep": 7.4,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.42,
+    "relativeHumidityPct": 46.4,
+    "co2Ppm": 3782,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.93,
+    "sourceDate": "2014-10-04",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 15,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 59.9,
+    "sleep": 7.5,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.32,
+    "relativeHumidityPct": 48.2,
+    "co2Ppm": 3967,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 3.15,
+    "sourceDate": "2014-10-05",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 16,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.7,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.54,
+    "relativeHumidityPct": 49.8,
+    "co2Ppm": 3934,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 3.36,
+    "sourceDate": "2014-10-06",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 17,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.8,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.72,
+    "relativeHumidityPct": 46.3,
+    "co2Ppm": 4219,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.56,
+    "sourceDate": "2014-10-07",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 18,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.8,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.44,
+    "relativeHumidityPct": 42.6,
+    "co2Ppm": 3101,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.77,
+    "sourceDate": "2014-10-08",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 19,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.7,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.52,
+    "relativeHumidityPct": 40.3,
+    "co2Ppm": 2251,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 3.96,
+    "sourceDate": "2014-10-09",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 20,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.5,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.57,
+    "relativeHumidityPct": 39.1,
+    "co2Ppm": 2015,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.16,
+    "sourceDate": "2014-10-10",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 21,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.4,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.77,
+    "relativeHumidityPct": 41.3,
+    "co2Ppm": 2297,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.37,
+    "sourceDate": "2014-10-11",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 22,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.4,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.58,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 2838,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.57,
+    "sourceDate": "2014-10-12",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 23,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.5,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.67,
+    "relativeHumidityPct": 45.5,
+    "co2Ppm": 3193,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.78,
+    "sourceDate": "2014-10-13",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 24,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.6,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 3233,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.98,
+    "sourceDate": "2014-10-14",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 25,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.2,
+    "sleep": 7.7,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.45,
+    "relativeHumidityPct": 44.9,
+    "co2Ppm": 3250,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.18,
+    "sourceDate": "2014-10-15",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 26,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.2,
+    "sleep": 7.8,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.49,
+    "relativeHumidityPct": 43.6,
+    "co2Ppm": 3292,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.38,
+    "sourceDate": "2014-10-16",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 27,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.2,
+    "sleep": 7.7,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 44.8,
+    "co2Ppm": 3296,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.59,
+    "sourceDate": "2014-10-17",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 28,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.6,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.62,
+    "relativeHumidityPct": 44.5,
+    "co2Ppm": 3326,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.8,
+    "sourceDate": "2014-10-18",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 29,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60.1,
+    "sleep": 7.5,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.71,
+    "relativeHumidityPct": 47.7,
+    "co2Ppm": 3551,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.99,
+    "sourceDate": "2014-10-19",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-01",
+   "day": 30,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 60,
+    "sleep": 7.4,
+    "bloodPressure": 108,
+    "bloodPressureDiastolic": 66
+   },
+   "heightCm": 168,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.3,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3400,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 6.19,
+    "sourceDate": "2014-10-20",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 1,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 54,
+    "respiratoryRate": 13,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 77.6,
+    "sleep": 6.5,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 182.1,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 25.13,
+    "relativeHumidityPct": 54.9,
+    "co2Ppm": 2660,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 0.21,
+    "sourceDate": "2014-09-21",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 2,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 77.3,
+    "sleep": 6.6,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 182.8,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 24.82,
+    "relativeHumidityPct": 66.5,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.23,
+    "radiationAccumMgy": 0.44,
+    "sourceDate": "2014-09-22",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 3,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 77,
+    "sleep": 6.7,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 183.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.93,
+    "relativeHumidityPct": 51.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 0.64,
+    "sourceDate": "2014-09-23",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 4,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.9,
+    "sleep": 7,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 183.6,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.39,
+    "relativeHumidityPct": 35.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 0.86,
+    "sourceDate": "2014-09-24",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 5,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.3,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 183.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.02,
+    "relativeHumidityPct": 32.1,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.07,
+    "sourceDate": "2014-09-25",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 6,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.4,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.05,
+    "relativeHumidityPct": 32.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.28,
+    "sourceDate": "2014-09-26",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 7,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.5,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.13,
+    "relativeHumidityPct": 36.4,
+    "co2Ppm": 2943,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.49,
+    "sourceDate": "2014-09-27",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 8,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.6,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 40.9,
+    "co2Ppm": 2935,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 1.69,
+    "sourceDate": "2014-09-28",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 9,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.7,
+    "sleep": 7.5,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.69,
+    "relativeHumidityPct": 41.4,
+    "co2Ppm": 2448,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.89,
+    "sourceDate": "2014-09-29",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 10,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.6,
+    "sleep": 7.4,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 42.7,
+    "co2Ppm": 2648,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.09,
+    "sourceDate": "2014-09-30",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 11,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.6,
+    "sleep": 7.3,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.55,
+    "relativeHumidityPct": 43.5,
+    "co2Ppm": 3056,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.3,
+    "sourceDate": "2014-10-01",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 12,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.5,
+    "sleep": 7.2,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.29,
+    "relativeHumidityPct": 44.2,
+    "co2Ppm": 3367,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.51,
+    "sourceDate": "2014-10-02",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 13,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.6,
+    "sleep": 7.3,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.48,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3604,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.72,
+    "sourceDate": "2014-10-03",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 14,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.6,
+    "sleep": 7.4,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.42,
+    "relativeHumidityPct": 46.4,
+    "co2Ppm": 3782,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.93,
+    "sourceDate": "2014-10-04",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 15,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.7,
+    "sleep": 7.5,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.32,
+    "relativeHumidityPct": 48.2,
+    "co2Ppm": 3967,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 3.15,
+    "sourceDate": "2014-10-05",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 16,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.6,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.54,
+    "relativeHumidityPct": 49.8,
+    "co2Ppm": 3934,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 3.36,
+    "sourceDate": "2014-10-06",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 17,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.5,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.72,
+    "relativeHumidityPct": 46.3,
+    "co2Ppm": 4219,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.56,
+    "sourceDate": "2014-10-07",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 18,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.7,
+    "sleep": 7.4,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.44,
+    "relativeHumidityPct": 42.6,
+    "co2Ppm": 3101,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.77,
+    "sourceDate": "2014-10-08",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 19,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.7,
+    "sleep": 7.3,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.52,
+    "relativeHumidityPct": 40.3,
+    "co2Ppm": 2251,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 3.96,
+    "sourceDate": "2014-10-09",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 20,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.7,
+    "sleep": 7.2,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.57,
+    "relativeHumidityPct": 39.1,
+    "co2Ppm": 2015,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.16,
+    "sourceDate": "2014-10-10",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 21,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.7,
+    "sleep": 7.2,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.77,
+    "relativeHumidityPct": 41.3,
+    "co2Ppm": 2297,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.37,
+    "sourceDate": "2014-10-11",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 22,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.3,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.58,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 2838,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.57,
+    "sourceDate": "2014-10-12",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 23,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.9,
+    "sleep": 7.5,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.67,
+    "relativeHumidityPct": 45.5,
+    "co2Ppm": 3193,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.78,
+    "sourceDate": "2014-10-13",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 24,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.9,
+    "sleep": 7.6,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 3233,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.98,
+    "sourceDate": "2014-10-14",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 25,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.9,
+    "sleep": 7.6,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.45,
+    "relativeHumidityPct": 44.9,
+    "co2Ppm": 3250,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.18,
+    "sourceDate": "2014-10-15",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 26,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 53,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.9,
+    "sleep": 7.5,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.49,
+    "relativeHumidityPct": 43.6,
+    "co2Ppm": 3292,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.38,
+    "sourceDate": "2014-10-16",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 27,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 52,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.9,
+    "sleep": 7.4,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 44.8,
+    "co2Ppm": 3296,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.59,
+    "sourceDate": "2014-10-17",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 28,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.2,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.62,
+    "relativeHumidityPct": 44.5,
+    "co2Ppm": 3326,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.8,
+    "sourceDate": "2014-10-18",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 29,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.2,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.71,
+    "relativeHumidityPct": 47.7,
+    "co2Ppm": 3551,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.99,
+    "sourceDate": "2014-10-19",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-02",
+   "day": 30,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 51,
+    "respiratoryRate": 12,
+    "temperature": 36.5,
+    "spo2": 99,
+    "bodyMass": 76.8,
+    "sleep": 7.3,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 184.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.3,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3400,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 6.19,
+    "sourceDate": "2014-10-20",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 1,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 66.6,
+    "sleep": 6.4,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 171,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 25.13,
+    "relativeHumidityPct": 54.9,
+    "co2Ppm": 2660,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 0.21,
+    "sourceDate": "2014-09-21",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 2,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 66.3,
+    "sleep": 6.6,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 171.7,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 24.82,
+    "relativeHumidityPct": 66.5,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.23,
+    "radiationAccumMgy": 0.44,
+    "sourceDate": "2014-09-22",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 3,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.2,
+    "sleep": 6.8,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 172.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.93,
+    "relativeHumidityPct": 51.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 0.64,
+    "sourceDate": "2014-09-23",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 4,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.1,
+    "sleep": 7.2,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 172.4,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.39,
+    "relativeHumidityPct": 35.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 0.86,
+    "sourceDate": "2014-09-24",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 5,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.1,
+    "sleep": 7.6,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 172.6,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.02,
+    "relativeHumidityPct": 32.1,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.07,
+    "sourceDate": "2014-09-25",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 6,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.1,
+    "sleep": 7.7,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 172.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.05,
+    "relativeHumidityPct": 32.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.28,
+    "sourceDate": "2014-09-26",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 7,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.7,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 172.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.13,
+    "relativeHumidityPct": 36.4,
+    "co2Ppm": 2943,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.49,
+    "sourceDate": "2014-09-27",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 8,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.9,
+    "sleep": 7.6,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 172.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 40.9,
+    "co2Ppm": 2935,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 1.69,
+    "sourceDate": "2014-09-28",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 9,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.8,
+    "sleep": 6.9,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Increasing sleep debt and fatigue; mild intermittent headache.",
+   "symptoms": [
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    },
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 2
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.69,
+    "relativeHumidityPct": 41.4,
+    "co2Ppm": 2448,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.89,
+    "sourceDate": "2014-09-29",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 10,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.7,
+    "sleep": 6.2,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 173,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Increasing sleep debt and fatigue; mild intermittent headache.",
+   "symptoms": [
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    },
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 2
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 42.7,
+    "co2Ppm": 2648,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.09,
+    "sourceDate": "2014-09-30",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 11,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.7,
+    "sleep": 5.7,
+    "bloodPressure": 118,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 173,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Increasing sleep debt and fatigue; mild intermittent headache.",
+   "symptoms": [
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    },
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 2
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.55,
+    "relativeHumidityPct": 43.5,
+    "co2Ppm": 3056,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.3,
+    "sourceDate": "2014-10-01",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 12,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.8,
+    "sleep": 5.8,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 173,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Headache 4/10 with daytime fatigue; no focal neurologic or visual red flags.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.29,
+    "relativeHumidityPct": 44.2,
+    "co2Ppm": 3367,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.51,
+    "sourceDate": "2014-10-02",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 13,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.8,
+    "sleep": 5.9,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 173,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Headache 4/10 with daytime fatigue; no focal neurologic or visual red flags.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.48,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3604,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.72,
+    "sourceDate": "2014-10-03",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 14,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.9,
+    "sleep": 6,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 173,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Headache 4/10 with daytime fatigue; no focal neurologic or visual red flags.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.42,
+    "relativeHumidityPct": 46.4,
+    "co2Ppm": 3782,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.93,
+    "sourceDate": "2014-10-04",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 15,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 6.1,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Headache 4/10 with daytime fatigue; no focal neurologic or visual red flags.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.32,
+    "relativeHumidityPct": 48.2,
+    "co2Ppm": 3967,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 3.15,
+    "sourceDate": "2014-10-05",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 16,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.9,
+    "sleep": 6,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Headache 4/10 with daytime fatigue; no focal neurologic or visual red flags.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.54,
+    "relativeHumidityPct": 49.8,
+    "co2Ppm": 3934,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 3.36,
+    "sourceDate": "2014-10-06",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 17,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.9,
+    "sleep": 5.9,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Headache 4/10 with daytime fatigue; no focal neurologic or visual red flags.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.72,
+    "relativeHumidityPct": 46.3,
+    "co2Ppm": 4219,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.56,
+    "sourceDate": "2014-10-07",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 18,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.8,
+    "sleep": 6.1,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Sleep and headache improving after recovery intervention.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.44,
+    "relativeHumidityPct": 42.6,
+    "co2Ppm": 3101,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.77,
+    "sourceDate": "2014-10-08",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 19,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.8,
+    "sleep": 6.3,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Sleep and headache improving after recovery intervention.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.52,
+    "relativeHumidityPct": 40.3,
+    "co2Ppm": 2251,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 3.96,
+    "sourceDate": "2014-10-09",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 20,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.9,
+    "sleep": 6.8,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Sleep and headache improving after recovery intervention.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.57,
+    "relativeHumidityPct": 39.1,
+    "co2Ppm": 2015,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.16,
+    "sourceDate": "2014-10-10",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 21,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 65.9,
+    "sleep": 7.2,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Sleep and headache improving after recovery intervention.",
+   "symptoms": [
+    {
+     "label": "headache",
+     "bodyPart": "head",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.77,
+    "relativeHumidityPct": 41.3,
+    "co2Ppm": 2297,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.37,
+    "sourceDate": "2014-10-11",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 22,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.6,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.58,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 2838,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.57,
+    "sourceDate": "2014-10-12",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 23,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.1,
+    "sleep": 7.7,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.67,
+    "relativeHumidityPct": 45.5,
+    "co2Ppm": 3193,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.78,
+    "sourceDate": "2014-10-13",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 24,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.1,
+    "sleep": 7.7,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 3233,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.98,
+    "sourceDate": "2014-10-14",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 25,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.5,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.45,
+    "relativeHumidityPct": 44.9,
+    "co2Ppm": 3250,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.18,
+    "sourceDate": "2014-10-15",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 26,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.4,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.49,
+    "relativeHumidityPct": 43.6,
+    "co2Ppm": 3292,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.38,
+    "sourceDate": "2014-10-16",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 27,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.3,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 44.8,
+    "co2Ppm": 3296,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.59,
+    "sourceDate": "2014-10-17",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 28,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.3,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.62,
+    "relativeHumidityPct": 44.5,
+    "co2Ppm": 3326,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.8,
+    "sourceDate": "2014-10-18",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 29,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66,
+    "sleep": 7.4,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.71,
+    "relativeHumidityPct": 47.7,
+    "co2Ppm": 3551,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.99,
+    "sourceDate": "2014-10-19",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-03",
+   "day": 30,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 62,
+    "respiratoryRate": 13,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 66.1,
+    "sleep": 7.6,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 173.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.3,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3400,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 6.19,
+    "sourceDate": "2014-10-20",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 1,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 81.5,
+    "sleep": 6,
+    "bloodPressure": 118,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 177,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 25.13,
+    "relativeHumidityPct": 54.9,
+    "co2Ppm": 2660,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 0.21,
+    "sourceDate": "2014-09-21",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 2,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 81.2,
+    "sleep": 6.3,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 177.7,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 24.82,
+    "relativeHumidityPct": 66.5,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.23,
+    "radiationAccumMgy": 0.44,
+    "sourceDate": "2014-09-22",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 3,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 81.1,
+    "sleep": 6.7,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 178.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.93,
+    "relativeHumidityPct": 51.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 0.64,
+    "sourceDate": "2014-09-23",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 4,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 81,
+    "sleep": 7.1,
+    "bloodPressure": 118,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 178.5,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.39,
+    "relativeHumidityPct": 35.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 0.86,
+    "sourceDate": "2014-09-24",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 5,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.9,
+    "sleep": 7.4,
+    "bloodPressure": 118,
+    "bloodPressureDiastolic": 75
+   },
+   "heightCm": 178.7,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.02,
+    "relativeHumidityPct": 32.1,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.07,
+    "sourceDate": "2014-09-25",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 6,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.8,
+    "sleep": 7.3,
+    "bloodPressure": 119,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 178.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.05,
+    "relativeHumidityPct": 32.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.28,
+    "sourceDate": "2014-09-26",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 7,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 60,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.7,
+    "sleep": 7.2,
+    "bloodPressure": 119,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 179,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.13,
+    "relativeHumidityPct": 36.4,
+    "co2Ppm": 2943,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.49,
+    "sourceDate": "2014-09-27",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 8,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 59,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.6,
+    "sleep": 7.1,
+    "bloodPressure": 119,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 179,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 40.9,
+    "co2Ppm": 2935,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 1.69,
+    "sourceDate": "2014-09-28",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 9,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 59,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.5,
+    "sleep": 7,
+    "bloodPressure": 118,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 179.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.69,
+    "relativeHumidityPct": 41.4,
+    "co2Ppm": 2448,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.89,
+    "sourceDate": "2014-09-29",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 10,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 59,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.5,
+    "sleep": 7,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 179.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 42.7,
+    "co2Ppm": 2648,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.09,
+    "sourceDate": "2014-09-30",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 11,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 60,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.5,
+    "sleep": 7.1,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 179.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.55,
+    "relativeHumidityPct": 43.5,
+    "co2Ppm": 3056,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.3,
+    "sourceDate": "2014-10-01",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 12,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.6,
+    "sleep": 7.3,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 179.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.29,
+    "relativeHumidityPct": 44.2,
+    "co2Ppm": 3367,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.51,
+    "sourceDate": "2014-10-02",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 13,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.7,
+    "sleep": 7.4,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 179.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.48,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3604,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.72,
+    "sourceDate": "2014-10-03",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 14,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.7,
+    "sleep": 7.4,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 179.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.42,
+    "relativeHumidityPct": 46.4,
+    "co2Ppm": 3782,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.93,
+    "sourceDate": "2014-10-04",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 15,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.6,
+    "sleep": 7.3,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 179.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.32,
+    "relativeHumidityPct": 48.2,
+    "co2Ppm": 3967,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 3.15,
+    "sourceDate": "2014-10-05",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 16,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.2,
+    "sleep": 6.9,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 179.2,
+   "urinations24h": 5,
+   "stools24h": 1,
+   "symptomsText": "Reduced fluid intake, thirst and decreasing urine frequency.",
+   "symptoms": [
+    {
+     "label": "thirst",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.54,
+    "relativeHumidityPct": 49.8,
+    "co2Ppm": 3934,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 3.36,
+    "sourceDate": "2014-10-06",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 17,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.7,
+    "sleep": 6.7,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 179.2,
+   "urinations24h": 4,
+   "stools24h": 1,
+   "symptomsText": "Reduced fluid intake, thirst and decreasing urine frequency.",
+   "symptoms": [
+    {
+     "label": "thirst",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.72,
+    "relativeHumidityPct": 46.3,
+    "co2Ppm": 4219,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.56,
+    "sourceDate": "2014-10-07",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 18,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.4,
+    "sleep": 6.5,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 179.2,
+   "urinations24h": 3,
+   "stools24h": 1,
+   "symptomsText": "Reduced fluid intake, thirst and decreasing urine frequency.",
+   "symptoms": [
+    {
+     "label": "thirst",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.44,
+    "relativeHumidityPct": 42.6,
+    "co2Ppm": 3101,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.77,
+    "sourceDate": "2014-10-08",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 19,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.4,
+    "sleep": 6.6,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 67
+   },
+   "heightCm": 179.2,
+   "urinations24h": 3,
+   "stools24h": 1,
+   "symptomsText": "Reduced fluid intake, thirst and decreasing urine frequency.",
+   "symptoms": [
+    {
+     "label": "thirst",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.52,
+    "relativeHumidityPct": 40.3,
+    "co2Ppm": 2251,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 3.96,
+    "sourceDate": "2014-10-09",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 20,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 69,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.5,
+    "sleep": 6.7,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 68
+   },
+   "heightCm": 179.2,
+   "urinations24h": 3,
+   "stools24h": 1,
+   "symptomsText": "Reduced urine frequency, dark urine and intermittent flank discomfort; no fever.",
+   "symptoms": [
+    {
+     "label": "flank-discomfort",
+     "bodyPart": "back",
+     "severity": 3
+    },
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.57,
+    "relativeHumidityPct": 39.1,
+    "co2Ppm": 2015,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.16,
+    "sourceDate": "2014-10-10",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 21,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 70,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.6,
+    "sleep": 6.8,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 179.2,
+   "urinations24h": 3,
+   "stools24h": 1,
+   "symptomsText": "Reduced urine frequency, dark urine and intermittent flank discomfort; no fever.",
+   "symptoms": [
+    {
+     "label": "flank-discomfort",
+     "bodyPart": "back",
+     "severity": 3
+    },
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.77,
+    "relativeHumidityPct": 41.3,
+    "co2Ppm": 2297,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.37,
+    "sourceDate": "2014-10-11",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 22,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 70,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.6,
+    "sleep": 6.9,
+    "bloodPressure": 110,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 179.2,
+   "urinations24h": 3,
+   "stools24h": 1,
+   "symptomsText": "Reduced urine frequency, dark urine and intermittent flank discomfort; no fever.",
+   "symptoms": [
+    {
+     "label": "flank-discomfort",
+     "bodyPart": "back",
+     "severity": 3
+    },
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.58,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 2838,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.57,
+    "sourceDate": "2014-10-12",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 23,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 70,
+    "respiratoryRate": 16,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.6,
+    "sleep": 6.8,
+    "bloodPressure": 109,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 179.2,
+   "urinations24h": 3,
+   "stools24h": 1,
+   "symptomsText": "Reduced urine frequency, dark urine and intermittent flank discomfort; no fever.",
+   "symptoms": [
+    {
+     "label": "flank-discomfort",
+     "bodyPart": "back",
+     "severity": 3
+    },
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.67,
+    "relativeHumidityPct": 45.5,
+    "co2Ppm": 3193,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.78,
+    "sourceDate": "2014-10-13",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 24,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 79.8,
+    "sleep": 6.8,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 179.2,
+   "urinations24h": 4,
+   "stools24h": 1,
+   "symptomsText": "Hydration and urinary pattern improving; flank discomfort resolved.",
+   "symptoms": [
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 3233,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.98,
+    "sourceDate": "2014-10-14",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 25,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 64,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80,
+    "sleep": 6.8,
+    "bloodPressure": 111,
+    "bloodPressureDiastolic": 69
+   },
+   "heightCm": 179.2,
+   "urinations24h": 4,
+   "stools24h": 1,
+   "symptomsText": "Hydration and urinary pattern improving; flank discomfort resolved.",
+   "symptoms": [
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.45,
+    "relativeHumidityPct": 44.9,
+    "co2Ppm": 3250,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.18,
+    "sourceDate": "2014-10-15",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 26,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 63,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.2,
+    "sleep": 6.8,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 179.2,
+   "urinations24h": 5,
+   "stools24h": 1,
+   "symptomsText": "Hydration and urinary pattern improving; flank discomfort resolved.",
+   "symptoms": [
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.49,
+    "relativeHumidityPct": 43.6,
+    "co2Ppm": 3292,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.38,
+    "sourceDate": "2014-10-16",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 27,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.6,
+    "sleep": 7,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 179.2,
+   "urinations24h": 5,
+   "stools24h": 1,
+   "symptomsText": "Hydration and urinary pattern improving; flank discomfort resolved.",
+   "symptoms": [
+    {
+     "label": "dark-urine",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 44.8,
+    "co2Ppm": 3296,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.59,
+    "sourceDate": "2014-10-17",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 28,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 60,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.8,
+    "sleep": 7.2,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 179.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.62,
+    "relativeHumidityPct": 44.5,
+    "co2Ppm": 3326,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.8,
+    "sourceDate": "2014-10-18",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 29,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 80.9,
+    "sleep": 7.3,
+    "bloodPressure": 116,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 179.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.71,
+    "relativeHumidityPct": 47.7,
+    "co2Ppm": 3551,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.99,
+    "sourceDate": "2014-10-19",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-04",
+   "day": 30,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 61,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 98,
+    "bodyMass": 81,
+    "sleep": 7.4,
+    "bloodPressure": 117,
+    "bloodPressureDiastolic": 74
+   },
+   "heightCm": 179.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.3,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3400,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 6.19,
+    "sourceDate": "2014-10-20",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 1,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 15,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.7,
+    "sleep": 6.2,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 160.9,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 25.13,
+    "relativeHumidityPct": 54.9,
+    "co2Ppm": 2660,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 0.21,
+    "sourceDate": "2014-09-21",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 2,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 15,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.5,
+    "sleep": 6.6,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 161.6,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 24.82,
+    "relativeHumidityPct": 66.5,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.23,
+    "radiationAccumMgy": 0.44,
+    "sourceDate": "2014-09-22",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 3,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 15,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.4,
+    "sleep": 6.9,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 162,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.93,
+    "relativeHumidityPct": 51.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 0.64,
+    "sourceDate": "2014-09-23",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 4,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 15,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.3,
+    "sleep": 7.2,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 73
+   },
+   "heightCm": 162.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.39,
+    "relativeHumidityPct": 35.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 0.86,
+    "sourceDate": "2014-09-24",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 5,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.2,
+    "sleep": 7.4,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.5,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.02,
+    "relativeHumidityPct": 32.1,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.07,
+    "sourceDate": "2014-09-25",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 6,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.3,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.6,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.05,
+    "relativeHumidityPct": 32.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.28,
+    "sourceDate": "2014-09-26",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 7,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.2,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.7,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.13,
+    "relativeHumidityPct": 36.4,
+    "co2Ppm": 2943,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.49,
+    "sourceDate": "2014-09-27",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 8,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 55.9,
+    "sleep": 7.1,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 40.9,
+    "co2Ppm": 2935,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 1.69,
+    "sourceDate": "2014-09-28",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 9,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.2,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.69,
+    "relativeHumidityPct": 41.4,
+    "co2Ppm": 2448,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.89,
+    "sourceDate": "2014-09-29",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 10,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.3,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 42.7,
+    "co2Ppm": 2648,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.09,
+    "sourceDate": "2014-09-30",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 11,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.4,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.8,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.55,
+    "relativeHumidityPct": 43.5,
+    "co2Ppm": 3056,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.3,
+    "sourceDate": "2014-10-01",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 12,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.5,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.29,
+    "relativeHumidityPct": 44.2,
+    "co2Ppm": 3367,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.51,
+    "sourceDate": "2014-10-02",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 13,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.4,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.48,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3604,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.72,
+    "sourceDate": "2014-10-03",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 14,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.3,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.42,
+    "relativeHumidityPct": 46.4,
+    "co2Ppm": 3782,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.93,
+    "sourceDate": "2014-10-04",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 15,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.2,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.32,
+    "relativeHumidityPct": 48.2,
+    "co2Ppm": 3967,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 3.15,
+    "sourceDate": "2014-10-05",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 16,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 55.9,
+    "sleep": 7.1,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.54,
+    "relativeHumidityPct": 49.8,
+    "co2Ppm": 3934,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 3.36,
+    "sourceDate": "2014-10-06",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 17,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.1,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.72,
+    "relativeHumidityPct": 46.3,
+    "co2Ppm": 4219,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.56,
+    "sourceDate": "2014-10-07",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 18,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56,
+    "sleep": 7.2,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.44,
+    "relativeHumidityPct": 42.6,
+    "co2Ppm": 3101,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.77,
+    "sourceDate": "2014-10-08",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 19,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.4,
+    "bloodPressure": 115,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.52,
+    "relativeHumidityPct": 40.3,
+    "co2Ppm": 2251,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 3.96,
+    "sourceDate": "2014-10-09",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 20,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.2,
+    "sleep": 7.5,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.57,
+    "relativeHumidityPct": 39.1,
+    "co2Ppm": 2015,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.16,
+    "sourceDate": "2014-10-10",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 21,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.2,
+    "sleep": 7.5,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.77,
+    "relativeHumidityPct": 41.3,
+    "co2Ppm": 2297,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.37,
+    "sourceDate": "2014-10-11",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 22,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.2,
+    "sleep": 7.4,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.58,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 2838,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.57,
+    "sourceDate": "2014-10-12",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 23,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.3,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.67,
+    "relativeHumidityPct": 45.5,
+    "co2Ppm": 3193,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.78,
+    "sourceDate": "2014-10-13",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 24,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.1,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 3233,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.98,
+    "sourceDate": "2014-10-14",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 25,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.1,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.45,
+    "relativeHumidityPct": 44.9,
+    "co2Ppm": 3250,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.18,
+    "sourceDate": "2014-10-15",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 26,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 65,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.1,
+    "sleep": 7.2,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 70
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.49,
+    "relativeHumidityPct": 43.6,
+    "co2Ppm": 3292,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.38,
+    "sourceDate": "2014-10-16",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 27,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 66,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.2,
+    "sleep": 7.3,
+    "bloodPressure": 112,
+    "bloodPressureDiastolic": 71
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 44.8,
+    "co2Ppm": 3296,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.59,
+    "sourceDate": "2014-10-17",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 28,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.3,
+    "sleep": 7.4,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.62,
+    "relativeHumidityPct": 44.5,
+    "co2Ppm": 3326,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.8,
+    "sourceDate": "2014-10-18",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 29,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.3,
+    "sleep": 7.5,
+    "bloodPressure": 113,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.71,
+    "relativeHumidityPct": 47.7,
+    "co2Ppm": 3551,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.99,
+    "sourceDate": "2014-10-19",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-05",
+   "day": 30,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.7,
+    "spo2": 98,
+    "bodyMass": 56.3,
+    "sleep": 7.4,
+    "bloodPressure": 114,
+    "bloodPressureDiastolic": 72
+   },
+   "heightCm": 162.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.3,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3400,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 6.19,
+    "sourceDate": "2014-10-20",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 1,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 71,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 87.6,
+    "sleep": 6.1,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 80
+   },
+   "heightCm": 186.1,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 25.13,
+    "relativeHumidityPct": 54.9,
+    "co2Ppm": 2660,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 0.21,
+    "sourceDate": "2014-09-21",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 2,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 71,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 87.3,
+    "sleep": 6.4,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 79
+   },
+   "heightCm": 186.8,
+   "urinations24h": 7,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 24.82,
+    "relativeHumidityPct": 66.5,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.23,
+    "radiationAccumMgy": 0.44,
+    "sourceDate": "2014-09-22",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 3,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 70,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 87.1,
+    "sleep": 6.7,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 79
+   },
+   "heightCm": 187.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.93,
+    "relativeHumidityPct": 51.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 0.64,
+    "sourceDate": "2014-09-23",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 4,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 69,
+    "respiratoryRate": 15,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.9,
+    "sleep": 6.8,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 187.7,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.39,
+    "relativeHumidityPct": 35.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 0.86,
+    "sourceDate": "2014-09-24",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 5,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.7,
+    "sleep": 6.9,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 187.9,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.02,
+    "relativeHumidityPct": 32.1,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.07,
+    "sourceDate": "2014-09-25",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 6,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.5,
+    "sleep": 6.8,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.05,
+    "relativeHumidityPct": 32.9,
+    "co2Ppm": 2646,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.28,
+    "sourceDate": "2014-09-26",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 7,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.5,
+    "sleep": 6.8,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 76
+   },
+   "heightCm": 188.1,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 23.13,
+    "relativeHumidityPct": 36.4,
+    "co2Ppm": 2943,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.49,
+    "sourceDate": "2014-09-27",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 8,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.5,
+    "sleep": 6.9,
+    "bloodPressure": 125,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 40.9,
+    "co2Ppm": 2935,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 1.69,
+    "sourceDate": "2014-09-28",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 9,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.5,
+    "sleep": 7,
+    "bloodPressure": 124,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.2,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.69,
+    "relativeHumidityPct": 41.4,
+    "co2Ppm": 2448,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 1.89,
+    "sourceDate": "2014-09-29",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 10,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 76,
+    "respiratoryRate": 17,
+    "temperature": 37.2,
+    "spo2": 96,
+    "bodyMass": 86.6,
+    "sleep": 6.3,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "New sore throat, cough and fatigue.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 3
+    },
+    {
+     "label": "sore-throat",
+     "bodyPart": "general",
+     "severity": 3
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 42.7,
+    "co2Ppm": 2648,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.09,
+    "sourceDate": "2014-09-30",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 11,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 83,
+    "respiratoryRate": 20,
+    "temperature": 37.8,
+    "spo2": 94,
+    "bodyMass": 86.6,
+    "sleep": 5.7,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "New sore throat, cough and fatigue.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 3
+    },
+    {
+     "label": "sore-throat",
+     "bodyPart": "general",
+     "severity": 3
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 3
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.55,
+    "relativeHumidityPct": 43.5,
+    "co2Ppm": 3056,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.3,
+    "sourceDate": "2014-10-01",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 12,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 83,
+    "respiratoryRate": 20,
+    "temperature": 37.8,
+    "spo2": 94,
+    "bodyMass": 86.5,
+    "sleep": 5.6,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Persistent cough, malaise and reduced exercise tolerance; no chest pain.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 4
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.29,
+    "relativeHumidityPct": 44.2,
+    "co2Ppm": 3367,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 2.51,
+    "sourceDate": "2014-10-02",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 13,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 82,
+    "respiratoryRate": 20,
+    "temperature": 37.8,
+    "spo2": 94,
+    "bodyMass": 86.5,
+    "sleep": 5.5,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Persistent cough, malaise and reduced exercise tolerance; no chest pain.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 4
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.48,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3604,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.72,
+    "sourceDate": "2014-10-03",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 14,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 81,
+    "respiratoryRate": 20,
+    "temperature": 37.8,
+    "spo2": 94,
+    "bodyMass": 86.4,
+    "sleep": 5.4,
+    "bloodPressure": 128,
+    "bloodPressureDiastolic": 76
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Persistent cough, malaise and reduced exercise tolerance; no chest pain.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 4
+    }
+   ],
+   "redFlag": true,
+   "environment": {
+    "temperatureC": 22.42,
+    "relativeHumidityPct": 46.4,
+    "co2Ppm": 3782,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 2.93,
+    "sourceDate": "2014-10-04",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 15,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 81,
+    "respiratoryRate": 20,
+    "temperature": 37.8,
+    "spo2": 94,
+    "bodyMass": 86.4,
+    "sleep": 5.3,
+    "bloodPressure": 129,
+    "bloodPressureDiastolic": 76
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Persistent cough, malaise and reduced exercise tolerance; no chest pain.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 4
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.32,
+    "relativeHumidityPct": 48.2,
+    "co2Ppm": 3967,
+    "radiationDoseMgyDay": 0.22,
+    "radiationAccumMgy": 3.15,
+    "sourceDate": "2014-10-05",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 16,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 81,
+    "respiratoryRate": 20,
+    "temperature": 37.8,
+    "spo2": 94,
+    "bodyMass": 86.4,
+    "sleep": 5.4,
+    "bloodPressure": 129,
+    "bloodPressureDiastolic": 76
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Persistent cough, malaise and reduced exercise tolerance; no chest pain.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 4
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 4
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.54,
+    "relativeHumidityPct": 49.8,
+    "co2Ppm": 3934,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 3.36,
+    "sourceDate": "2014-10-06",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 17,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 80,
+    "respiratoryRate": 19,
+    "temperature": 37.6,
+    "spo2": 94,
+    "bodyMass": 86.5,
+    "sleep": 5.7,
+    "bloodPressure": 129,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Respiratory symptoms progressively improving.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 1
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.72,
+    "relativeHumidityPct": 46.3,
+    "co2Ppm": 4219,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.56,
+    "sourceDate": "2014-10-07",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 18,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 79,
+    "respiratoryRate": 18,
+    "temperature": 37.4,
+    "spo2": 95,
+    "bodyMass": 86.6,
+    "sleep": 6,
+    "bloodPressure": 128,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Respiratory symptoms progressively improving.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 1
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.44,
+    "relativeHumidityPct": 42.6,
+    "co2Ppm": 3101,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 3.77,
+    "sourceDate": "2014-10-08",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 19,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 77,
+    "respiratoryRate": 17,
+    "temperature": 37.3,
+    "spo2": 95,
+    "bodyMass": 86.7,
+    "sleep": 6.3,
+    "bloodPressure": 128,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Respiratory symptoms progressively improving.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 1
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.52,
+    "relativeHumidityPct": 40.3,
+    "co2Ppm": 2251,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 3.96,
+    "sourceDate": "2014-10-09",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 20,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 75,
+    "respiratoryRate": 17,
+    "temperature": 37.1,
+    "spo2": 96,
+    "bodyMass": 86.7,
+    "sleep": 6.6,
+    "bloodPressure": 127,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Respiratory symptoms progressively improving.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 1
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.57,
+    "relativeHumidityPct": 39.1,
+    "co2Ppm": 2015,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.16,
+    "sourceDate": "2014-10-10",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 21,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 72,
+    "respiratoryRate": 16,
+    "temperature": 36.9,
+    "spo2": 96,
+    "bodyMass": 86.6,
+    "sleep": 6.6,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Respiratory symptoms progressively improving.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 1
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.77,
+    "relativeHumidityPct": 41.3,
+    "co2Ppm": 2297,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.37,
+    "sourceDate": "2014-10-11",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 22,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 69,
+    "respiratoryRate": 15,
+    "temperature": 36.8,
+    "spo2": 97,
+    "bodyMass": 86.6,
+    "sleep": 6.7,
+    "bloodPressure": 124,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "Respiratory symptoms progressively improving.",
+   "symptoms": [
+    {
+     "label": "cough",
+     "bodyPart": "chest",
+     "severity": 1
+    },
+    {
+     "label": "fatigue",
+     "bodyPart": "general",
+     "severity": 1
+    }
+   ],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.58,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 2838,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.57,
+    "sourceDate": "2014-10-12",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 23,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.6,
+    "sleep": 6.8,
+    "bloodPressure": 124,
+    "bloodPressureDiastolic": 76
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.67,
+    "relativeHumidityPct": 45.5,
+    "co2Ppm": 3193,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 4.78,
+    "sourceDate": "2014-10-13",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 24,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 67,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.6,
+    "sleep": 6.8,
+    "bloodPressure": 124,
+    "bloodPressureDiastolic": 76
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.68,
+    "relativeHumidityPct": 44.6,
+    "co2Ppm": 3233,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 4.98,
+    "sourceDate": "2014-10-14",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 25,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.7,
+    "sleep": 6.9,
+    "bloodPressure": 124,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.45,
+    "relativeHumidityPct": 44.9,
+    "co2Ppm": 3250,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.18,
+    "sourceDate": "2014-10-15",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 26,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.8,
+    "sleep": 7.1,
+    "bloodPressure": 124,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.49,
+    "relativeHumidityPct": 43.6,
+    "co2Ppm": 3292,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.38,
+    "sourceDate": "2014-10-16",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 27,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 69,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.8,
+    "sleep": 7.2,
+    "bloodPressure": 125,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.6,
+    "relativeHumidityPct": 44.8,
+    "co2Ppm": 3296,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.59,
+    "sourceDate": "2014-10-17",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 28,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 69,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.9,
+    "sleep": 7.2,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.62,
+    "relativeHumidityPct": 44.5,
+    "co2Ppm": 3326,
+    "radiationDoseMgyDay": 0.21,
+    "radiationAccumMgy": 5.8,
+    "sourceDate": "2014-10-18",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 29,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 69,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.8,
+    "sleep": 7.1,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 78
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.71,
+    "relativeHumidityPct": 47.7,
+    "co2Ppm": 3551,
+    "radiationDoseMgyDay": 0.2,
+    "radiationAccumMgy": 5.99,
+    "sourceDate": "2014-10-19",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  },
+  {
+   "crewId": "NX-06",
+   "day": 30,
+   "phase": "INFLIGHT",
+   "vitals": {
+    "heartRate": 68,
+    "respiratoryRate": 14,
+    "temperature": 36.6,
+    "spo2": 97,
+    "bodyMass": 86.7,
+    "sleep": 7,
+    "bloodPressure": 126,
+    "bloodPressureDiastolic": 77
+   },
+   "heightCm": 188.3,
+   "urinations24h": 6,
+   "stools24h": 1,
+   "symptomsText": "No relevant symptoms.",
+   "symptoms": [],
+   "redFlag": false,
+   "environment": {
+    "temperatureC": 22.3,
+    "relativeHumidityPct": 44.7,
+    "co2Ppm": 3400,
+    "radiationDoseMgyDay": 0.19,
+    "radiationAccumMgy": 6.19,
+    "sourceDate": "2014-10-20",
+    "origin": "NASA_REAL_REINDEXED_RR1"
+   },
+   "physiologyOrigin": "LITERATURE_DERIVED_SYNTHETIC"
+  }
+ ]
+}

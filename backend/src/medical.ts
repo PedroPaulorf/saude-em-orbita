@@ -20,6 +20,28 @@ export const rules: Record<string, { unit: string; attention: number; flagged: n
   bodyMass: { unit: 'kg', attention: 1, flagged: 2, direction: 'below' },
 }
 
+/**
+ * Motor de monitoramento (frontend/src/lib/monitor.ts): roda no aparelho; o servidor só registra a versão.
+ * Mesmos limiares por medida da versão acima, mais micções em 24 h. Mudou algo, nova versão.
+ */
+export const MONITOR_RULE_VERSION = 'health7-nexus-2026-11-14-v1'
+export const monitorRule = {
+  version: MONITOR_RULE_VERSION, simulated: true, clinicalSource: null, runsOn: 'device', engine: 'frontend/src/lib/monitor.ts',
+  referenceIds: references.map(r => r.id), dataAnchors: 'NEXUS-Med 03_Source_Evidence (medical_references role data-anchor)',
+  rules: { ...rules, urinations24h: { unit: 'per day', attention: 2, flagged: 3, direction: 'below' } },
+  baselines: { preflight: 'personal profile baseline',
+    inflight: 'median of the last 14 days (at least 3), leaving out days when the measure was off together with another measure or a symptom; a change lasting the whole window becomes the new baseline' },
+  states: {
+    ESCALATE: 'red flag: yes to a check-up alert question, an alert symptom, flank discomfort or flagged SpO2 with temperature flagged above, or severe headache (7/10 or more)',
+    'PERSISTENT CHANGE': 'two or more measures off (or one measure and a symptom) on 2 days in a row or more',
+    WATCH: 'any measure off today or any symptom reported today',
+    STABLE: 'none of the above',
+  },
+  adaptationDays: 3, adaptationNote: 'Flight days 1 to 3 stay at WATCH at most, unless there is a red flag',
+  scoreWeights: { measurePoint: 8, symptom: 6, persistenceDay: 4 },
+  notice: 'Demonstration rule · values anchored in published spaceflight data. The 0-100 score is change intensity, never a probability.',
+}
+
 export async function initializeMedical(db: pg.Pool) {
   const client = await db.connect()
   try {
@@ -30,6 +52,7 @@ export async function initializeMedical(db: pg.Pool) {
       version: RULE_VERSION, simulated: true, clinicalSource: null, referenceIds: references.map(r => r.id), rules,
       notice: 'Demonstration thresholds without clinical validation. Blood pressure comparison uses systolic only.',
     }])
+    await client.query('INSERT INTO medical_rules VALUES($1,$2) ON CONFLICT(version) DO NOTHING', [MONITOR_RULE_VERSION, monitorRule])
     // Payloads remain unchanged. Backfilled evaluations use today's baseline, explicitly retrospectively.
     const legacy = await client.query(`SELECT c.id,c.crew_id,c.payload FROM checkins c
       WHERE c.payload->'vitals' <> '{}'::jsonb

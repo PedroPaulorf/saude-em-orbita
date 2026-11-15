@@ -1,12 +1,5 @@
-import { test, expect, type Page } from '@playwright/test'
-
-async function login(page: Page, username: string) {
-  await page.getByLabel('Username', { exact: true }).fill(username)
-  await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Sync now', exact: true })).toBeEnabled()
-}
+import { test, expect } from '@playwright/test'
+import { login, sync } from './helpers'
 
 test('medical data uses the signed-in history and private saved scenarios on desktop and mobile', async ({ page }) => {
   await page.route('**/DONKI-API/**', route => route.abort())
@@ -17,8 +10,7 @@ test('medical data uses the signed-in history and private saved scenarios on des
     data: { clientId: 'medical-browser-fixture', at: new Date().toISOString(), source: 'simulated', vitals: { sleep: 5.1 }, behavioral: {}, provenance: { sleep: { method: 'manual', quality: 'simulated' } } },
   })
   expect(written.status()).toBe(201)
-  await page.getByRole('button', { name: 'Sync now', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Sync now', exact: true })).toBeEnabled()
+  await sync(page)
   await page.getByRole('link', { name: 'Medical data & sources', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Medical data & sources', exact: true })).toBeVisible()
   await page.getByText('Latest stored assessment', { exact: true }).click()

@@ -1,4 +1,4 @@
-import { ArrowRight, CircleCheck, CircleDashed, Droplet, NotebookPen, Radio, ShieldPlus, Sun, TrendingUp } from 'lucide-react'
+import { Activity, ArrowRight, CircleCheck, CircleDashed, Droplet, NotebookPen, Radio, ShieldPlus, Sun, TrendingUp } from 'lucide-react'
 import type { Note } from '@/lib/notes'
 import { cn } from '@/lib/utils'
 import { DemoTag } from './SourceTag'
@@ -8,6 +8,8 @@ function NoteIcon({ note }: { note: Note }) {
   switch (note.kind) {
     case 'pending':
       return <CircleDashed className={cn(cls, 'text-ink-soft')} aria-hidden />
+    case 'state':
+      return note.status === 'flagged' ? <Radio className={cn(cls, 'text-flag-ink')} aria-hidden /> : <Activity className={cn(cls, 'text-brand')} aria-hidden />
     case 'pattern':
       return <ShieldPlus className={cn(cls, note.status === 'flagged' ? 'text-flag-ink' : 'text-brand')} aria-hidden />
     case 'measure':

@@ -14,7 +14,8 @@ export interface CheckIn {
   source: 'simulated'
   vitals: Vitals
   behavioral: Record<string, number>
-  healthDetails?: { urine?: string; stool?: string }
+  /** Urina e fezes do check-up; contagens e red flag vêm da importação NEXUS-Med (ou da futura pergunta de alerta). */
+  healthDetails?: { urine?: string; stool?: string; urinations24h?: number; stools24h?: number; redFlag?: boolean }
   provenance?: Record<string, Provenance>
   observations?: MedicalObservation[]
   id?: string

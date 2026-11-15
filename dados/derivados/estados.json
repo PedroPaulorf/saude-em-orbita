@@ -1,0 +1,32 @@
+{
+ "notice": "Synthetic crew profiles (NEXUS-Med research, fictional NX-01 to NX-06). Measurement values follow published spaceflight trends; environment is real NASA RR-1 telemetry re-indexed to mission day, not measured with these crew profiles.",
+ "source": "dados/Med_6_crew_prototype_dataset.xlsm",
+ "sheet": "05_Alert_Guide",
+ "synthetic": true,
+ "items": [
+  {
+   "state": "STABLE",
+   "meaning": "Within expected personal variability",
+   "wording": "Measurements are within your expected personal range.",
+   "action": "Continue routine monitoring."
+  },
+  {
+   "state": "WATCH",
+   "meaning": "Meaningful change; may be adaptation or transient",
+   "wording": "A change from your personal baseline was detected.",
+   "action": "Repeat measurement; complete symptom check-in; review context."
+  },
+  {
+   "state": "PERSISTENT CHANGE",
+   "meaning": "Multivariable change that deserves review",
+   "wording": "Several measurements are moving away from your personal baseline.",
+   "action": "Repeat/confirm; reduce non-critical workload; open action card."
+  },
+  {
+   "state": "ESCALATE",
+   "meaning": "Pattern or symptom requires medical review",
+   "wording": "Current changes require medical evaluation.",
+   "action": "Escalate to CMO / ground support according to mission protocol."
+  }
+ ]
+}

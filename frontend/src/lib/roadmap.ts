@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { scopedStorageKey } from '@/lib/active-profile'
 import { baselinePairs, eliminationToday, fmtDelta, fmtNum, type BaselinePair, type ParamId } from '@/lib/baselines'
 import { evaluate } from '@/lib/health'
+import { ESCALATE_PROTOCOL, signalText, topSignals, type MonitorResult, type MonitorState } from '@/lib/monitor'
 import type { PatternResult } from '@/lib/prevention'
 import type { Profile } from '@/lib/api'
 import type { CheckInInput } from '@/lib/storage'
@@ -82,6 +83,8 @@ export interface RoadmapInput {
   sepThisWeek: boolean
   water: { today: number; goal: number }
   checkupDoneToday: boolean
+  /** Resultado do motor de monitoramento: a regra decide o estado; o roteiro só monta os passos. */
+  monitor: { state: MonitorState; score: number; day: number; wording: string; reasons: string[]; signals: string[] } | null
 }
 
 // ---------- urina e fezes: opções do check-up ----------
@@ -97,6 +100,7 @@ export function roadmapInput(args: {
   patterns: PatternResult[]
   sepThisWeek: boolean
   water: { today: number; goal: number }
+  monitor?: MonitorResult | null
   today?: Date
 }): RoadmapInput {
   const { profile, checkins, today = new Date() } = args
@@ -107,10 +111,14 @@ export function roadmapInput(args: {
     pairs,
     elimination: eliminationToday(checkins, today),
     behavioral: behavioral && isTodayUtc(behavioral.at) ? behavioral.behavioral! : null,
-    patterns: args.patterns.filter((p) => p.active).map((p) => ({ id: p.def.id, title: p.def.title, status: p.status })),
+    patterns: args.patterns.filter((p) => p.active).slice(0, 2).map((p) => ({ id: p.def.id, title: p.def.title, status: p.status })),
     sepThisWeek: args.sepThisWeek,
     water: args.water,
     checkupDoneToday: pairs.some((p) => p.today != null) || !!eliminationToday(checkins, today).urine,
+    monitor: args.monitor
+      ? { state: args.monitor.state, score: args.monitor.score, day: args.monitor.day, wording: args.monitor.wording, reasons: args.monitor.reasons,
+          signals: topSignals(args.monitor, 3).map(signalText) }
+      : null,
   }
 }
 
@@ -198,6 +206,51 @@ const ADVICE: Partial<Record<`${VitalId}:${Dir}`, Advice>> = {
     today: 'Re-measure in one hour, away from air vents.',
     next: 'Dress warmer if your module feels cold.',
     week: 'Your flight surgeon reviews the trend.',
+    risk: 'altered-immune-system-responses',
+  },
+}
+
+/**
+ * Passos por condição da pesquisa NEXUS-Med (plano do assistente, seção 8), tirados das ações
+ * recomendadas da planilha. Só rotina: nada de remédio, dose ou diagnóstico. "ground" vai ao solo.
+ */
+interface ConditionAdvice extends Advice { weekKind?: StepKind }
+const HYDRATION: ConditionAdvice = {
+  headline: 'Hydration first today',
+  today: 'Reach your water goal and log your urinations in the check-up.',
+  next: 'Weigh in each morning with the same routine.',
+  week: 'If your urinations stay low, tell your flight surgeon.',
+  weekKind: 'ground',
+  risk: 'inadequate-food-and-nutrition',
+  action: 'water',
+}
+const SLEEP_HEADACHE: ConditionAdvice = {
+  headline: 'Protect your sleep period',
+  today: 'Dim the lights before the sleep period and check the cabin CO₂ with your crew.',
+  next: 'Keep the same sleep period start for the next 3 nights.',
+  week: 'Ask your flight surgeon to review your work schedule.',
+  risk: 'inadequate-sleep-and-irregular-schedules',
+}
+export const CONDITION_ADVICE: Record<string, ConditionAdvice> = {
+  C12: HYDRATION,
+  C06: { ...HYDRATION, headline: 'Ease into flight: fluids and rest', risk: 'altered-sensorimotor-and-vestibular-function' },
+  C16: {
+    headline: 'Keep fluids steady and log your urine',
+    today: 'Log your urinations and urine color in the check-up.',
+    next: 'Keep the water goal every day.',
+    week: 'Ground review if the flank discomfort continues.',
+    weekKind: 'ground',
+    risk: 'inadequate-food-and-nutrition',
+    action: 'water',
+  },
+  C18: SLEEP_HEADACHE,
+  C05: { ...SLEEP_HEADACHE, headline: 'Ease the load and protect your sleep' },
+  C09: {
+    headline: 'Rest and re-measure today',
+    today: 'Repeat today’s measurements and rest between tasks.',
+    next: 'Measure your temperature morning and evening.',
+    week: 'Ground review of your measurements and symptoms.',
+    weekKind: 'ground',
     risk: 'altered-immune-system-responses',
   },
 }
@@ -310,10 +363,39 @@ export function buildOnDevice(input: RoadmapInput, key = roadmapKey(input), now 
     next.push({ id: 'mood-next', kind: 'watch', text: 'Do the mood check each morning. It is not scored.', why: 'Self-report; it does not replace your psychologist', risk: 'behavioral-changes-and-psychiatric-disorders' })
   }
 
-  // Padrões de sinais precoces já ativos.
+  // Condições da pesquisa compatíveis: passos da seção 8, na frente dos passos por medida.
+  const m = input.monitor
+  const monitorWhy = m ? `${m.signals.join(' · ') || m.wording} · rule state ${m.state.toLowerCase()}` : ''
+  const condToday: RoadmapStep[] = [], condNext: RoadmapStep[] = [], condWeek: RoadmapStep[] = []
   for (const pat of input.patterns) {
-    week.push({ id: `pattern-${pat.id}`, kind: 'ground', text: `Early-sign pattern active: ${pat.title}. Your flight surgeon reviews it.`, why: 'Several signs on the same day · see the rules' })
+    const a = CONDITION_ADVICE[pat.id]
+    // Os números do motor; a frase segura da condição já está no cartão do padrão.
+    const why = monitorWhy || pat.title
+    if (!a) {
+      week.push({ id: `pattern-${pat.id}`, kind: 'ground', text: `Early-sign pattern active: ${pat.title} Your flight surgeon reviews it.`, why: 'Several signs on the same day · see the rules' })
+      continue
+    }
+    headlines.push({ rank: 30, text: a.headline })
+    condToday.push({ id: `${pat.id}-today`, kind: 'do', text: a.today, why, risk: a.risk, action: a.action })
+    condNext.push({ id: `${pat.id}-next`, kind: 'do', text: a.next, why, risk: a.risk })
+    condWeek.push({ id: `${pat.id}-week`, kind: a.weekKind ?? 'do', text: a.week, why, risk: a.risk })
   }
+  // Por estado: WATCH pede repetir e relatar; PERSISTENT CHANGE pede reduzir a carga e repetir todo dia.
+  const stateToday: RoadmapStep[] = [], stateNext: RoadmapStep[] = []
+  if (m?.state === 'WATCH') {
+    stateToday.push(
+      { id: 'watch-repeat', kind: 'do', text: 'Repeat the measurement that changed, at rest.', why: monitorWhy },
+      { id: 'watch-symptoms', kind: 'do', text: 'Complete the symptom check-in on the body map.', why: 'A change from your personal baseline was detected' },
+    )
+  }
+  if (m?.state === 'PERSISTENT CHANGE') {
+    headlines.push({ rank: 25, text: 'Ease the load and confirm the change' })
+    stateToday.push({ id: 'persistent-workload', kind: 'do', text: 'Ask to reduce non-critical workload today.', why: monitorWhy })
+    stateNext.push({ id: 'persistent-daily', kind: 'watch', text: 'Repeat the check-up every day, at the same time.', why: 'Several measurements are moving away from your personal baseline' })
+  }
+  today.unshift(...(m?.state === 'WATCH' ? [...stateToday, ...condToday] : [...condToday, ...stateToday]))
+  next.unshift(...condNext, ...stateNext)
+  week.unshift(...condWeek)
 
   // Clima espacial (DONKI informa eventos, não a dose recebida).
   if (input.sepThisWeek) {
@@ -332,14 +414,27 @@ export function buildOnDevice(input: RoadmapInput, key = roadmapKey(input), now 
   }
   const watched = [...new Set(signals.map((s) => s.label.toLowerCase()))]
   next.push({ id: 'checkup-daily', kind: 'watch', text: watched.length ? `Check-up every morning, same time: watch ${watched.join(', ')}.` : 'Check-up every morning, at the same time.', why: 'Same time each day makes the comparison fair' })
-  week.unshift(...drifts)
+  week.splice(condWeek.length, 0, ...drifts)
   if (week.length === 0) {
     week.push({ id: 'steady', kind: 'do', text: 'Your measures hold steady in flight. Keep the routine.', why: 'In flight close to pre-flight for every measure' })
   }
 
-  const ground = today.some((s) => s.kind === 'ground') || input.patterns.some((p) => p.status === 'flagged')
+  const ground = today.some((s) => s.kind === 'ground') || input.patterns.some((p) => p.status === 'flagged') || m?.state === 'ESCALATE'
   const top = headlines.sort((a, b) => b.rank - a.rank)[0]
   const n = new Set(signals.filter((s) => s.kind === 'today').map((s) => s.param)).size
+  // ESCALATE: sem passos de rotina; só o protocolo (a tela mostra o texto fixo, sem IA).
+  if (m?.state === 'ESCALATE') {
+    return {
+      key, engine: 'on-device', generatedAt: now.toISOString(), headline: m.wording, summary: ESCALATE_PROTOCOL,
+      signals: signals.sort((a, b) => ORDER[b.status] - ORDER[a.status]),
+      phases: [
+        { id: 'today', title: 'Today', steps: [{ id: 'escalate', kind: 'ground', text: ESCALATE_PROTOCOL, why: m.reasons.join(' · ') }] },
+        { id: 'next-days', title: 'Next 3 days', steps: [] },
+        { id: 'week', title: 'This week', steps: [] },
+      ],
+      ground: true,
+    }
+  }
   return {
     key,
     engine: 'on-device',
@@ -381,6 +476,8 @@ export const AI_INSTRUCTIONS = [
   'Compare each measure today with BOTH baselines: pre-flight (before launch) and in-flight (median of recent mission days).',
   'Suggest routine actions only (sleep, fluids, exercise schedule, re-measuring, telling the flight surgeon). Never diagnose, never name a disease, never suggest medication or doses.',
   'Anything flagged goes to the flight surgeon as a "ground" step. Every step has a "why" that quotes the numbers.',
+  'The monitoring state, score and signals come from the rule in the context ("monitor"). Never change or contradict them, never call the score a probability or a percentage, and never write steps when the state is ESCALATE.',
+  'When research patterns are active, use their safe wording exactly as given and keep the routine steps of "conditionSteps".',
   'Return ONLY JSON: {"headline": string, "summary": string, "phases": [{"id": "today"|"next-days"|"week", "title": string, "steps": [{"id": string, "kind": "do"|"watch"|"ground", "text": string, "why": string, "param"?: string, "risk"?: string}]}]}.',
   'Use at most 4 steps today and 3 in each other phase. "risk" must be an id from the NASA HRP list in the context.',
 ].join(' ')
@@ -392,7 +489,9 @@ function aiContext(input: RoadmapInput) {
     measures: input.pairs.map((p) => ({ id: p.id, label: p.label, unit: p.unit, today: p.todayText ?? null, preflight: p.preflight ?? null, inflight: p.inflight ?? null, inflightDays: p.inflightDays, rule: p.config.rule })),
     elimination: input.elimination,
     behavioral: input.behavioral,
+    monitor: input.monitor,
     activePatterns: input.patterns,
+    conditionSteps: Object.fromEntries(input.patterns.filter((p) => CONDITION_ADVICE[p.id]).map((p) => [p.id, CONDITION_ADVICE[p.id]])),
     solarParticleEventThisWeek: input.sepThisWeek,
     water: input.water,
     hrpRisks: ['cardiovascular-adaptations', 'hypoxia', 'inadequate-sleep-and-irregular-schedules', 'inadequate-food-and-nutrition', 'altered-immune-system-responses', 'host-microorganism-interactions', 'behavioral-changes-and-psychiatric-disorders', 'reduced-cardiorespiratory-and-musculoskeletal-fitness', 'radiation-induced-cancers'],

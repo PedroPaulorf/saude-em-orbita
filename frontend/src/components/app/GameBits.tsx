@@ -58,12 +58,18 @@ export function Ring({ value, max, size = 44, label }: { value: number; max: num
 /**
  * Avisos do jogo: "+20 points" quando os pontos de hoje sobem, e um diálogo ao subir de rank.
  * Compara com a leitura anterior; na primeira leitura não avisa nada.
+ * `ready`: o histórico do servidor já chegou (ou falhou). Antes disso os pontos "pulam" ao carregar
+ * os registros de outro aparelho, e isso não é algo que a pessoa acabou de fazer.
  */
-export function GameEvents({ game }: { game: GameSummary }) {
+export function GameEvents({ game, ready = true }: { game: GameSummary; ready?: boolean }) {
   const prev = useRef<{ today: number; rankMin: number } | null>(null)
   const [rankUp, setRankUp] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!ready) {
+      prev.current = null
+      return
+    }
     const now = { today: game.today.total, rankMin: game.rank.min }
     const before = prev.current
     prev.current = now
@@ -72,7 +78,7 @@ export function GameEvents({ game }: { game: GameSummary }) {
     if (gained > 0) toast(`+${gained} points`, { description: `${formatPoints(game.totalPoints)} points in total` })
     // oxlint-disable-next-line react/set-state-in-effect -- reage a uma mudança externa (registros salvos)
     if (now.rankMin > before.rankMin) setRankUp(game.rank.name)
-  }, [game])
+  }, [game, ready])
 
   return (
     <Dialog open={!!rankUp} onOpenChange={(o) => !o && setRankUp(null)}>

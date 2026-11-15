@@ -2,8 +2,8 @@ import { ExternalLink, Radiation } from 'lucide-react'
 import hrp from '@/data/hrp-risks.json'
 import { radiationSummary } from '@/lib/radiation'
 import { cn, utcDay } from '@/lib/utils'
-import { Clamped } from './Clamped'
 import { Dot } from './Dot'
+import { NasaAdvice } from './NasaAdvice'
 
 const RISK = hrp.risks.find((r) => r.id === 'radiation-induced-cancers')
 
@@ -104,19 +104,7 @@ export function RadiationCard({ sepDay, className }: { sepDay?: string; classNam
         </p>
       )}
 
-      {RISK && (
-        <div className="grid gap-1 border-t border-hairline pt-4">
-          <p className="text-sm font-semibold text-ink-soft">
-            What can be done
-            <Dot />
-            NASA Human Research Program
-          </p>
-          <Clamped text={RISK.whatCanBeDone} lines={3} />
-          <a href={RISK.url} target="_blank" rel="noreferrer" className="self-start text-sm text-interactive underline underline-offset-3">
-            Source: {RISK.title}
-          </a>
-        </div>
-      )}
+      {RISK && <NasaAdvice risk={RISK} />}
     </section>
   )
 }

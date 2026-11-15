@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { waitForSync } from './helpers'
 import { createRequire } from 'node:module'
 
 test('stats and report retain assessment evidence when the current personal baseline changes', async ({ page }) => {
@@ -7,7 +8,7 @@ test('stats and report retain assessment evidence when the current personal base
   await page.getByLabel('Username', { exact: true }).fill('crew02')
   await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Sync now', exact: true })).toBeEnabled()
+  await waitForSync(page)
   const vitals = { sleep: 5.1, heartRate: 71, bloodPressure: 118, bloodPressureDiastolic: 76, temperature: 36.7 }
   const saved = await page.request.post('http://127.0.0.1:3003/api/v1/me/checkins', {
     headers: { 'X-Requested-With': 'Health7', 'X-Health7-Crew': 'crew-02' },
@@ -24,7 +25,7 @@ test('stats and report retain assessment evidence when the current personal base
 
   await page.goto('/#/stats?region=head')
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Sync now', exact: true })).toBeEnabled()
+  await waitForSync(page)
   const today = page.getByRole('region', { name: "Today's measures", exact: true })
   await expect(today.getByText('Manual entry · Simulated data')).toHaveCount(4)
   const region = page.locator('#region-panel')
@@ -63,7 +64,7 @@ test('stats and report retain assessment evidence when the current personal base
   await page.getByLabel('Username', { exact: true }).fill('crew03')
   await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Sync now', exact: true })).toBeEnabled()
+  await waitForSync(page)
   await page.goto('/#/stats?region=head')
   await expect(page.getByText('No sleep measurements recorded.', { exact: true })).toBeVisible()
   await expect(page.getByText('Measurement details', { exact: true })).toHaveCount(0)

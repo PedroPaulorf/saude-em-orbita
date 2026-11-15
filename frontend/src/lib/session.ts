@@ -1,11 +1,14 @@
 import { apiRequest, ApiError, createClientId, checkInPayload, type Profile, type History, type Symptom } from './api'
 import { cacheCheckIns, loadCheckIns, normalizeCheckIn, replaceCheckIns, saveCheckIn, rejectCheckIn, type CheckIn, type CheckInInput } from './storage'
 import { setActiveProfile } from './active-profile'
+import type { EnvironmentRecord } from './monitor'
 export interface SessionState {
   profile: Profile | null; phase:'restoring'|'signed-out'|'ready'; busy:boolean; syncing:boolean
   checkins: CheckIn[]; symptoms: Symptom[]; error:string|null; truncated:boolean; historyLoaded:boolean
+  /** Ambiente de cabine (RR-1 na tripulação NEXUS). Só contexto: falha ao buscar não derruba a sincronização. */
+  environment: EnvironmentRecord[]
 }
-const initial = (): SessionState => ({profile:null,phase:'restoring',busy:false,syncing:false,checkins:[],symptoms:[],error:null,truncated:false,historyLoaded:false})
+const initial = (): SessionState => ({profile:null,phase:'restoring',busy:false,syncing:false,checkins:[],symptoms:[],error:null,truncated:false,historyLoaded:false,environment:[]})
 export class SessionController {
   private state = initial()
   private listeners = new Set<()=>void>()
@@ -103,17 +106,19 @@ export class SessionController {
         }
       }
       if(!this.valid(epoch,profile.id)) return
-      const [checks,symptoms]=await Promise.all([
+      const [checks,symptoms,environment]=await Promise.all([
         this.request<History<CheckIn>>('/me/checkins?limit=100',undefined,signal,profile.id),
         this.request<History<Symptom>>('/me/symptoms?limit=100',undefined,signal,profile.id),
+        this.request<History<EnvironmentRecord>>('/me/environment?limit=100',undefined,signal,profile.id).catch(()=>null),
       ])
       if(!this.valid(epoch,profile.id)) return
       // Only unconfirmed records are merged with the authoritative current window.
       const pending=loadCheckIns(profile.id).filter(c=>c.sync!=='saved')
       const byId=new Map([...pending,...checks.items.map(c=>({...normalizeCheckIn(c),sync:'saved' as const}))].map(c=>[c.clientId,c]))
-      this.update({checkins:[...byId.values()].sort((a,b)=>a.at.localeCompare(b.at)),symptoms:symptoms.items,
-        truncated:checks.truncated||symptoms.truncated||!!symptoms.eventsTruncated,historyLoaded:true})
+      // Cache first: when historyLoaded turns true, everything read from this device (points, plans) is already current.
       cacheCheckIns(profile.id,checks.items)
+      this.update({checkins:[...byId.values()].sort((a,b)=>a.at.localeCompare(b.at)),symptoms:symptoms.items,environment:environment?.items ?? [],
+        truncated:checks.truncated||symptoms.truncated||!!symptoms.eventsTruncated,historyLoaded:true})
     } catch(error) { this.failure(error,epoch) }
     finally { if(this.valid(epoch,profile.id)) this.update({syncing:false,checkins:this.state.historyLoaded ? this.state.checkins : loadCheckIns(profile.id)}) }
   }

@@ -13,7 +13,8 @@
     "test": "node --env-file-if-exists=.env --import tsx --test test/*.test.ts",
     "migrate": "node --env-file-if-exists=.env --import tsx src/manage.ts",
     "seed": "node --env-file-if-exists=.env --import tsx src/manage.ts seed",
-    "user:create": "node --env-file-if-exists=.env --import tsx src/manage.ts create-user"
+    "user:create": "node --env-file-if-exists=.env --import tsx src/manage.ts create-user",
+    "import:nexus": "node --env-file-if-exists=.env --import tsx src/import-nexus.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.1.5",

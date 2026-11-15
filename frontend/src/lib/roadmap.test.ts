@@ -3,6 +3,9 @@ import { baselinePairs } from './baselines'
 import { buildOnDevice, parseAiRoadmap, roadmapInput } from './roadmap'
 import type { Profile } from './api'
 import type { CheckInInput } from './storage'
+import { monitor } from './monitor'
+import { fixture } from './nexus.fixture'
+import { patternsFromMonitor } from './prevention'
 
 const profile: Profile = { id: 'a', displayName: 'A', missionDay: 47, bodyModel: 'male', source: 'simulated',
   baseline: { heartRate: 62, bloodPressure: 116, bloodPressureDiastolic: 74, sleep: 7.2, temperature: 36.6, spo2: 97, respiratoryRate: 14 } }
@@ -50,4 +53,41 @@ test('AI answer is accepted only in the roadmap shape', () => {
   const ok = parseAiRoadmap({ output: '```json {"headline":"H","summary":"S","phases":[{"id":"today","steps":[{"text":"Drink","kind":"do"}]}]} ```' })
   expect(ok?.headline).toBe('H')
   expect(ok?.phases[0].steps[0].text).toBe('Drink')
+})
+
+// ---------- roteiro com o motor de monitoramento (NEXUS-Med) ----------
+
+const nexus = (crewId: string, todayDay: number) => {
+  const f = fixture(crewId, todayDay)
+  const result = monitor(f)
+  const p: Profile = { ...profile, missionDay: todayDay, baseline: { bloodPressureDiastolic: 70, ...f.profile.baseline } }
+  const input = roadmapInput({ profile: p, checkins: f.checkins, patterns: patternsFromMonitor(result), sepThisWeek: false, water: { today: 2, goal: 8 }, monitor: result, today: f.today })
+  return { input, roadmap: buildOnDevice(input, 'k', f.today!) }
+}
+const ids = (r: ReturnType<typeof buildOnDevice>, phase: number) => r.phases[phase].steps.map((s) => s.id)
+
+test('NX-04 on day 19: hydration steps of the research condition, plus the persistent-change step', () => {
+  const { input, roadmap } = nexus('NX-04', 19)
+  expect(input.monitor?.state).toBe('PERSISTENT CHANGE')
+  expect(roadmap.headline).toBe('Hydration first today')
+  expect(ids(roadmap, 0).slice(0, 2)).toEqual(['C12-today', 'persistent-workload'])
+  expect(roadmap.phases[0].steps[0]).toEqual(expect.objectContaining({ action: 'water', text: 'Reach your water goal and log your urinations in the check-up.' }))
+  expect(roadmap.phases[0].steps[0].why).toMatch(/urinations −3 per day vs in-flight 6/)
+  expect(ids(roadmap, 1)).toEqual(['C12-next', 'persistent-daily'])
+  expect(roadmap.phases[2].steps[0]).toEqual(expect.objectContaining({ id: 'C12-week', kind: 'ground' }))
+})
+
+test('NX-06 on day 14: ESCALATE leaves only the fixed protocol, no routine steps', () => {
+  const { roadmap } = nexus('NX-06', 14)
+  expect(roadmap.ground).toBe(true)
+  expect(roadmap.phases.flatMap((p) => p.steps).map((s) => s.id)).toEqual(['escalate'])
+  expect(roadmap.phases[0].steps[0].text).toMatch(/according to mission protocol/)
+})
+
+test('WATCH puts repeat-and-report on top; STABLE keeps the normal routine without condition steps', () => {
+  const watch = nexus('NX-01', 2).roadmap
+  expect(ids(watch, 0).slice(0, 3)).toEqual(['watch-repeat', 'watch-symptoms', 'C06-today'])
+  const stable = nexus('NX-02', 30)
+  expect(stable.input.monitor?.state).toBe('STABLE')
+  expect(stable.roadmap.phases.flatMap((p) => p.steps).some((s) => /^C\d\d-|^watch-|^persistent-/.test(s.id))).toBe(false)
 })

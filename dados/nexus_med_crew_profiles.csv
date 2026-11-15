@@ -1,0 +1,7 @@
+crew_id,sex_at_birth,age,role,medical_history,scenario_target,height_cm,body_mass_kg,heart_rate_bpm,respiratory_rate_min,body_temp_c,spo2_pct,urinations_24h,stools_24h,sleep_hours,systolic_bp,diastolic_bp
+NX-01,F,29,Mission Specialist,Seasonal allergic rhinitis; history of motion-sickness susceptibility; otherwise medically fit.,Normal early adaptation / mild space-motion-sickness pattern,165.0,61.0,64,14,36.6,98,6,1,7.6,112,70
+NX-02,M,33,Pilot,Endurance-trained; physiologic resting bradycardia; no chronic disease.,Stable adaptation / low false-positive case,181.0,78.0,52,12,36.5,99,6,1,7.4,118,72
+NX-03,F,37,Payload Specialist,Episodic migraine without aura; no cardiovascular disease.,Sleep/circadian deterioration with headache-context pattern,170.0,67.0,62,13,36.6,98,6,1,7.5,114,72
+NX-04,M,41,Flight Engineer,"Remote nephrolithiasis, single resolved episode 8 years earlier; otherwise medically fit.",Dehydration / renal-concern pattern,176.0,82.0,60,14,36.6,98,6,1,7.2,120,76
+NX-05,F,46,Crew Medical Officer,Remote recurrent uncomplicated UTI; mild prior orthostatic susceptibility; no active disease.,Post-flight orthostatic intolerance concern,160.0,57.0,66,14,36.7,98,6,1,7.3,116,74
+NX-06,M,52,Commander,Family history of hypertension; high-normal personal blood pressure; no diagnosed hypertension.,Respiratory/systemic deterioration warning pattern,185.0,88.0,68,14,36.6,97,6,1,7.0,128,80

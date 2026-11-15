@@ -19,6 +19,7 @@ try {
   const requested = process.argv.slice(2)
   if (requested.some(name => !available.includes(name))) throw new Error('Unknown spec; pass an exact filename from e2e/')
   const specs = requested.length ? available.filter(name => requested.includes(name)) : available
+
   for (const spec of specs) {
     const schema = 'health7_browser_' + randomUUID().replaceAll('-', '')
     const scoped = new URL(process.env.TEST_DATABASE_URL)

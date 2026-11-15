@@ -106,6 +106,16 @@ O visual usa a paleta de [`../health7-design-system`](../health7-design-system) 
 
 São **regras de demonstração**, sem fonte clínica. Os limites ficam em `src/data/simulated.json` (`rule`: direção, desvio para atenção e para sinalizar). A meta de água (8 × 250 ml) também é de demonstração (`game.waterGoal`).
 
+## Motor de monitoramento (NEXUS-Med)
+
+`src/lib/monitor.ts` é a **regra que decide**; a IA, quando houver, só explica. Função pura, roda no aparelho. Recebe perfil, check-ups, sintomas, testes cognitivos e ambiente e devolve, para hoje e para cada dia anterior: um dos quatro estados da pesquisa (STABLE, WATCH, PERSISTENT CHANGE, ESCALATE), um score de 0 a 100, os sinais que formaram os dois e o texto da pesquisa para o estado (`05_Alert_Guide`, sem reescrever).
+
+- **Score é intensidade**, nunca probabilidade nem porcentagem: `min(100, 8 × pontos das medidas + 6 × sintomas + 4 × dias de persistência)`.
+- **Estado pela regra:** ESCALATE com red flag (pergunta de alerta do check-up, sintoma de alerta, SpO₂ ou desconforto no flanco com temperatura sinalizada, dor de cabeça forte); PERSISTENT CHANGE com duas ou mais medidas fora (ou uma e um sintoma) por 2 dias seguidos; WATCH com qualquer medida fora ou sintoma; dias 1 a 3 de voo não passam de WATCH, salvo red flag.
+- **Linhas de base:** pré-voo (perfil) e em voo (mediana de 14 dias, sem os dias de mudança em várias frentes). Limiares por medida iguais aos de `backend/src/medical.ts`, mais micções em 24 h (2 e 3 abaixo).
+- **Calibração** contra o gabarito da planilha em `monitor.test.ts`; a tabela de concordância e os desacordos explicados estão em `../dados/README.md`.
+- Versão `health7-nexus-2026-11-14-v1`, registrada pelo servidor em `medical_rules`. Mudou limiar ou peso, muda a versão.
+
 ## Clima espacial (NASA DONKI)
 
 Base `https://ccmc.gsfc.nasa.gov/DONKI-API/get/{recurso}`, só GET, sem chave, CORS liberado, até 60 dias por chamada.
@@ -129,6 +139,18 @@ Companheiro de conversa, não assistente médico. A personalidade e os limites f
 - Estados: sem conexão (campo desativado), esperando (desiste em 45 s), erro com "Try again", e modo de demonstração quando o endereço está vazio.
 - O `context` inclui `prevention` (padrões ativos, plano em andamento, dose da missão simulada). O trecho de prompt para o nó AI Agent está na seção 9 do plano v3.
 - A conversa fica no `localStorage` (`health7:chat:v1`) e **não entra no relatório para o solo**.
+
+### Fluxos no n8n (pasta "health7")
+
+A regra do app (`monitor.ts`) decide o estado, o score e os sinais; os fluxos só escrevem em cima disso. Endereços em `.env.example`.
+
+| Fluxo | Variável | Recebe | Devolve | Proteções |
+|---|---|---|---|---|
+| `[H7] Assistente` | `VITE_N8N_CHAT_WEBHOOK_URL` (`/webhook/h7-assistente`) | `{ sessionId, message, context }`, com `context.prevention.monitor` (estado, score, sinais) e os padrões com o texto seguro | `{ reply }` | AI Agent (OpenAI) com memória por `sessionId`; prompt proíbe diagnóstico, probabilidade, remédio e números inventados; filtro troca a resposta se aparecer palavra proibida; em ESCALATE só aponta o protocolo e a faixa vermelha |
+| `[H7] Roteiro` | `VITE_N8N_ROADMAP_WEBHOOK_URL` (`/webhook/h7-roteiro`) | `{ mode, instructions, context }`, com `monitor` e `conditionSteps` | `{ headline, summary, phases }` | ESCALATE não passa pela IA (volta o protocolo fixo); palavra proibida devolve 422 e o app mantém o roteiro do aparelho; o `parseAiRoadmap` recusa formato errado |
+| `[H7] Alerta` | `VITE_N8N_ALERT_WEBHOOK_URL` (`/webhook/h7-alerta`) | `{ crew, crewId, date, day, state, reasons, signals, ruleVersion }` do botão "Notify ground" | `{ ok, recordedAt, delivery: "crew-only", message }` | Sem IA; só aceita ESCALATE; por enquanto não envia nada para fora (o registro é a execução no n8n). Sem endereço ou sem rede, o horário fica no aparelho |
+
+Os endereços não têm autenticação e ficam públicos no site: só dados fictícios.
 
 ## Credits
 

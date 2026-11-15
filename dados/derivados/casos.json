@@ -1,0 +1,50 @@
+{
+ "notice": "Synthetic crew profiles (NEXUS-Med research, fictional NX-01 to NX-06). Measurement values follow published spaceflight trends; environment is real NASA RR-1 telemetry re-indexed to mission day, not measured with these crew profiles.",
+ "source": "dados/NEXUS-Med_6crew_daily_30d_cases.xlsm",
+ "sheet": "03_Case_Scenarios",
+ "synthetic": true,
+ "items": [
+  {
+   "case": "CASE-A",
+   "crewId": "NX-06",
+   "conditionIds": "C09",
+   "condition": "Respiratory Infection",
+   "onset": "Day 10",
+   "peak": "Days 13–15",
+   "recovery": "Days 17–22",
+   "baselinePattern": "HR 68; RR 14; T 36.6; SpO₂ 97%; sleep 7.0 h",
+   "dailyProgression": "D10 sore throat/cough → D11 WATCH → D12 persistent multivariable change → D13-15 HR/RR/T↑ + SpO₂/sleep↓ → D14 red flag → recovery.",
+   "expectedAlert": "WATCH → PERSISTENT CHANGE → ESCALATE → recovery",
+   "recommendedAction": "Repeat measurements; reduce non-critical workload; open respiratory action card; CMO escalation during red-flag period.",
+   "whyUseful": "Strong multimodal example using T°, HR, RR, SpO₂, sleep and symptoms."
+  },
+  {
+   "case": "CASE-B",
+   "crewId": "NX-04",
+   "conditionIds": "C12 + C16",
+   "condition": "Dehydration / hypovolemia + Nephrolithiasis concern",
+   "onset": "Day 16",
+   "peak": "Days 20–23",
+   "recovery": "Days 24–27",
+   "baselinePattern": "HR 60; PA 120/76; mass 82 kg; urine 6/day",
+   "dailyProgression": "D16 thirst/reduced intake → urine and mass fall → HR↑/PA↓ → D20 flank discomfort/dark urine → persistent renal concern → hydration/recovery.",
+   "expectedAlert": "WATCH → PERSISTENT CHANGE → recovery",
+   "recommendedAction": "Confirm hydration/urine pattern; reduce workload; follow renal/volume action card; CMO review if flank pain persists, fever or obstruction signs appear.",
+   "whyUseful": "Uses history + urine + mass + HR + BP and demonstrates condition-specific context."
+  },
+  {
+   "case": "CASE-C",
+   "crewId": "NX-03",
+   "conditionIds": "C18 + C05",
+   "condition": "Sleep / Circadian Deterioration + Late Headache",
+   "onset": "Day 9",
+   "peak": "Days 12–17",
+   "recovery": "Days 18–21",
+   "baselinePattern": "Sleep 7.5 h; HR 62; PA 114/72",
+   "dailyProgression": "Sleep gradually falls → fatigue/headache → HR and BP mildly increase → persistent change without neurological red flags → recovery intervention.",
+   "expectedAlert": "WATCH → PERSISTENT CHANGE → recovery",
+   "recommendedAction": "Review sleep schedule/light/workload/CO₂; recovery period; repeat vitals; CMO if headache becomes severe or neuro/visual red flags appear.",
+   "whyUseful": "Shows non-emergency persistent deterioration and explainable action without overdiagnosis."
+  }
+ ]
+}

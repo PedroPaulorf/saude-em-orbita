@@ -13,10 +13,12 @@ import { indicators, type DonkiSnapshot, type SpaceWeatherSource } from '@/lib/d
 import type { GameSummary } from '@/lib/game'
 import { crew, getTodayVitals } from '@/lib/health'
 import { activePlan, loadPlans } from '@/lib/plans'
-import { evaluatePatterns } from '@/lib/prevention'
+import { loadCognitive } from '@/lib/cognitive'
+import { monitor, signalText, topSignals } from '@/lib/monitor'
+import { patternsFromMonitor } from '@/lib/prevention'
 import { radiationSummary } from '@/lib/radiation'
 import { latestCheckIn, loadCheckIns } from '@/lib/storage'
-import { preventionInput } from '@/lib/usePrevention'
+import { session } from '@/lib/session'
 import { isTodayUtc } from '@/lib/utils'
 import { loadWater, WATER_GOAL } from '@/lib/water'
 
@@ -150,11 +152,21 @@ export function buildContext(game: GameSummary, weather?: WeatherContext) {
  */
 function preventionContext() {
   const water = loadWater()
-  const patterns = evaluatePatterns(preventionInput(water)).filter((p) => p.active)
+  // A regra decide: o estado e os sinais vão prontos; a IA explica e não pode mudá-los.
+  const snap = session.getSnapshot()
+  const result = snap.profile
+    ? monitor({ profile: snap.profile, checkins: snap.checkins, symptoms: snap.symptoms, cognitive: loadCognitive(), environment: snap.environment })
+    : null
+  const patterns = result ? patternsFromMonitor(result).filter((p) => p.active).slice(0, 2) : []
   const plan = activePlan(loadPlans(), { checkIns: loadCheckIns(), water, waterGoal: WATER_GOAL })
   const rad = radiationSummary()
   return {
-    patterns: patterns.map((p) => ({ id: p.def.id, title: p.def.title, signsPresent: p.present, signsTotal: p.total, status: p.status })),
+    monitor: result
+      ? { state: result.state, score: result.score, scoreMeaning: 'Change intensity from 0 to 100, not a probability', missionDay: result.day,
+          wording: result.wording, action: result.action, reasons: result.reasons, signals: topSignals(result, 4).map(signalText),
+          environment: result.environment?.items ?? [], ruleVersion: result.ruleVersion, notice: result.notice }
+      : null,
+    patterns: patterns.map((p) => ({ id: p.def.id, safeWording: p.def.title, signsPresent: p.present, signsTotal: p.total, status: p.status })),
     plan: plan?.today
       ? { pattern: plan.pattern.title, day: plan.dayNumber, days: plan.plan.days, stepsDoneToday: plan.today.doneCount, stepsToday: plan.today.steps.length }
       : null,

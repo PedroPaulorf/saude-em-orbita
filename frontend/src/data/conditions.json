@@ -1,21 +1,35 @@
 {
-  "_note": "DEMONSTRATION RULES. No clinical source yet. Research (Valéria) replaces signs, limits and sources. A pattern is not a diagnosis: the app shows which signs are present and sends the pattern to the flight surgeon.",
+  "_note": "DEMONSTRATION RULES from the NEXUS-Med research (dados/derivados/condicoes.json). The title is the research safe wording, shown whole: never the condition name alone. A pattern is not a diagnosis and never changes the monitor state on its own; the screen shows which signs are present and sends the pattern to the flight surgeon.",
   "patterns": [
     {
-      "id": "sleep-debt",
-      "title": "Sleep debt",
-      "summary": "Several days of short sleep with signs of strain.",
-      "hrpRisk": "inadequate-sleep-and-irregular-schedules",
-      "source": null,
-      "minSigns": 2,
+      "id": "C09",
+      "title": "Pattern increases concern for respiratory infection; requires medical evaluation.",
+      "safeWording": "Pattern increases concern for respiratory infection; requires medical evaluation.",
+      "condition": "Respiratory Infection",
+      "summary": "Fever, faster heart rate and breathing, lower oxygen saturation or shorter sleep, with respiratory symptoms.",
+      "hrpRisk": "altered-immune-system-responses",
+      "source": "NEXUS-Med 04_Disease_Alignment (synthetic crew research; demonstration rule)",
+      "minSigns": 3,
       "signs": [
         {
-          "id": "sleep-low",
+          "id": "resp-symptoms",
+          "type": "symptom",
+          "labels": [
+            "cough",
+            "sore-throat",
+            "congestion",
+            "shortness-of-breath"
+          ],
+          "label": "You reported cough, sore throat or congestion",
+          "required": true
+        },
+        {
+          "id": "temp-up",
           "type": "measure",
-          "measure": "sleep",
-          "side": "below",
-          "days": 3,
-          "label": "Sleep below your baseline for 3 days or more"
+          "measure": "temperature",
+          "side": "above",
+          "days": 1,
+          "label": "Temperature above your baseline"
         },
         {
           "id": "hr-up",
@@ -24,120 +38,6 @@
           "side": "above",
           "days": 1,
           "label": "Resting heart rate above your baseline"
-        },
-        {
-          "id": "rest-low",
-          "type": "selfReport",
-          "question": "rest",
-          "atMost": 2,
-          "label": "You reported feeling little rested"
-        },
-        {
-          "id": "stress-high",
-          "type": "selfReport",
-          "question": "stress",
-          "atLeast": 4,
-          "label": "You reported high stress"
-        }
-      ],
-      "plan": {
-        "days": 5,
-        "stepsSource": "Adapted from NASA HRP, 'What can be done' for this risk.",
-        "steps": [
-          {
-            "id": "check-ups",
-            "type": "auto",
-            "rule": "bothCheckUps",
-            "label": "Do both check-ups"
-          },
-          {
-            "id": "sleep-period",
-            "type": "manual",
-            "label": "Kept the scheduled sleep period"
-          },
-          {
-            "id": "lights",
-            "type": "manual",
-            "label": "Dimmed the lights before the sleep period"
-          },
-          {
-            "id": "relax",
-            "type": "manual",
-            "label": "Took the scheduled relaxation time"
-          }
-        ]
-      }
-    },
-    {
-      "id": "low-intake",
-      "title": "Low fluid and food intake",
-      "summary": "Missed water goals with body mass going down.",
-      "hrpRisk": "inadequate-food-and-nutrition",
-      "source": null,
-      "minSigns": 2,
-      "signs": [
-        {
-          "id": "water-missed",
-          "type": "water",
-          "missedDays": 2,
-          "label": "Water goal missed on each of the last 2 days"
-        },
-        {
-          "id": "mass-low",
-          "type": "measure",
-          "measure": "bodyMass",
-          "side": "below",
-          "days": 2,
-          "label": "Body mass below your baseline for 2 days or more"
-        },
-        {
-          "id": "hr-up",
-          "type": "measure",
-          "measure": "heartRate",
-          "side": "above",
-          "days": 1,
-          "label": "Resting heart rate above your baseline"
-        }
-      ],
-      "plan": {
-        "days": 5,
-        "stepsSource": "Adapted from NASA HRP, 'What can be done' for this risk.",
-        "steps": [
-          {
-            "id": "water-goal",
-            "type": "auto",
-            "rule": "waterGoal",
-            "label": "Reach the water goal"
-          },
-          {
-            "id": "meals",
-            "type": "manual",
-            "label": "Logged all scheduled meals"
-          },
-          {
-            "id": "check-ups",
-            "type": "auto",
-            "rule": "bothCheckUps",
-            "label": "Do both check-ups"
-          }
-        ]
-      }
-    },
-    {
-      "id": "reduced-oxygenation",
-      "title": "Reduced oxygenation",
-      "summary": "Lower oxygen saturation with faster breathing and heart rate.",
-      "hrpRisk": "hypoxia",
-      "source": null,
-      "minSigns": 2,
-      "signs": [
-        {
-          "id": "spo2-low",
-          "type": "measure",
-          "measure": "spo2",
-          "side": "below",
-          "days": 1,
-          "label": "Oxygen saturation below your baseline"
         },
         {
           "id": "rr-up",
@@ -148,15 +48,429 @@
           "label": "Respiratory rate above your baseline"
         },
         {
+          "id": "spo2-low",
+          "type": "measure",
+          "measure": "spo2",
+          "side": "below",
+          "days": 1,
+          "label": "Oxygen saturation below your baseline"
+        },
+        {
+          "id": "sleep-low",
+          "type": "measure",
+          "measure": "sleep",
+          "side": "below",
+          "days": 1,
+          "label": "Sleep below your baseline"
+        }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from the NEXUS-Med recommended actions (03_Case_Scenarios) and the preventive roadmap.",
+        "steps": [
+          {
+            "id": "repeat",
+            "type": "manual",
+            "label": "Repeated today’s measurements"
+          },
+          {
+            "id": "rest",
+            "type": "manual",
+            "label": "Rested between demanding tasks"
+          },
+          {
+            "id": "temp-twice",
+            "type": "manual",
+            "label": "Measured temperature morning and evening"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C12",
+      "title": "Pattern compatible with reduced circulating volume / dehydration concern.",
+      "safeWording": "Pattern compatible with reduced circulating volume / dehydration concern.",
+      "condition": "Dehydration / hypovolemia pattern",
+      "summary": "Faster heart rate with lower blood pressure, fewer urinations and lower body mass.",
+      "hrpRisk": "inadequate-food-and-nutrition",
+      "source": "NEXUS-Med 04_Disease_Alignment (synthetic crew research; demonstration rule)",
+      "minSigns": 3,
+      "signs": [
+        {
           "id": "hr-up",
           "type": "measure",
           "measure": "heartRate",
           "side": "above",
           "days": 1,
           "label": "Resting heart rate above your baseline"
+        },
+        {
+          "id": "bp-low",
+          "type": "measure",
+          "measure": "bloodPressure",
+          "side": "below",
+          "days": 1,
+          "label": "Blood pressure below your baseline"
+        },
+        {
+          "id": "urine-low",
+          "type": "measure",
+          "measure": "urinations24h",
+          "side": "below",
+          "days": 1,
+          "label": "Fewer urinations than your baseline"
+        },
+        {
+          "id": "mass-low",
+          "type": "measure",
+          "measure": "bodyMass",
+          "side": "below",
+          "days": 1,
+          "label": "Body mass below your in-flight baseline"
+        },
+        {
+          "id": "rr-up",
+          "type": "measure",
+          "measure": "respiratoryRate",
+          "side": "above",
+          "days": 1,
+          "label": "Respiratory rate above your baseline"
+        },
+        {
+          "id": "thirst",
+          "type": "symptom",
+          "labels": [
+            "thirst",
+            "dizziness",
+            "vomiting"
+          ],
+          "label": "You reported thirst, dizziness or vomiting"
         }
       ],
-      "plan": null
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from the NEXUS-Med recommended actions (03_Case_Scenarios) and the preventive roadmap.",
+        "steps": [
+          {
+            "id": "water-goal",
+            "type": "auto",
+            "rule": "waterGoal",
+            "label": "Reach the water goal"
+          },
+          {
+            "id": "urinations",
+            "type": "manual",
+            "label": "Logged urinations in the check-up"
+          },
+          {
+            "id": "weigh",
+            "type": "manual",
+            "label": "Weighed in each morning with the same routine"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C16",
+      "title": "Urinary/renal pattern requires review; imaging/lab needed for diagnosis.",
+      "safeWording": "Urinary/renal pattern requires review; imaging/lab needed for diagnosis.",
+      "condition": "Nephrolithiasis",
+      "summary": "Flank discomfort together with urinary or hydration changes.",
+      "hrpRisk": "inadequate-food-and-nutrition",
+      "source": "NEXUS-Med 04_Disease_Alignment (synthetic crew research; demonstration rule)",
+      "minSigns": 2,
+      "signs": [
+        {
+          "id": "flank",
+          "type": "symptom",
+          "labels": [
+            "flank-discomfort"
+          ],
+          "label": "You reported flank discomfort",
+          "required": true
+        },
+        {
+          "id": "dark-urine",
+          "type": "symptom",
+          "labels": [
+            "dark-urine"
+          ],
+          "label": "You reported dark urine"
+        },
+        {
+          "id": "urine-low",
+          "type": "measure",
+          "measure": "urinations24h",
+          "side": "below",
+          "days": 1,
+          "label": "Fewer urinations than your baseline"
+        },
+        {
+          "id": "mass-low",
+          "type": "measure",
+          "measure": "bodyMass",
+          "side": "below",
+          "days": 1,
+          "label": "Body mass below your in-flight baseline"
+        },
+        {
+          "id": "temp-up",
+          "type": "measure",
+          "measure": "temperature",
+          "side": "above",
+          "days": 1,
+          "label": "Temperature above your baseline"
+        }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from the NEXUS-Med recommended actions (03_Case_Scenarios) and the preventive roadmap.",
+        "steps": [
+          {
+            "id": "urine-log",
+            "type": "manual",
+            "label": "Logged urinations and urine color"
+          },
+          {
+            "id": "water-goal",
+            "type": "auto",
+            "rule": "waterGoal",
+            "label": "Reach the water goal"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C18",
+      "title": "Persistent sleep/circadian deviation detected.",
+      "safeWording": "Persistent sleep/circadian deviation detected.",
+      "condition": "Sleep / Circadian Deterioration",
+      "summary": "Sleep below your baseline for several days, with an effect on heart rate, energy or test results.",
+      "hrpRisk": "inadequate-sleep-and-irregular-schedules",
+      "source": "NEXUS-Med 04_Disease_Alignment (synthetic crew research; demonstration rule)",
+      "minSigns": 2,
+      "signs": [
+        {
+          "id": "sleep-low",
+          "type": "measure",
+          "measure": "sleep",
+          "side": "below",
+          "days": 2,
+          "label": "Sleep below your baseline for 2 days or more",
+          "required": true
+        },
+        {
+          "id": "hr-up",
+          "type": "measure",
+          "measure": "heartRate",
+          "side": "above",
+          "days": 1,
+          "label": "Resting heart rate above your baseline"
+        },
+        {
+          "id": "fatigue",
+          "type": "symptom",
+          "labels": [
+            "fatigue"
+          ],
+          "label": "You reported fatigue"
+        },
+        {
+          "id": "cognitive",
+          "type": "cognitive",
+          "label": "Reaction or attention test below your own median"
+        }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from the NEXUS-Med recommended actions (03_Case_Scenarios) and the preventive roadmap.",
+        "steps": [
+          {
+            "id": "sleep-period",
+            "type": "manual",
+            "label": "Kept the same sleep period start"
+          },
+          {
+            "id": "lights",
+            "type": "manual",
+            "label": "Dimmed the lights before the sleep period"
+          },
+          {
+            "id": "co2",
+            "type": "manual",
+            "label": "Checked cabin CO₂ with the crew"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C05",
+      "title": "Headache pattern requires review; system does not determine cause.",
+      "safeWording": "Headache pattern requires review; system does not determine cause.",
+      "condition": "Late Headache",
+      "summary": "Headache together with measures off your baseline.",
+      "hrpRisk": "inadequate-sleep-and-irregular-schedules",
+      "source": "NEXUS-Med 04_Disease_Alignment (synthetic crew research; demonstration rule)",
+      "minSigns": 2,
+      "signs": [
+        {
+          "id": "headache",
+          "type": "symptom",
+          "labels": [
+            "headache"
+          ],
+          "label": "You reported a headache",
+          "required": true
+        },
+        {
+          "id": "bp-up",
+          "type": "measure",
+          "measure": "bloodPressure",
+          "side": "above",
+          "days": 1,
+          "label": "Blood pressure above your baseline"
+        },
+        {
+          "id": "hr-up",
+          "type": "measure",
+          "measure": "heartRate",
+          "side": "above",
+          "days": 1,
+          "label": "Resting heart rate above your baseline"
+        },
+        {
+          "id": "temp-up",
+          "type": "measure",
+          "measure": "temperature",
+          "side": "above",
+          "days": 1,
+          "label": "Temperature above your baseline"
+        },
+        {
+          "id": "rr-up",
+          "type": "measure",
+          "measure": "respiratoryRate",
+          "side": "above",
+          "days": 1,
+          "label": "Respiratory rate above your baseline"
+        },
+        {
+          "id": "spo2-low",
+          "type": "measure",
+          "measure": "spo2",
+          "side": "below",
+          "days": 1,
+          "label": "Oxygen saturation below your baseline"
+        },
+        {
+          "id": "sleep-low",
+          "type": "measure",
+          "measure": "sleep",
+          "side": "below",
+          "days": 1,
+          "label": "Sleep below your baseline"
+        }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from the NEXUS-Med recommended actions (03_Case_Scenarios) and the preventive roadmap.",
+        "steps": [
+          {
+            "id": "lights",
+            "type": "manual",
+            "label": "Dimmed the lights before the sleep period"
+          },
+          {
+            "id": "co2",
+            "type": "manual",
+            "label": "Checked cabin CO₂ with the crew"
+          },
+          {
+            "id": "check-ups",
+            "type": "auto",
+            "rule": "bothCheckUps",
+            "label": "Do both check-ups"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C06",
+      "title": "Early adaptation pattern; repeat measurements if symptoms persist.",
+      "safeWording": "Early adaptation pattern; repeat measurements if symptoms persist.",
+      "condition": "Space Motion Sickness + dehydration risk",
+      "summary": "Nausea early in the flight, with short-lived changes in heart rate, blood pressure, body mass or sleep.",
+      "hrpRisk": "altered-sensorimotor-and-vestibular-function",
+      "source": "NEXUS-Med 04_Disease_Alignment (synthetic crew research; demonstration rule)",
+      "minSigns": 2,
+      "missionDayMax": 7,
+      "signs": [
+        {
+          "id": "nausea",
+          "type": "symptom",
+          "labels": [
+            "nausea",
+            "vomiting",
+            "dizziness"
+          ],
+          "label": "You reported nausea, vomiting or dizziness",
+          "required": true
+        },
+        {
+          "id": "hr-up",
+          "type": "measure",
+          "measure": "heartRate",
+          "side": "above",
+          "days": 1,
+          "label": "Resting heart rate above your baseline"
+        },
+        {
+          "id": "bp-low",
+          "type": "measure",
+          "measure": "bloodPressure",
+          "side": "below",
+          "days": 1,
+          "label": "Blood pressure below your baseline"
+        },
+        {
+          "id": "mass-low",
+          "type": "measure",
+          "measure": "bodyMass",
+          "side": "below",
+          "days": 1,
+          "label": "Body mass below your in-flight baseline"
+        },
+        {
+          "id": "sleep-low",
+          "type": "measure",
+          "measure": "sleep",
+          "side": "below",
+          "days": 1,
+          "label": "Sleep below your baseline"
+        }
+      ],
+      "plan": {
+        "days": 5,
+        "stepsSource": "Adapted from the NEXUS-Med recommended actions (03_Case_Scenarios) and the preventive roadmap.",
+        "steps": [
+          {
+            "id": "water-goal",
+            "type": "auto",
+            "rule": "waterGoal",
+            "label": "Reach the water goal"
+          },
+          {
+            "id": "urinations",
+            "type": "manual",
+            "label": "Logged urinations in the check-up"
+          },
+          {
+            "id": "weigh",
+            "type": "manual",
+            "label": "Weighed in each morning with the same routine"
+          }
+        ]
+      }
     }
   ],
   "demo": {
@@ -257,14 +571,14 @@
       {
         "id": "day-1",
         "title": "Day 1 · signs appear",
-        "description": "Clears check-ups, water and plans. The starting state: sleep debt shows up."
+        "description": "Clears check-ups, water and plans. The starting state: the sleep pattern shows up."
       },
       {
         "id": "day-3",
         "title": "Day 3 · plan under way",
-        "description": "Sleep debt plan started 2 days ago. Today's behavioral check-in and today's plan steps are left for the camera.",
+        "description": "Sleep pattern plan started 2 days ago. Today's behavioral check-in and today's plan steps are left for the camera.",
         "plan": {
-          "pattern": "sleep-debt",
+          "pattern": "C18",
           "startedDaysAgo": 2
         },
         "health": [
@@ -299,7 +613,7 @@
         "title": "Day 5 · back within baseline",
         "description": "Last day of the plan; the pattern is no longer active. Today's plan steps are left for the camera: marking the last one closes the plan.",
         "plan": {
-          "pattern": "sleep-debt",
+          "pattern": "C18",
           "startedDaysAgo": 4
         },
         "health": [

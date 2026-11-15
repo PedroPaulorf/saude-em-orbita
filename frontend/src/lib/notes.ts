@@ -3,9 +3,10 @@
   A nota diz o fato e leva para onde a pessoa age. Não dá conselho: a orientação vem do texto da
   NASA ("What can be done"), mostrado no Detailed stats.
 */
+import { STATE_LABEL, STATE_STATUS, type MonitorState } from '@/lib/monitor'
 import type { BodyRegionId, Status, Vital, VitalId } from '@/types'
 
-export type NoteKind = 'pending' | 'pattern' | 'measure' | 'space' | 'water' | 'calm'
+export type NoteKind = 'pending' | 'state' | 'pattern' | 'measure' | 'space' | 'water' | 'calm'
 
 export type NoteAction =
   | { kind: 'href'; href: string; label: string }
@@ -21,7 +22,9 @@ export interface Note {
   action?: NoteAction
 }
 
-export const VITAL_REGION: Record<VitalId, BodyRegionId> = {
+/** Região do corpo de cada medida (micções, do motor de monitoramento, ficam no tronco). */
+export const VITAL_REGION: Record<VitalId | 'urinations24h', BodyRegionId> = {
+  urinations24h: 'core',
   sleep: 'head',
   heartRate: 'chest',
   bloodPressure: 'chest',
@@ -50,11 +53,13 @@ export interface NotesInput {
   patterns?: { id: string; title: string; present: number; total: number; status: Status }[]
   /** Plano em andamento: troca a nota do padrão. */
   plan?: { day: number; days: number; stepsDone: number; steps: number }
+  /** Estado do motor de monitoramento (monitor.ts), com os dois sinais principais já em texto. */
+  monitor?: { state: MonitorState; score: number; signals: string[] }
 }
 
 const SEVERITY: Record<Status, number> = { baseline: 0, attention: 1, flagged: 2 }
 
-export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, patterns = [], plan }: NotesInput, max = 3): Note[] {
+export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, patterns = [], plan, monitor }: NotesInput, max = 3): Note[] {
   const notes: Note[] = []
 
   if (!healthDoneToday) {
@@ -63,6 +68,17 @@ export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, pa
       kind: 'pending',
       text: "Today's health check-up is pending.",
       action: { kind: 'href', href: '#/check/health', label: 'Start check-up' },
+    })
+  }
+
+  // Estado do motor, quando não é estável: o fato e os dois sinais principais, levando à Prevention.
+  if (monitor && monitor.state !== 'STABLE') {
+    notes.push({
+      id: 'monitor-state',
+      kind: 'state',
+      status: STATE_STATUS[monitor.state],
+      text: `${STATE_LABEL[monitor.state]} · score ${monitor.score}${monitor.signals.length ? `: ${monitor.signals.join('; ')}.` : '.'}`,
+      action: { kind: 'href', href: '#/prevention', label: monitor.state === 'ESCALATE' ? 'See the protocol' : 'Open Prevention' },
     })
   }
 
@@ -81,7 +97,7 @@ export function buildNotes({ vitals, healthDoneToday, sepTime, sepDay, water, pa
       id: `pattern-${pattern.id}`,
       kind: 'pattern',
       status: pattern.status,
-      text: `Early signs of ${pattern.title.toLowerCase()}: ${pattern.present} of ${pattern.total} present.`,
+      text: `${pattern.title} ${pattern.present} of ${pattern.total} signs present.`,
       action: { kind: 'href', href: '#/prevention', label: 'Open Prevention' },
     })
   }
