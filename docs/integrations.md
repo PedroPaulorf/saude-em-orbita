@@ -2,6 +2,8 @@
 
 Implementação de 14/11/2026. A interface mantém o inglês usado no restante do Health7.
 
+Na branch experimental `teste/conectar-dispositivos`, o botão **Connect iPhone** ao lado de Start/Redo abre a configuração do companion iOS. O código-fonte HealthKit está em [ios/](../ios/README.md), com sincronização em primeiro plano e instruções para compilar no Mac. Ainda requer instalação e validação em iPhone físico; o navegador não faz pareamento direto. Veja [escopo e validação](iphone-connection.md).
+
 ## Acesso e estado das integrações
 
 A Home contém os cartões **Artemis mission tracking** e **Watches & research devices**. A rota autenticada `#/integrations`, também acessível por `#/data`, reúne os caminhos de importação e o histórico da conta.
@@ -26,9 +28,9 @@ O equipamento relacionado à USP é o **ActLumus**, produzido pela Condor Instru
 4. Selecionar o arquivo, conferir a prévia e os registros XML não suportados. Nada é enviado durante a prévia.
 5. Marcar a autorização e escolher **Save imported measurements**. O histórico confirma o resultado e informa duplicatas.
 
-O navegador aceita arquivos de até **10 MiB**, com **1–500 amostras suportadas**. O POST normalizado tem limite de **256 KiB**. Dividir arquivos maiores antes da importação; ZIP não é aceito. O histórico mostra as últimas 100 amostras por horário de medição, com contagem total e aviso de truncamento. Registros anteriores permanecem no banco; ainda não há paginação, exportação ou exclusão de importações na interface.
+Apple XML aceita até **200 MiB** e **1 milhão de medidas suportadas**, processadas em Web Worker com leitura em blocos de 1 MiB, sem árvore DOM. JSON/CSV aceita até **10 MiB e 500 medidas**. O envio confirmado pelo usuário divide automaticamente a prévia em lotes de até **500 medidas e 220 KiB**, abaixo do limite de **256 KiB** da API; ZIP não é aceito. A prévia visual limita-se a 100 medidas para não renderizar centenas de milhares de linhas. O histórico mostra as últimas 100 amostras por horário de medição, com contagem total e aviso de truncamento. Registros anteriores permanecem no banco; ainda não há paginação, exportação ou exclusão de importações na interface.
 
-A prévia fica somente na memória da tela. Não existe fila offline para importações de vestíveis. Manter o arquivo original; em falha de rede, repetir a operação com a mesma prévia preserva o identificador. Ao sair da tela, selecionar outro arquivo ou trocar de conta, a prévia é descartada. A fila existente dos check-ups simulados continua com seu comportamento anterior.
+A prévia fica somente na memória da tela. O envio tem progresso e pausa/retomada; lotes confirmados permanecem no banco. Repetir um lote após perda da resposta usa o mesmo identificador. Fechar a página descarta o progresso local; selecionar o mesmo arquivo novamente usa a deduplicação do servidor. Não existe fila offline para importações de vestíveis. Manter o arquivo original; em falha de rede, repetir a operação com a mesma prévia preserva o identificador. Ao sair da tela, selecionar outro arquivo ou trocar de conta, a prévia é descartada. A fila existente dos check-ups simulados continua com seu comportamento anterior.
 
 ## Contrato Health7 v1
 
@@ -71,8 +73,13 @@ garmin,example,Garmin exemplo ficticio,restingHeartRate,62,bpm,2026-11-14T12:00:
 | `skinTemperature` | `degC` | −20–60 |
 | `photopicLight` | `lux` | 0–200000 |
 | `melanopicLight` | `melanopic-lux` | 0–200000 |
+| `stepCount` | `count` | 0–1000000 |
+| `walkingRunningDistance` | `m` | 0–10000000 |
+| `walkingSpeed` | `m/s` | 0–100 |
+| `activeEnergy` | `kcal` | 0–100000 |
+| `basalEnergy` | `kcal` | 0–100000 |
 
-São limites de aceitação do contrato, **não intervalos de normalidade clínica**. Disponibilidade depende de modelo, sensor e exportação; esta tabela não garante que todo relógio meça todos esses dados. Não há conversão automática de libras, Fahrenheit ou unidades de atividade sem uma regra específica.
+São limites de aceitação do contrato, **não intervalos de normalidade clínica**. Disponibilidade depende de modelo, sensor e exportação; esta tabela não garante que todo relógio meça todos esses dados. No JSON/CSV use exatamente as unidades do contrato. No XML Apple, as conversões explícitas estão descritas abaixo; não há conversão por palpite.
 
 ActLumus aceita somente `skinTemperature`, `photopicLight` e `melanopicLight`. Os canais de luz ficam restritos a essa origem nesta versão. Nunca mapear luz fotópica para luz melanópica, temperatura da pele para temperatura central ou contagens de atividade para horas de sono. O [manual do ActStudio/ActLumus](https://condorinst.com/wp-content/uploads/2025/05/Manual_ActTrust_2_1_0_EN.pdf) descreve sensores e exportações; a importação genérica não equivale a uma validação de seu formato bruto.
 
@@ -80,7 +87,7 @@ ActLumus aceita somente `skinTemperature`, `photopicLight` e `melanopicLight`. O
 
 ### Apple Health XML
 
-O usuário pode [exportar os dados do app Saúde em XML](https://support.apple.com/en-gb/guide/iphone/iph5ede58c3d/ios). Extrair o arquivo antes de selecionar. Exportações grandes devem ser convertidas/divididas; o importador não corta silenciosamente os primeiros 500 registros.
+O usuário pode [exportar os dados do app Saúde em XML](https://support.apple.com/en-gb/guide/iphone/iph5ede58c3d/ios). Extrair o arquivo antes de selecionar. Exportações até 200 MiB são processadas localmente e enviadas em lotes após autorização; o importador não corta silenciosamente os primeiros 500 registros. Arquivos grandes podem levar vários minutos para salvar.
 
 | Tipo `Record` do XML | Unidade de entrada | Resultado |
 | --- | --- | --- |
@@ -88,12 +95,17 @@ O usuário pode [exportar os dados do app Saúde em XML](https://support.apple.c
 | `HKQuantityTypeIdentifierRestingHeartRate` | `count/min` | `restingHeartRate`, `bpm` |
 | `HKQuantityTypeIdentifierOxygenSaturation` | `%`, fração HealthKit | `spo2`, multiplicação por 100 |
 | `HKQuantityTypeIdentifierRespiratoryRate` | `count/min` | `respiratoryRate`, `breaths/min` |
-| `HKQuantityTypeIdentifierBodyMass` | `kg` | `bodyMass`, `kg` |
+| `HKQuantityTypeIdentifierBodyMass` | `kg`, `lb` | `bodyMass`, `kg` (lb × 0,45359237) |
 | `HKQuantityTypeIdentifierAppleSleepingWristTemperature` | `degC` | `skinTemperature`, `degC` |
+| `HKQuantityTypeIdentifierStepCount` | `count` | `stepCount`, contagem por intervalo |
+| `HKQuantityTypeIdentifierDistanceWalkingRunning` | `m`, `km`, `mi` | `walkingRunningDistance`, metros (×1, ×1000, ×1609,344) |
+| `HKQuantityTypeIdentifierWalkingSpeed` | `m/s`, `km/hr`, `mi/hr` | `walkingSpeed`, m/s (×1, ÷3,6, ×0,44704) |
+| `HKQuantityTypeIdentifierActiveEnergyBurned` | `kcal`, `kJ`, `cal` | `activeEnergy`, kcal (×1, ÷4,184, ÷1000) |
+| `HKQuantityTypeIdentifierBasalEnergyBurned` | `kcal`, `kJ`, `cal` | `basalEnergy`, kcal (×1, ÷4,184, ÷1000) |
 
 O [HealthKit representa porcentagens como frações de 0 a 1](https://developer.apple.com/documentation/healthkit/hkunit/percent%28%29): por exemplo `0.97` vira `97 %` somente neste adaptador XML. No JSON/CSV Health7 a porcentagem já deve estar na escala 0–100. Unidades diferentes das listadas causam erro, não conversão por palpite. Datas Apple com deslocamento como `-0300` são normalizadas; `sourceName` é preservado como identificação declarada de dispositivo/origem. O app Saúde agrega múltiplas fontes, portanto não se presume que todo registro venha de um Apple Watch.
 
-Tipos fora dessa lista, incluindo categorias de sono, são contados como não suportados e apresentados na prévia. Tipos suportados com conteúdo inválido impedem a importação inteira. XML malformado, entidades e DTD externo são rejeitados. O XML não é inserido na página nem enviado ao servidor; só as amostras normalizadas passam pela API.
+Tipos fora dessa lista, incluindo categorias de sono, são contados como não suportados e apresentados na prévia. Tipos suportados com conteúdo inválido impedem a prévia e nenhum lote é enviado. Durante o envio, uma rejeição interrompe o lote atual e mantém os lotes anteriores já confirmados. XML malformado, entidades e DTD externo são rejeitados. O XML não é inserido na página nem enviado ao servidor; só as amostras normalizadas passam pela API.
 
 ## API e armazenamento
 
@@ -106,7 +118,7 @@ GET  /api/v1/me/wearables
 
 POST recebe o objeto do arquivo, acrescido de `clientId` e `format: health7-json-v1 | health7-csv-v1 | apple-health-xml`. O frontend gera um identificador por prévia. Não enviar `skipped`, nome do arquivo, `crewId` ou XML bruto.
 
-Exige cookie de sessão, origem permitida e `X-Requested-With: Health7`. O frontend também envia `X-Health7-Crew`; troca de conta invalida o pedido. O proprietário vem da sessão, nunca do arquivo. A rota de importação permite 20 requisições por minuto por IP com o mecanismo de rate limit existente. A validação é repetida no servidor.
+Exige cookie de sessão, origem permitida e `X-Requested-With: Health7`. O frontend também envia `X-Health7-Crew`; troca de conta invalida o pedido. O proprietário vem da sessão, nunca do arquivo. A rota de importação permite 120 requisições por minuto por conta autenticada com o mecanismo de rate limit existente. A validação é repetida no servidor.
 
 Resposta de criação: `201`, com `id`, `crewId`, `clientId`, `source`, `format`, `quality`, `count`, `added`, `duplicates`, `receivedAt`. Repetição idêntica do mesmo `clientId` retorna `200` com a resposta original. Reutilizar o identificador com conteúdo diferente retorna `409`.
 

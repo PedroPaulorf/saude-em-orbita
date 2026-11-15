@@ -1,3 +1,4 @@
+import { SaxesParser } from 'saxes'
 export type WearableSource = 'apple' | 'samsung' | 'garmin' | 'actlumus'
 export const metricInfo = {
   heartRate: ['Heart rate', 'bpm', 1, 350], restingHeartRate: ['Resting heart rate', 'bpm', 1, 350],
@@ -5,6 +6,11 @@ export const metricInfo = {
   bodyMass: ['Body mass', 'kg', 1, 500], sleepDuration: ['Asleep interval', 'h', 0, 24],
   skinTemperature: ['Skin temperature', 'degC', -20, 60], photopicLight: ['Photopic light', 'lux', 0, 200000],
   melanopicLight: ['Melanopic light', 'melanopic-lux', 0, 200000],
+  stepCount: ['Steps (recorded interval)', 'count', 0, 1000000],
+  walkingRunningDistance: ['Walking / running distance', 'm', 0, 10000000],
+  walkingSpeed: ['Walking speed', 'm/s', 0, 100],
+  activeEnergy: ['Active energy', 'kcal', 0, 100000],
+  basalEnergy: ['Basal energy', 'kcal', 0, 100000],
 } as const
 export interface WearableSample { device: string; metric: keyof typeof metricInfo; value: number; unit: string; at: string; endAt?: string }
 export interface WearableFile { version: 1; source: WearableSource; quality: 'unverified' | 'example'; samples: WearableSample[] }
@@ -108,25 +114,62 @@ const appleTypes: Record<string, { metric: WearableSample['metric']; unit: strin
   HKQuantityTypeIdentifierRespiratoryRate: { metric: 'respiratoryRate', unit: 'count/min', convert: n => n },
   HKQuantityTypeIdentifierBodyMass: { metric: 'bodyMass', unit: 'kg', convert: n => n },
   HKQuantityTypeIdentifierAppleSleepingWristTemperature: { metric: 'skinTemperature', unit: 'degC', convert: n => n },
+  HKQuantityTypeIdentifierStepCount: { metric: 'stepCount', unit: 'count', convert: n => n },
+  HKQuantityTypeIdentifierDistanceWalkingRunning: { metric: 'walkingRunningDistance', unit: 'm', convert: n => n },
+  HKQuantityTypeIdentifierWalkingSpeed: { metric: 'walkingSpeed', unit: 'm/s', convert: n => n },
+  HKQuantityTypeIdentifierActiveEnergyBurned: { metric: 'activeEnergy', unit: 'kcal', convert: n => n },
+  HKQuantityTypeIdentifierBasalEnergyBurned: { metric: 'basalEnergy', unit: 'kcal', convert: n => n },
 }
 export function appleRecord(attributes: Record<string, string>): WearableSample | null {
   const adapter = Object.hasOwn(appleTypes, attributes.type) ? appleTypes[attributes.type] : undefined
   if (!adapter) return null
-  if (attributes.unit !== adapter.unit || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(attributes.value ?? '') || !Number.isFinite(Number(attributes.value))) throw new Error('Unsupported Apple unit or value. Convert it explicitly using the JSON/CSV template.')
+  const conversions: Record<string, Record<string, number>> = {
+    walkingRunningDistance: { m: 1, km: 1000, mi: 1609.344 },
+    walkingSpeed: { 'm/s': 1, 'km/hr': 1 / 3.6, 'mi/hr': 0.44704 },
+    activeEnergy: { kcal: 1, Cal: 1, kJ: 1 / 4.184, J: 1 / 4184, cal: 0.001 },
+    basalEnergy: { kcal: 1, Cal: 1, kJ: 1 / 4.184, J: 1 / 4184, cal: 0.001 },
+    bodyMass: { kg: 1, lb: 0.45359237 },
+  }
+  const factor = conversions[adapter.metric]?.[attributes.unit] ?? (attributes.unit === adapter.unit ? 1 : undefined)
+  if (factor === undefined) throw new Error(`Unsupported Apple unit "${attributes.unit ?? '(missing)'}" for ${attributes.type}. Nothing was sent or saved. Report this unit so its conversion can be verified.`)
+  if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(attributes.value ?? '') || !Number.isFinite(Number(attributes.value))) throw new Error(`Invalid numeric value for ${attributes.type} (unit "${attributes.unit}"). Nothing was sent or saved.`)
   const appleDate = (s: string) => s?.replace(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) ([+-]\d{2})(\d{2})$/, '$1T$2$3:$4')
-  return { device: attributes.sourceName, metric: adapter.metric, value: adapter.convert(Number(attributes.value)), unit: metricInfo[adapter.metric][1], at: appleDate(attributes.startDate), endAt: appleDate(attributes.endDate) }
+  return { device: attributes.sourceName, metric: adapter.metric, value: adapter.convert(Number(attributes.value) * factor), unit: metricInfo[adapter.metric][1], at: appleDate(attributes.startDate), endAt: appleDate(attributes.endDate) }
+}
+/** SAX reader: no DOM tree, accepts chunk boundaries inside attributes and UTF-8 text. */
+export function createAppleXmlReader() {
+  const parser = new SaxesParser({ xmlns: false })
+  const samples: WearableSample[] = []; let skipped = 0, depth = 0, root = false
+  const unsupported = new Map<string, number>()
+  parser.on('error', error => { throw new Error('Invalid Apple XML: ' + error.message) })
+  parser.on('doctype', value => { if (/<!ENTITY|\b(?:SYSTEM|PUBLIC)\s+["']/i.test(value)) throw new Error('XML entities and external document types are not accepted.') })
+  parser.on('opentag', tag => {
+    depth++
+    if (depth === 1) { if (tag.name !== 'HealthData') throw new Error('Expected an extracted Apple Health XML file, not ZIP.'); root = true }
+    if (depth !== 2 || tag.name !== 'Record') return
+    const attrs = tag.attributes as Record<string, string>
+    const sample = appleRecord(attrs)
+    if (sample) {
+      if (samples.length >= 1000000) throw new Error('Export exceeds one million supported measurements. Export a smaller period.')
+      samples.push(validateWearableFile({ version: 1, source: 'apple', quality: 'unverified', samples: [sample] }, 'apple').samples[0])
+    } else { skipped++; const type = attrs.type ?? 'Unknown'; unsupported.set(type, (unsupported.get(type) ?? 0) + 1) }
+  })
+  parser.on('closetag', () => { depth-- })
+  return {
+    write: (chunk: string) => { parser.write(chunk) },
+    finish: (): ParsedWearables => {
+      parser.close()
+      if (!root) throw new Error('Expected an extracted Apple Health XML file.')
+      if (!samples.length) {
+        const found = [...unsupported.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([type, n]) => type.replace(/^HK(?:Quantity|Category)TypeIdentifier/, '') + ' (' + n + ')').join(', ')
+        throw new Error('No supported measurements found. ' + (found ? 'Other records found: ' + found : 'No Record entries found; choose export.xml.') + '. Nothing was sent or saved.')
+      }
+      return { version: 1, source: 'apple', quality: 'unverified', format: 'apple-health-xml', samples, skipped }
+    },
+  }
 }
 export function parseAppleXml(text: string): ParsedWearables {
-  if (/<!ENTITY|\b(?:SYSTEM|PUBLIC)\s+["']/i.test(text)) throw new Error('XML entities and external document types are not accepted.')
-  const xml = new DOMParser().parseFromString(text, 'application/xml')
-  if (xml.querySelector('parsererror') || xml.documentElement.tagName !== 'HealthData') throw new Error('Expected an extracted Apple Health XML file, not ZIP.')
-  const samples: WearableSample[] = []; let skipped = 0
-  for (const record of xml.querySelectorAll('Record')) {
-    const sample = appleRecord(Object.fromEntries(Array.from(record.attributes).map(a => [a.name, a.value])))
-    if (sample) samples.push(sample); else skipped++
-    if (samples.length > 500) throw new Error('More than 500 supported samples. Split/convert the export into smaller Health7 files first.')
-  }
-  return { ...validateWearableFile({ version: 1, source: 'apple', quality: 'unverified', samples }, 'apple'), format: 'apple-health-xml', skipped }
+  const reader = createAppleXmlReader(); reader.write(text); return reader.finish()
 }
 export function exampleFile(source: WearableSource): WearableFile {
   const light = source === 'actlumus'
