@@ -84,7 +84,7 @@ O `.env.local` aponta para a API (`VITE_API_URL=http://localhost:3001`) e para o
 | `nx01`, `nx02`, `nx03`, `nx04`, `nx05`, `nx06` | `senha123` |
 | `crew02`, `crew03` (só depois de `npm run seed`) | `senha123` |
 
-É uma senha **fictícia de demonstração**, igual para todos, e as contas só existem em banco local. Ela vale porque o `DEMO_PASSWORD` do `.env` é usado ao criar as contas. Se você usar outro valor, a senha será esse valor. Se o banco já tinha as contas, a senha antiga continua.
+É uma senha **fictícia de demonstração**, igual para todos. Com `NEXUS_AUTO_REANCHOR=true` (já vem no `.env.example`), o back **alinha sozinho** a senha dessas 8 contas com o `DEMO_PASSWORD` toda vez que sobe, e cria `crew02` e `crew03` se faltarem. Não precisa de `npm run seed`, de reset do banco nem de comando extra: basta `git pull` e `npm run dev`. Se o `DEMO_PASSWORD` estiver vazio, vale `senha123`.
 
 ## Quando o dia vira
 
@@ -117,6 +117,6 @@ Detalhes e opções em [backend/README.md](backend/README.md).
 | Chat com "Demo reply" | Falta o `frontend/.env.local`. Copie o `.env.example` e reinicie o front. |
 | `docker compose` reclama de `POSTGRES_PASSWORD` | Falta o `backend/.env`. |
 | Erro de conexão no back | Porta ou senha da `DATABASE_URL` diferente das do Compose. |
-| Não consigo entrar com `nx01` | Use `senha123`. Se mudou o `DEMO_PASSWORD` depois de criar as contas, a senha antiga ficou valendo: a atualização do repositório não troca senhas existentes; solicite ao responsável a alteração das contas de demonstração. |
+| Não consigo entrar com `nx01` | Use `senha123`. Reinicie o back: ele realinha a senha das contas demo. Se persistir, confira se `NEXUS_AUTO_REANCHOR=true` está no `backend/.env`. |
 
 Os arquivos `.env` e `.env.local` ficam fora do Git de propósito. Não os envie por commit.

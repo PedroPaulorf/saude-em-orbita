@@ -23,11 +23,21 @@ catch (error) { app.log.error(error); await app.close(); process.exitCode = 1 }
 
 if (process.env.NEXUS_AUTO_REANCHOR === 'true' && !process.exitCode) {
   const { reanchorNexusIfStale } = await import('./import-nexus.js')
+  const { syncDemoAccounts } = await import('./seed.js')
+  const { openDatabase } = await import('./database.js')
+  const demoPassword = process.env.DEMO_PASSWORD || 'senha123'
   let running = false
   const tick = async () => {
     if (running) return
     running = true
-    try { await reanchorNexusIfStale(databaseUrl, process.env.DEMO_PASSWORD, line => app.log.info(line)) }
+    try {
+      await reanchorNexusIfStale(databaseUrl, demoPassword, line => app.log.info(line))
+      const db = openDatabase(databaseUrl)
+      try {
+        const fixed = await syncDemoAccounts(db, demoPassword)
+        if (fixed.length) app.log.info(`Demo: senha alinhada com DEMO_PASSWORD em ${fixed.join(', ')}`)
+      } finally { await db.end() }
+    }
     catch (error) { app.log.error(error) } finally { running = false }
   }
   await tick()
