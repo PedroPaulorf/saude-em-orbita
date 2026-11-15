@@ -1,0 +1,503 @@
+<!doctype html>
+<!--
+  Health7 · Project Submission Report · V2
+  Mesmo texto do V1 (docs/Health7_Rulima_Tech_Submission_Report.pdf), com o visual da landing page:
+  cores do Space Apps, Fira Sans / Overpass / Fira Code, ondas, cartões com sombra dura e o Seven na capa.
+  Uma seção por página A4. Para gerar o PDF: node docs/submission-report/build.mjs
+  O cabeçalho, a onda e o rodapé de cada página são montados pelo script no fim do arquivo.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Health7 - Rulima Tech - NASA Space Apps Challenge 2026</title>
+<meta name="author" content="Rulima Tech">
+<meta name="description" content="NASA Space Apps Challenge 2026 Project Submission Report">
+<style>
+  @font-face { font-family: "Fira Sans"; font-weight: 600; src: url("../../frontend/node_modules/@fontsource/fira-sans/files/fira-sans-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Fira Sans"; font-weight: 700; src: url("../../frontend/node_modules/@fontsource/fira-sans/files/fira-sans-latin-700-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Fira Sans"; font-weight: 900; src: url("../../frontend/node_modules/@fontsource/fira-sans/files/fira-sans-latin-900-normal.woff2") format("woff2"); }
+  @font-face { font-family: Overpass; font-weight: 400; src: url("../../frontend/node_modules/@fontsource/overpass/files/overpass-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: Overpass; font-weight: 600; src: url("../../frontend/node_modules/@fontsource/overpass/files/overpass-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: Overpass; font-weight: 700; src: url("../../frontend/node_modules/@fontsource/overpass/files/overpass-latin-700-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Fira Code"; font-weight: 400; src: url("../../frontend/node_modules/@fontsource/fira-code/files/fira-code-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Fira Code"; font-weight: 500; src: url("../../frontend/node_modules/@fontsource/fira-code/files/fira-code-latin-500-normal.woff2") format("woff2"); }
+
+  @page { size: A4; margin: 0; }
+  :root {
+    /* Paleta do Space Apps, a mesma da landing (frontend/src/styles/theme.css). */
+    --deep: #07173f;
+    --blue: #0960e1;
+    --yonder: #2e96f5;
+    --yellow: #eafe07;
+    --rocket: #d93400;
+    --surface: #0b2150;
+    --surface-2: #11306b;
+    --ink-soft: #a9bde6;
+    --line: rgb(46 150 245 / 0.28);
+    --display: "Fira Sans", system-ui, sans-serif;
+    --sans: Overpass, system-ui, sans-serif;
+    --mono: "Fira Code", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; background: #020a1f; }
+  h1, h2, p, ul, ol, table, figure { margin: 0; padding: 0; }
+  a { color: inherit; }
+
+  .page {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--deep);
+    color: #fff;
+    font: 400 9.4pt/1.5 var(--sans);
+    break-after: page;
+  }
+  .page:last-child { break-after: auto; }
+  @media screen { .page { margin: 8mm auto; } }
+
+  /* ---------- cabeçalho, onda e rodapé das páginas de conteúdo ---------- */
+  .band { position: absolute; inset: 0 0 auto 0; height: 21mm; background: var(--blue); }
+  .band .row { display: flex; align-items: baseline; justify-content: space-between; padding: 6.2mm 16mm 0; }
+  .band .brand { font: 900 13pt/1 var(--display); letter-spacing: 0.05em; color: var(--yellow); }
+  .band .doc { font: 500 7.6pt/1 var(--mono); color: #fff; }
+  .band svg { position: absolute; left: -3%; bottom: -0.3mm; width: 106%; height: 8mm; fill: var(--deep); }
+  .band .progress { position: absolute; left: 0; top: 0; height: 1.1mm; background: var(--yellow); }
+  .foot { position: absolute; inset: auto 16mm 9mm 16mm; display: flex; justify-content: space-between; border-top: 0.6pt solid var(--line); padding-top: 2.4mm; font: 400 7.2pt/1 var(--mono); color: var(--ink-soft); }
+
+  .body { position: absolute; inset: 27mm 16mm 18mm 16mm; }
+  .eyebrow { font: 500 8.2pt/1 var(--mono); color: var(--yonder); }
+  h1 { margin-top: 2.2mm; font: 900 25pt/1.02 var(--display); color: var(--yellow); }
+  h2 { margin-top: 6.2mm; font: 900 12.6pt/1.15 var(--display); color: #fff; }
+  h1 + h2 { margin-top: 4.4mm; }
+  p { margin-top: 2.4mm; color: rgb(255 255 255 / 0.88); }
+  h2 + p { margin-top: 1.6mm; }
+  .lede { margin-top: 3.4mm; }
+
+  /* Frase de destaque, como a "ideia" da landing. */
+  .statement { margin-top: 2mm; font: 900 15pt/1.22 var(--display); color: #fff; text-wrap: balance; }
+
+  /* ---------- listas ---------- */
+  ul.dots { list-style: none; margin-top: 2mm; }
+  ul.dots li { position: relative; padding-left: 5mm; margin-top: 1.25mm; color: rgb(255 255 255 / 0.9); }
+  ul.dots li::before { content: ""; position: absolute; left: 0.6mm; top: 0.52em; width: 1.9mm; height: 1.9mm; border-radius: 50%; background: var(--yellow); }
+  ul.dots.tight li { margin-top: 0.9mm; font-size: 8.9pt; }
+
+  /* ---------- tabelas: cartão com borda e sombra dura, cabeçalho amarelo ---------- */
+  .table { margin-top: 2.6mm; border: 2pt solid var(--blue); border-radius: 9pt; overflow: hidden; background: var(--surface); box-shadow: 4pt 4pt 0 0 var(--yonder); }
+  table { width: 100%; border-collapse: collapse; font-size: 8.5pt; line-height: 1.38; }
+  th { background: var(--yellow); color: var(--deep); font: 900 8.6pt/1.2 var(--display); text-align: left; padding: 2.2mm 3mm; }
+  td { padding: 2mm 3mm; vertical-align: top; border-top: 0.6pt solid var(--line); color: rgb(255 255 255 / 0.9); }
+  td:first-child { color: #fff; font-weight: 600; }
+  td + td, th + th { border-left: 0.6pt solid var(--line); }
+  th + th { border-left-color: rgb(7 23 63 / 0.18); }
+  td a { color: var(--yellow); font-family: var(--mono); font-size: 8pt; }
+  td.check { font: 500 8.6pt/1.4 var(--mono); color: var(--yellow); white-space: pre; }
+
+  /* ---------- avisos: adesivos da landing ---------- */
+  .card { margin-top: 6mm; padding: 3.4mm 4.4mm 3.8mm; border-radius: 9pt; font-size: 8.9pt; line-height: 1.45; }
+  .card b { display: block; margin-bottom: 0.8mm; font: 900 10.6pt/1.2 var(--display); }
+  .card p { margin: 0; color: inherit; }
+  /* aviso de limite (vermelho no V1): o laranja do botão principal, com sombra amarela */
+  .card.alert { background: var(--rocket); color: #fff; box-shadow: 4pt 4pt 0 0 var(--yellow); }
+  /* nota informativa (azul no V1) */
+  .card.info { background: var(--blue); color: #fff; box-shadow: 4pt 4pt 0 0 var(--yonder); }
+  /* destaque (verde-água no V1): o bilhete amarelo */
+  .card.note { background: var(--yellow); color: var(--deep); box-shadow: 4pt 4pt 0 0 var(--blue); transform: rotate(-0.45deg); }
+
+  /* ---------- fluxo de monitoramento: cinco adesivos ---------- */
+  .flow { display: flex; align-items: stretch; gap: 1.2mm; margin-top: 3.4mm; }
+  .flow .step { flex: 1; padding: 2.6mm 3mm 3mm; border-radius: 9pt; font: 700 9.2pt/1.2 var(--display); box-shadow: 3pt 3pt 0 0 var(--blue); }
+  .flow .step span { display: block; font: 900 20pt/1 var(--display); margin-bottom: 1.2mm; }
+  .flow .step:nth-of-type(1) { background: var(--yellow); color: var(--deep); transform: rotate(-1.6deg); }
+  .flow .step:nth-of-type(2) { background: #fff; color: var(--deep); transform: rotate(1.2deg); }
+  .flow .step:nth-of-type(3) { background: var(--blue); color: #fff; box-shadow: 3pt 3pt 0 0 var(--yonder); transform: rotate(-0.8deg); }
+  .flow .step:nth-of-type(4) { background: var(--rocket); color: #fff; box-shadow: 3pt 3pt 0 0 var(--yellow); transform: rotate(1.6deg); }
+  .flow .step:nth-of-type(5) { background: var(--yonder); color: var(--deep); transform: rotate(-1.1deg); }
+  .flow svg { flex: none; width: 5.6mm; align-self: center; stroke: var(--yonder); fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- fontes: lista em duas colunas, como "Science and sources" ---------- */
+  .sources { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8mm; margin-top: 2.8mm; }
+  .sources a { display: flex; align-items: flex-start; justify-content: space-between; gap: 3mm; padding: 2.4mm 3mm; border: 1.2pt solid rgb(255 255 255 / 0.16); border-radius: 8pt; font-weight: 600; font-size: 8.8pt; line-height: 1.3; color: #fff; text-decoration: none; }
+  .sources svg { flex: none; width: 3.1mm; height: 3.1mm; margin-top: 0.4mm; stroke: var(--yonder); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- capa ---------- */
+  .cover .seven { position: absolute; right: 12mm; top: 20mm; width: 82mm; height: 82mm; }
+  .cover .text { position: absolute; left: 18mm; right: 18mm; top: 108mm; }
+  .cover .kicker { font: 500 9.4pt/1 var(--mono); color: var(--yonder); }
+  .cover .title { margin-top: 4mm; font: 900 70pt/0.92 var(--display); color: var(--yellow); letter-spacing: -0.01em; }
+  .cover .tagline { margin-top: 4mm; font: 600 17pt/1.2 var(--sans); color: #fff; }
+  .cover .rule { margin-top: 8mm; height: 1.3mm; background: linear-gradient(to right, var(--yellow) 0 18%, rgb(255 255 255 / 0.16) 18% 100%); }
+  .cover .label { margin-top: 11mm; font: 500 9.4pt/1 var(--mono); color: var(--yonder); }
+  .cover .meta { margin-top: 3.4mm; font-size: 11pt; line-height: 1.5; color: rgb(255 255 255 / 0.9); }
+  .cover .meta + .meta { margin-top: 12mm; }
+  .cover .sea { position: absolute; inset: auto 0 0 0; height: 34mm; background: var(--blue); }
+  .cover .sea svg { position: absolute; left: -3%; top: -11.6mm; width: 106%; height: 12mm; fill: var(--blue); }
+  .cover .sea p { position: absolute; left: 18mm; bottom: 11mm; margin: 0; font: 400 8.4pt/1 var(--mono); color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ============ capa ============ -->
+<section class="page cover">
+  <svg class="seven" viewBox="-70 -70 140 140" aria-hidden="true">
+    <ellipse rx="64" ry="50" fill="none" stroke="#eafe07" stroke-width="2.2" transform="rotate(-20)"/>
+    <ellipse rx="52" ry="66" fill="none" stroke="#2e96f5" stroke-width="2.2" transform="rotate(15)"/>
+    <circle r="40" fill="#0960e1"/>
+    <circle r="34.5" fill="#07173f"/>
+    <g id="eyes" transform="translate(-27 -11.8) scale(1.18)"></g>
+  </svg>
+  <div class="text">
+    <p class="kicker">NASA SPACE APPS CHALLENGE 2026</p>
+    <p class="title">HEALTH7</p>
+    <p class="tagline">From Your Baseline to Your Next Step</p>
+    <div class="rule"></div>
+    <p class="label">PROJECT SUBMISSION REPORT</p>
+    <p class="meta">Selected challenge:<br>Create Health Monitoring Software for Astronauts on Space Missions</p>
+    <p class="meta">Team: Rulima Tech<br>Team leader and presenter: Pedro Paulo<br>Date: 15 November 2026</p>
+  </div>
+  <div class="sea">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 74 C 220 8, 430 6, 660 58 S 1110 132, 1440 36 L 1440 120 L 0 120 Z"/></svg>
+    <p>Rulima Tech | NASA Space Apps Challenge 2026</p>
+  </div>
+</section>
+
+<!-- ============ 01 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 01</p>
+  <h1>Project identification</h1>
+  <div class="table" style="margin-top:4.4mm"><table>
+    <colgroup><col style="width:26%"><col></colgroup>
+    <tr><th>Field</th><th>Submission information</th></tr>
+    <tr><td>Project name</td><td>Health7 - From Your Baseline to Your Next Step</td></tr>
+    <tr><td>Team</td><td>Rulima Tech</td></tr>
+    <tr><td>Challenge</td><td>Create Health Monitoring Software for Astronauts on Space Missions</td></tr>
+    <tr><td>Team leader</td><td>Pedro Paulo</td></tr>
+    <tr><td>Presenter</td><td>Pedro Paulo</td></tr>
+    <tr><td>Final project</td><td><a href="https://github.com/PedroPaulorf/saude-em-orbita">github.com/PedroPaulorf/saude-em-orbita</a></td></tr>
+    <tr><td>Demo video</td><td>Public link to be added before submission</td></tr>
+    <tr><td>Live demonstration</td><td>Public link to be added before submission</td></tr>
+  </table></div>
+
+  <h2>Team members</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:42%"><col></colgroup>
+    <tr><th>Member</th><th>Role in submission</th></tr>
+    <tr><td>Pedro Paulo</td><td>Team leader and presenter</td></tr>
+    <tr><td>João Girão</td><td>Team member</td></tr>
+    <tr><td>Yvens Almeida</td><td>Team member</td></tr>
+    <tr><td>Arthus Girão</td><td>Team member</td></tr>
+    <tr><td>Valéria Maucaylli</td><td>Team member</td></tr>
+    <tr><td>Pedro Henrique</td><td>Team member</td></tr>
+  </table></div>
+
+  <div class="card info">
+    <b>Submission language</b>
+    <p>This report is written in English because the Project Submission Guide requires the submission page and linked project materials to be in English. A spoken video in another language must include accurate English subtitles.</p>
+  </div>
+</div></section>
+
+<!-- ============ 02 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 02</p>
+  <h1>High-level project summary</h1>
+  <p class="lede">Health7 is a functional prototype designed to support preventive health monitoring during long-duration space missions. The system brings together physical check-ups, symptom reports, behavioral check-ins, and cognitive tests. Instead of interpreting each measurement in isolation, Health7 compares current records with the astronaut's personal pre-mission baseline and recent mission history.</p>
+  <p>An explicit rule-based engine identifies stable conditions, relevant changes, persistent patterns, and signs that may require medical evaluation. The platform then shows what changed, which records contributed to the result, and what follow-up actions should be considered.</p>
+  <p>Artificial intelligence is used as an explanation and communication layer. It translates selected monitoring information into clear language and helps organize a follow-up roadmap. It does not determine the monitoring state, diagnose a disease, prescribe treatment, or replace a physician.</p>
+  <p>Health7 addresses the challenge by transforming dispersed health indicators into understandable and actionable information. Its goal is to increase astronaut autonomy, support preventive action, and improve the quality of information available for medical evaluation when immediate assistance from Earth may be limited.</p>
+
+  <div class="card alert">
+    <b>Evidence boundary</b>
+    <p>The current version is a software prototype demonstrated with synthetic crew scenarios and selected NASA data and research resources. It has not been clinically validated or deployed in spaceflight.</p>
+  </div>
+
+  <h2 style="margin-top:9mm">Core value proposition</h2>
+  <p class="statement">Health7 converts fragmented health records into an explainable personal trajectory and a practical next step before an overt clinical event.</p>
+</div></section>
+
+<!-- ============ 03 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 03</p>
+  <h1>Problem, solution, and user journey</h1>
+  <h2>The problem</h2>
+  <p>During long-duration missions, astronauts are exposed to isolation, altered gravity, radiation, confined environments, disrupted sleep, and communication delays. Health measurements may come from different tests, devices, and self-reported observations. A single value may not explain whether a meaningful personal change is occurring, while delayed communication can limit immediate access to specialists.</p>
+  <h2>The solution</h2>
+  <p>Health7 organizes physical measurements, symptoms, behavioral check-ins, cognitive tests, and historical records in one monitoring environment. It compares recent information with the astronaut's individual baseline, identifies patterns through explicit rules, and presents the evidence together with a follow-up roadmap.</p>
+
+  <h2>Monitoring flow</h2>
+  <div class="flow">
+    <div class="step"><span>1</span>Record<br>health data</div>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13 C 8 9, 14 9, 20 12"/><path d="M15 7 L 20 12 L 14 16"/></svg>
+    <div class="step"><span>2</span>Compare with<br>baseline</div>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 C 8 15, 14 15, 20 12"/><path d="M14 8 L 20 12 L 15 17"/></svg>
+    <div class="step"><span>3</span>Evaluate<br>patterns</div>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13 C 8 9, 14 9, 20 12"/><path d="M15 7 L 20 12 L 14 16"/></svg>
+    <div class="step"><span>4</span>Display<br>state</div>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 C 8 15, 14 15, 20 12"/><path d="M14 8 L 20 12 L 15 17"/></svg>
+    <div class="step"><span>5</span>Explain and<br>guide</div>
+  </div>
+
+  <h2 style="margin-top:7.4mm">Monitoring states</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:25%"><col></colgroup>
+    <tr><th>State</th><th>Meaning in the prototype</th></tr>
+    <tr><td>Stable</td><td>No meaningful change is identified by the current demonstration rules.</td></tr>
+    <tr><td>Watch</td><td>A change deserves additional observation or a repeat measurement.</td></tr>
+    <tr><td>Persistent Change</td><td>A relevant pattern continues across multiple records or days.</td></tr>
+    <tr><td>Escalate</td><td>A warning sign or combination of findings indicates that medical evaluation or mission protocol should be considered.</td></tr>
+  </table></div>
+
+  <div class="card note">
+    <b>Example user journey</b>
+    <p>After several monitoring days, Health7 may identify that a measurement or cognitive result changed repeatedly compared with the astronaut's baseline. The system does not announce a disease. It shows the changed records, explains whether the pattern is isolated or persistent, recommends what to check next, and indicates when medical evaluation should be requested.</p>
+  </div>
+</div></section>
+
+<!-- ============ 04 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 04</p>
+  <h1>Benefits, technology, and validation status</h1>
+  <h2>Expected benefits</h2>
+  <ul class="dots">
+    <li>Greater astronaut autonomy during long missions.</li>
+    <li>Earlier recognition of relevant health changes.</li>
+    <li>Clear explanations instead of unexplained alerts.</li>
+    <li>Personalized comparison with each astronaut's baseline.</li>
+    <li>Better organization of physical, behavioral, and cognitive records.</li>
+    <li>A traceable summary for later medical review.</li>
+    <li>Practical follow-up actions based on monitoring states.</li>
+    <li>Reduced dependence on continuous communication with Earth.</li>
+  </ul>
+
+  <h2>Technology</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:27%"><col></colgroup>
+    <tr><th>Layer</th><th>Technology and purpose</th></tr>
+    <tr><td>User interface</td><td>React, TypeScript, and Vite</td></tr>
+    <tr><td>Application services</td><td>Node.js, TypeScript, and Fastify</td></tr>
+    <tr><td>Data storage</td><td>PostgreSQL</td></tr>
+    <tr><td>AI workflow</td><td>Optional n8n workflow for explanation and roadmap organization</td></tr>
+    <tr><td>Decision logic</td><td>Explicit demonstration rules separated from generative AI</td></tr>
+  </table></div>
+
+  <h2 style="margin-top:8mm">Current limitations</h2>
+  <ul class="dots tight">
+    <li>Crew profiles and daily physiological scenarios are synthetic or literature-informed synthetic data.</li>
+    <li>There has been no clinical or in-flight validation.</li>
+    <li>The prototype does not diagnose disease or calculate a validated disease probability.</li>
+    <li>Most measurements are entered manually or through simulated workflows.</li>
+    <li>Wearable imports are separate from the main evaluation flow, and no validated continuous sensor stream is active.</li>
+    <li>The system does not automatically contact a physician on Earth and is not fully offline.</li>
+    <li>NASA resources provide research and mission context; they do not represent NASA certification or endorsement.</li>
+  </ul>
+</div></section>
+
+<!-- ============ 05 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 05</p>
+  <h1>Use of Super Intelligence</h1>
+  <p class="lede">Super Intelligence is used as a supporting tool, not as the source of the project idea and not as a replacement for medical judgment. The project concept and design decisions remain the responsibility of the Rulima Tech team.</p>
+  <h2>Use inside the prototype</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:50%"><col></colgroup>
+    <tr><th>AI may</th><th>AI may not</th></tr>
+    <tr><td>Explain selected changes in accessible language.</td><td>Determine or modify the monitoring state.</td></tr>
+    <tr><td>Organize routine follow-up actions.</td><td>Diagnose a disease.</td></tr>
+    <tr><td>Summarize monitoring context for the user.</td><td>Prescribe medication or treatment.</td></tr>
+    <tr><td>Support clearer communication.</td><td>Replace a physician or mission medical protocol.</td></tr>
+  </table></div>
+
+  <h2 style="margin-top:8mm">Use during project preparation</h2>
+  <p>Generative AI assisted with organizing project documentation, reviewing written explanations, drafting and translating presentation material, and summarizing research resources. All final claims and submission materials must be reviewed and approved by the team.</p>
+
+  <div class="card alert">
+    <b>Required disclosure before submission</b>
+    <p>The team must disclose any additional AI use for source code, data generation, images, video, narration, audio, or design assets. AI-generated images or video must carry the visible watermark required by the competition guide. AI-generated audio, code, or data must be acknowledged in the description or associated metadata.</p>
+  </div>
+
+  <h2 style="margin-top:9mm">Operational safeguard</h2>
+  <p>The rule engine determines the monitoring state. AI cannot change that result. If the AI service is unavailable, the prototype can present a local fallback roadmap based on the current state and already available information.</p>
+</div></section>
+
+<!-- ============ 06 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 06</p>
+  <h1>NASA data and resources</h1>
+  <p class="lede">Health7 uses NASA data and research to inform mission context, longitudinal health-data design, and the need for health autonomy. Each source is described with an explicit boundary to prevent unsupported claims.</p>
+  <div class="table" style="margin-top:4mm"><table>
+    <colgroup><col style="width:25%"><col style="width:41%"><col></colgroup>
+    <tr><th>NASA resource</th><th>How it supports the project</th><th>Important boundary</th></tr>
+    <tr><td>OSDR OSD-569, OSD-575, and OSD-656</td><td>Human spaceflight research data used to study longitudinal records, biomarker organization, and changes across collection moments.</td><td>The current alerts are not clinically validated predictions derived directly from these datasets.</td></tr>
+    <tr><td>Rodent Research-1 Environmental Data Application</td><td>Real environmental telemetry, including cabin temperature, humidity, carbon dioxide, and radiation-related information, included in the project data package.</td><td>Values were reorganized along simulated mission days and were not collected simultaneously with the synthetic crew profiles.</td></tr>
+    <tr><td>NASA DONKI</td><td>Provides space-weather event context in the prototype.</td><td>Events are not an astronaut's personal radiation dose and do not directly determine the monitoring state.</td></tr>
+    <tr><td>Human Research Roadmap and NASA-STD-3001</td><td>Frames long-duration health risks, preventive care, monitoring, and human-system requirements.</td><td>Research and standards references do not constitute certification or endorsement of Health7.</td></tr>
+    <tr><td>EIMO Clinical Decision Support and Integrated Medical Model</td><td>Supports the design rationale for clearer decisions and greater medical autonomy when ground support is delayed.</td><td>Health7 is not represented as an implementation or validated replacement for these NASA systems.</td></tr>
+  </table></div>
+
+  <div class="card note" style="margin-top:8mm">
+    <b>Safe data statement</b>
+    <p>Real NASA environmental telemetry and research resources are combined with literature-informed synthetic crew physiology for demonstration. The sources are not presented as simultaneous observations from the same mission or crew.</p>
+  </div>
+</div></section>
+
+<!-- ============ 07 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 07</p>
+  <h1>Partner data and other references</h1>
+  <h2>Terrestrial proxy dataset</h2>
+  <p>The Multilevel Monitoring of Activity and Sleep in Healthy People dataset was studied as a terrestrial physiological proxy. It includes heart rate, RR intervals, actigraphy, sleep information, questionnaires, and saliva-related records. MMASH contains data from people on Earth and must not be described as astronaut data.</p>
+  <h2>Background and comparative references</h2>
+  <ul class="dots">
+    <li>Canadian Space Agency Bio-Monitor.</li>
+    <li>European Space Agency EveryWear.</li>
+    <li>Royal College of Physicians NEWS2 framework.</li>
+    <li>NASA fatigue and sleep research resources.</li>
+    <li>Biomedical Results from Skylab.</li>
+  </ul>
+  <p style="margin-top:3mm">These references helped the team understand existing monitoring technologies and interfaces. They are not presented as integrated partner datasets or as clinical validation of the prototype.</p>
+  <h2>Software and content attribution</h2>
+  <p>Known software resources include React, TypeScript, Vite, Node.js, Fastify, PostgreSQL, and n8n. Before final submission, the team must add the exact attribution and license for every external code library, icon, font, image, video, audio asset, dataset, text excerpt, and design component. Copyrighted material should only be included when permission is available.</p>
+
+  <div class="card info" style="margin-top:8mm">
+    <b>Competitive positioning</b>
+    <p>Health7 does not claim to invent multimodal monitoring, the first integrated astronaut dashboard, or the first personalized health tool. Its proposed contribution is the combination of a personal trajectory, explainable monitoring states, and preventive next actions before an overt clinical event.</p>
+  </div>
+</div></section>
+
+<!-- ============ 08 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 08</p>
+  <h1>Thirty-second project demonstration</h1>
+  <div class="card note" style="margin-top:5mm">
+    <b>Final narration - approximately 60 words</b>
+    <p>I'm Pedro Paulo, leader and presenter of Rulima Tech. On long missions, astronauts must recognize health changes and know when to act. We created Health7: from your baseline to your next step. It compares physical and cognitive records with personal history. Rules flag changes; AI explains them and organizes follow-up. Using NASA research and open data, Health7 supports prevention, autonomy, and timely medical evaluation.</p>
+  </div>
+
+  <h2 style="margin-top:8mm">Storyboard</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:12%"><col style="width:40%"><col></colgroup>
+    <tr><th>Time</th><th>Screen</th><th>Narration</th></tr>
+    <tr><td>0-2 s</td><td>Pedro Paulo; Rulima Tech; all six team-member names in smaller text.</td><td>I'm Pedro Paulo, leader and presenter of Rulima Tech.</td></tr>
+    <tr><td>2-5 s</td><td>Astronaut, delayed Earth communication, and fragmented health records.</td><td>On long missions, astronauts must recognize health changes and know when to act.</td></tr>
+    <tr><td>5-10 s</td><td>Health7 logo, tagline, and monitoring dashboard.</td><td>We created Health7: from your baseline to your next step.</td></tr>
+    <tr><td>10-17 s</td><td>Physical check-up, cognitive test, personal-history comparison, and state indicator.</td><td>It compares physical and cognitive records with personal history.</td></tr>
+    <tr><td>17-23 s</td><td>Rule-based status, plain-language explanation, and follow-up roadmap.</td><td>Rules flag changes; AI explains them and organizes follow-up.</td></tr>
+    <tr><td>23-30 s</td><td>NASA source labels; final preventive-support message; prototype and synthetic-data disclosure.</td><td>Using NASA research and open data, Health7 supports prevention, autonomy, and timely medical evaluation.</td></tr>
+  </table></div>
+
+  <h2 style="margin-top:8mm">Video requirements</h2>
+  <ul class="dots">
+    <li>Maximum duration: 30 seconds.</li>
+    <li>English narration or accurate English subtitles.</li>
+    <li>Public link with no login or access request.</li>
+    <li>No likeness of anyone under 18.</li>
+    <li>Visible disclosure for AI-generated images or video.</li>
+  </ul>
+</div></section>
+
+<!-- ============ 09 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 09</p>
+  <h1>Claim controls and submission checklist</h1>
+  <h2>Claims to avoid and preferred alternatives</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:44%"><col></colgroup>
+    <tr><th>Avoid</th><th>Use instead</th></tr>
+    <tr><td>Health7 diagnoses or predicts disease.</td><td>Health7 identifies changes that may deserve attention.</td></tr>
+    <tr><td>Health7 prevents a specific disease.</td><td>Health7 supports preventive monitoring and follow-up.</td></tr>
+    <tr><td>The system prescribes treatment.</td><td>The system organizes monitoring actions and indicates when evaluation should be considered.</td></tr>
+    <tr><td>Clinically validated or validated by NASA.</td><td>Functional prototype demonstrated with synthetic crew scenarios and NASA research context.</td></tr>
+    <tr><td>Continuous validated sensor monitoring.</td><td>Manual or simulated inputs with wearable integration as future work.</td></tr>
+    <tr><td>DONKI provides personal radiation dose.</td><td>DONKI provides space-weather context only.</td></tr>
+    <tr><td>NASA environmental and crew data were collected together.</td><td>NASA telemetry was reindexed beside separate synthetic crew scenarios.</td></tr>
+  </table></div>
+
+  <h2>Final checklist</h2>
+  <div class="table"><table>
+    <colgroup><col style="width:11%"><col></colgroup>
+    <tr><th>Status</th><th>Item</th></tr>
+    <tr><td class="check">[ ]</td><td>Add the public 30-second video link.</td></tr>
+    <tr><td class="check">[ ]</td><td>Add and test the public live-demonstration link.</td></tr>
+    <tr><td class="check">[ ]</td><td>Confirm all six members are registered under the same Local Event.</td></tr>
+    <tr><td class="check">[ ]</td><td>Test every link in a private browser window.</td></tr>
+    <tr><td class="check">[ ]</td><td>Confirm the video is no longer than 30 seconds.</td></tr>
+    <tr><td class="check">[ ]</td><td>Add required AI disclosure, watermarking, and metadata.</td></tr>
+    <tr><td class="check">[ ]</td><td>Add licenses and attribution for all external assets and dependencies.</td></tr>
+    <tr><td class="check">[ ]</td><td>Keep prototype, synthetic-data, and validation boundaries visible.</td></tr>
+    <tr><td class="check">[ ]</td><td>Complete all required submission fields in English.</td></tr>
+    <tr><td class="check">[ ]</td><td>Submit and confirm the project status before the Local Event deadline.</td></tr>
+  </table></div>
+
+  <div class="card alert">
+    <b>Submission readiness</b>
+    <p>The written project narrative is ready. The remaining critical items are the public demo-video URL, the public live-site URL, final dependency and media attribution, and a last access test before submission.</p>
+  </div>
+</div></section>
+
+<!-- ============ 10 ============ -->
+<section class="page"><div class="body">
+  <p class="eyebrow">SECTION 10</p>
+  <h1>Sources and acknowledgments</h1>
+  <h2>NASA and project sources</h2>
+  <div class="sources">
+    <a href="https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/">NASA Space Apps Challenge: Health Monitoring Software</a>
+    <a href="https://osdr.nasa.gov/bio/repo/data/studies/OSD-569">NASA OSDR OSD-569</a>
+    <a href="https://osdr.nasa.gov/bio/repo/data/studies/OSD-575">NASA OSDR OSD-575</a>
+    <a href="https://osdr.nasa.gov/bio/repo/data/studies/OSD-656">NASA OSDR OSD-656</a>
+    <a href="https://visualization.osdr.nasa.gov/eda/">NASA OSDR Environmental Data Application</a>
+    <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI/">NASA DONKI</a>
+    <a href="https://humanresearchroadmap.nasa.gov/">NASA Human Research Roadmap</a>
+    <a href="https://www.nasa.gov/ochmo/human-spaceflight-and-aviation-standards/">NASA Human Spaceflight and Aviation Standards</a>
+    <a href="https://www.nasa.gov/reference/3-0-health-and-medical-care/">NASA Health and Medical Care Standards</a>
+    <a href="https://www.nasa.gov/centers-and-facilities/ames/ames-science/ames-space-biosciences/a-clinical-decision-support-system-for-earth-independent-medical-operations/">NASA Clinical Decision Support for Earth-Independent Medical Operations</a>
+    <a href="https://www.nasa.gov/nasa-integrated-medical-model-imm-overview/">NASA Integrated Medical Model overview</a>
+    <a href="https://github.com/PedroPaulorf/saude-em-orbita">Health7 source-code repository</a>
+  </div>
+
+  <h2 style="margin-top:9mm">Submission guide alignment</h2>
+  <p>This report follows the required Project Submission Guide fields: project name, high-level summary, demo link, final-project link, detailed description, use of Super Intelligence, NASA data, space-agency partner data, and other references. It also incorporates the demonstration format, language, access, attribution, and claim-control requirements reviewed by the team.</p>
+
+  <div class="card note" style="margin-top:10mm">
+    <b>Health7</b>
+    <p>Preventive support for astronaut autonomy - from a personal baseline to a clear next step.</p>
+  </div>
+</div></section>
+
+<script>
+  // Cabeçalho, onda, barra de progresso e rodapé de cada página de conteúdo.
+  const pages = [...document.querySelectorAll('.page')]
+  const wave = '<svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 74 C 220 8, 430 6, 660 58 S 1110 132, 1440 36 L 1440 120 L 0 120 Z"/></svg>'
+  pages.forEach((page, i) => {
+    if (i === 0) return
+    const band = document.createElement('div')
+    band.className = 'band'
+    band.innerHTML = `<span class="progress" style="width:${((i + 1) / pages.length) * 100}%"></span><div class="row"><span class="brand">HEALTH7</span><span class="doc">PROJECT SUBMISSION REPORT</span></div>${wave}`
+    if (i % 2 === 0) band.querySelector('svg').style.transform = 'scaleX(-1)'
+    const foot = document.createElement('div')
+    foot.className = 'foot'
+    foot.innerHTML = `<span>Rulima Tech | Health7</span><span>Page ${i + 1}</span>`
+    page.prepend(band)
+    page.append(foot)
+  })
+  // Ícone de link externo nas fontes.
+  document.querySelectorAll('.sources a').forEach((a) => {
+    a.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>')
+  })
+  // Olhos do Seven: matriz de LED 5×5 por olho, a mesma do componente do app (expressão "happy").
+  const arc = ['.....', '..#..', '.#.#.', '#...#', '.....']
+  const eyes = document.getElementById('eyes')
+  for (const x of [1, 25])
+    arc.forEach((row, r) =>
+      [...row].forEach((c, col) => {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+        dot.setAttribute('cx', x + col * 4 + 2)
+        dot.setAttribute('cy', r * 4 + 2)
+        dot.setAttribute('r', 1.35)
+        dot.setAttribute('fill', c === '#' ? '#ffffff' : 'rgba(255,255,255,0.1)')
+        eyes.append(dot)
+      }),
+    )
+</script>
+</body>
+</html>
