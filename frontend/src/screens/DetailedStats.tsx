@@ -137,6 +137,7 @@ export function DetailedStats({ params, profile, checkins, symptoms, truncated, 
         <a href="#/data?section=sources" className="font-semibold text-interactive underline">Sources & methodology</a>
         <p className="mt-1">NASA research informs the data architecture. These references do not validate the demonstration thresholds or provide a diagnosis.</p>
         <a href="#/integrations" className="mt-3 inline-block font-semibold text-interactive underline">View imported watch measurements</a>
+        {profile.bodyModel === 'female' && <a href="#/menstrual" className="mt-3 block font-semibold text-interactive underline">Open menstrual calendar</a>}
       </div>
     </div>
   )

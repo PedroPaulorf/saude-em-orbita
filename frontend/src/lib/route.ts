@@ -4,8 +4,8 @@
 */
 import { useSyncExternalStore } from 'react'
 
-export type Path = '/' | '/prevention' | '/progress' | '/stats' | '/check/health' | '/check/behavioral' | '/data' | '/integrations'
-const PATHS: Path[] = ['/', '/prevention', '/progress', '/stats', '/check/health', '/check/behavioral', '/data', '/integrations']
+export type Path = '/' | '/prevention' | '/progress' | '/stats' | '/check/health' | '/check/behavioral' | '/data' | '/integrations' | '/menstrual'
+const PATHS: Path[] = ['/', '/prevention', '/progress', '/stats', '/check/health', '/check/behavioral', '/data', '/integrations', '/menstrual']
 
 export interface Route {
   path: Path

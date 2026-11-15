@@ -22,6 +22,8 @@ O Health 7 é um protótipo com frontend React, backend Node/Fastify e PostgreSQ
 
 Água, planos e conversa ficam no navegador, separados por conta. Check-ups e sintomas ficam no PostgreSQL, organizados em **Pessoa, Saúde e Ambiente**: peso em Pessoa; medidas corporais, urina e fezes em Saúde; radiação, altitude, temperatura ambiente e oxigênio em Ambiente.
 
+**Calendário menstrual:** os perfis femininos têm acesso em `#/menstrual`, pela Home ou pelas estatísticas. Datas, fluxo, dor e sintomas são registrados pela própria usuária e persistidos no PostgreSQL. A referência NEXUS da pasta fornecida identifica os perfis sintéticos; não fornece datas menstruais. Veja [uso, fonte dos dados e API](docs/menstrual-calendar.md).
+
 ## Colaborar
 
 Veja [CONTRIBUTING.md](CONTRIBUTING.md): uma branch por tarefa, um PR para `main` e a revisão de outro membro.
