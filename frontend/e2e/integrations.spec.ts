@@ -1,11 +1,6 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { exampleCsv, exampleFile } from '../src/lib/wearables'
-import { signIn } from './helpers'
-
-async function login(page: Page, username: string) {
-  await signIn(page, username)
-  await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
-}
+import { login, logout } from './helpers'
 test('AROW links and wearable imports work with consent, normalized formats, Apple XML, duplicates and private persistent history', async ({ page }) => {
   test.setTimeout(90_000)
   await page.route('**/DONKI-API/**', route => route.abort())
@@ -57,7 +52,7 @@ test('AROW links and wearable imports work with consent, normalized formats, App
   await page.setViewportSize({ width: 390, height: 844 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
   await page.screenshot({ path: 'test-results/integrations-mobile.png', fullPage: true })
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await login(page, 'crew03')
   await page.goto('/#/integrations')
   await expect(page.getByText('0 imported samples saved for this account.')).toBeVisible()

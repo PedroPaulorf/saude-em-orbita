@@ -1,0 +1,46 @@
+{
+  "sourceTitle": "NEXUS-Med_6crew_daily_30d_cases.xlsm",
+  "sourceUrl": "https://drive.google.com/file/d/12rT8uTzcCMYUNBol3pIsnI5-PzxGmQe2/view",
+  "folderUrl": "https://drive.google.com/drive/folders/1M_BLpnYBPkhHI1AOSKiK_vtHp6DjI7p6",
+  "sha256": "96778bfa076e041f21f97da317ced7d4f6a78f00b9b1b81d4f228f88f2dbede8",
+  "sheet": "01_Crew_Profiles",
+  "fields": [
+    "crew_id",
+    "sex_at_birth",
+    "role"
+  ],
+  "profiles": [
+    {
+      "crewId": "NX-01",
+      "sexAtBirth": "F",
+      "role": "Mission Specialist"
+    },
+    {
+      "crewId": "NX-02",
+      "sexAtBirth": "M",
+      "role": "Pilot"
+    },
+    {
+      "crewId": "NX-03",
+      "sexAtBirth": "F",
+      "role": "Payload Specialist"
+    },
+    {
+      "crewId": "NX-04",
+      "sexAtBirth": "M",
+      "role": "Flight Engineer"
+    },
+    {
+      "crewId": "NX-05",
+      "sexAtBirth": "F",
+      "role": "Crew Medical Officer"
+    },
+    {
+      "crewId": "NX-06",
+      "sexAtBirth": "M",
+      "role": "Commander"
+    }
+  ],
+  "containsMenstrualDates": false,
+  "notice": "Synthetic research profiles. No menstrual dates or cycle lengths are supplied by this workbook. Calendar entries must be self-reported."
+}

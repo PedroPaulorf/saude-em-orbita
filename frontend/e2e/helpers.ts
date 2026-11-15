@@ -19,6 +19,7 @@ export async function sync(page: Page) {
 
 /** Tela de entrada: escolhe o perfil na grade de tripulantes e digita a senha. */
 export async function signIn(page: Page, username: string, password = PASSWORD) {
+  await page.goto('/#/login')
   await page.locator(`[data-profile="${username}"]`).click()
   await page.getByLabel('Password', { exact: true }).fill(password)
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
@@ -26,6 +27,13 @@ export async function signIn(page: Page, username: string, password = PASSWORD) 
 
 export async function login(page: Page, username: string) {
   await signIn(page, username)
-  await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Open profile$/ })).toBeVisible()
   await waitForSync(page)
+}
+
+/** The profile page provides the logout action on both mobile and desktop. */
+export async function logout(page: Page) {
+  await page.evaluate(() => { window.location.hash = '#/profile' })
+  await page.getByRole('main').getByRole('button', { name: 'Log out', exact: true }).click()
+  await expect(page.getByRole('link', { name: /Open profile$/ })).toHaveCount(0)
 }

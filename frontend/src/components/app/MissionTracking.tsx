@@ -16,8 +16,9 @@ export function IntegrationLinks() {
     <Panel>
       <PanelHeader icon={<Watch />} tone="orange" title="Watches & research devices" />
       <p className="text-sm text-ink-soft">Import and review measurements from Apple Health, Samsung, Garmin or ActLumus using supported files.</p>
-      <p className="text-xs text-ink-soft">File import available. Automatic device connections require additional setup.</p>
+      <p className="text-xs text-ink-soft">Connect compatible Bluetooth heart-rate transmitters or import files.</p>
       <a href="#/integrations" className="self-start font-semibold text-interactive underline">Mission & device integrations</a>
+      <a href="#/integrations" className="self-start font-semibold text-interactive underline">Connect watch via Bluetooth</a>
     </Panel>
   </div>
 }
