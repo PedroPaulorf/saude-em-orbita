@@ -1,5 +1,7 @@
 # AROW e dispositivos vestíveis
 
+**Atualização de 15/11/2026:** o projeto também oferece receptor Bluetooth HRS, aplicativo Android de ligação Samsung Health/Fit3 e paginação do histórico. Veja [Bluetooth e Galaxy Fit3](bluetooth-fit3.md) para esses caminhos, contratos e requisitos. Os fluxos por arquivo documentados em 14/11 abaixo continuam disponíveis.
+
 Implementação de 14/11/2026. A interface mantém o inglês usado no restante do Health7.
 
 Na branch experimental `teste/conectar-dispositivos`, o botão **Connect iPhone** ao lado de Start/Redo abre a configuração do companion iOS. O código-fonte HealthKit está em [ios/](../ios/README.md), com sincronização em primeiro plano e instruções para compilar no Mac. Ainda requer instalação e validação em iPhone físico; o navegador não faz pareamento direto. Veja [escopo e validação](iphone-connection.md).

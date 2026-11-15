@@ -13,7 +13,7 @@ test('setup never claims a connected phone without evidence and links to real fi
 })
 
 test('only Apple records count toward the received status; receipt is not a live connection', () => {
-  const history = { crewId: 'crew-nx04', total: 2, truncated: false, items: [
+  const history = { crewId: 'crew-nx04', total: 2, truncated: false, nextCursor: null, items: [
     { id: 'a', source: 'apple' as const, quality: 'unverified', receivedAt: '2026-11-15T10:00:00Z', device: 'HealthKit', metric: 'heartRate' as const, value: 65, unit: 'bpm', at: '2026-11-15T09:00:00Z' },
     { id: 'b', source: 'garmin' as const, quality: 'unverified', receivedAt: '2026-11-15T11:00:00Z', device: 'Watch', metric: 'heartRate' as const, value: 65, unit: 'bpm', at: '2026-11-15T09:00:00Z' },
   ] }

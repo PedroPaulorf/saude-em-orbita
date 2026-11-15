@@ -15,12 +15,12 @@ export const metricInfo = {
 export interface WearableSample { device: string; metric: keyof typeof metricInfo; value: number; unit: string; at: string; endAt?: string }
 export interface WearableFile { version: 1; source: WearableSource; quality: 'unverified' | 'example'; samples: WearableSample[] }
 export interface ParsedWearables extends WearableFile { format: 'health7-json-v1' | 'health7-csv-v1' | 'apple-health-xml'; skipped: number }
-export interface WearableHistory { crewId: string; total: number; truncated: boolean; items: (WearableSample & { id: string; source: WearableSource; quality: string; receivedAt: string })[] }
+export interface WearableHistory { crewId: string; total: number; truncated: boolean; nextCursor: string | null; items: (WearableSample & { id: string; source: WearableSource | 'bluetooth'; quality: string; receivedAt: string; transport?: 'bluetooth-le' | 'android-health-connect'; protocol?: string })[] }
 export const sources: { id: WearableSource; name: string; route: string; url: string; help: string }[] = [
   { id: 'apple', name: 'Apple Watch / Apple Health', route: 'Apple Health XML + Health7 JSON / CSV', url: 'https://developer.apple.com/documentation/healthkit',
     help: 'Import supported measurements from an extracted Apple Health XML file. Health can contain data from several devices. Automatic reading needs a native iOS app, HealthKit and your permission.' },
-  { id: 'samsung', name: 'Samsung Galaxy Watch', route: 'Health7 JSON / CSV', url: 'https://developer.samsung.com/health/data/overview.html',
-    help: 'Map exported data to the template. Automatic sync needs an Android companion using Health Connect or Samsung Health Data SDK and granted permissions.' },
+  { id: 'samsung', name: 'Samsung Health / Galaxy Watch / Fit3', route: 'Android phone bridge + Health7 JSON / CSV', url: 'https://developer.samsung.com/health/health-connect-faq.html',
+    help: 'For Fit3, use the Android phone bridge above to read heart rate shared by Samsung Health through Health Connect. File exports can also be mapped to the Health7 template. Availability depends on phone permissions and shared data.' },
   { id: 'garmin', name: 'Garmin', route: 'Health7 JSON / CSV', url: 'https://developer.garmin.com/gc-developer-program/overview/',
     help: 'Map exported data to the template. Automatic sync needs the appropriate Garmin Connect developer access, credentials and user authorization. Personal and business access have different terms.' },
   { id: 'actlumus', name: 'ActLumus · Condor / USP research', route: 'Health7 JSON / CSV', url: 'https://auspin.usp.br/tecnologia-brasileira-e-lancada-no-espaco-com-os-tripulantes-da-artemis/',

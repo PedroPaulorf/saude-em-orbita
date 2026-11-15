@@ -103,6 +103,8 @@ async function open(acc, viewport) {
     const method = route.request().method()
     const json = (body, status = 200) => route.fulfill({ status, contentType: 'application/json', headers: cors, body: JSON.stringify(body) })
     if (method === 'OPTIONS') return route.fulfill({ status: 204, headers: cors })
+    // Lista pública da tela de entrada: os mesmos seis tripulantes, só rótulos de identidade.
+    if (path === '/auth/profiles') return json({ profiles: crew.map((c) => ({ username: c.crewId.replace('-', '').toLowerCase(), name: c.crewId, role: c.role, bodyModel: c.sex === 'F' ? 'female' : 'male' })) })
     if (!acc) return json({ message: 'Unauthorized' }, 401)
     if (path === '/me') return json(acc.profile)
     if (path === '/me/checkins' && method === 'POST') return json({ ...route.request().postDataJSON(), id: `srv-${Date.now()}`, crewId: acc.profile.id, receivedAt: new Date().toISOString() }, 201)
@@ -138,9 +140,11 @@ async function attempt(name, run) {
 
 try {
   for (const view of ['desk', 'mob']) {
-    if (!wanted(`login-${view}`)) continue
+    if (!wanted(`login-${view}`) && !wanted(`login-password-${view}`)) continue
     const { ctx, page } = await open(null, VIEWPORTS[view])
-    await go(page, '/'); await shot(page, `login-${view}`, false); await ctx.close()
+    await go(page, '/'); await shot(page, `login-${view}`, false)
+    await attempt(`login-password-${view}`, async () => { await page.locator('[data-profile="nx03"]').click(); await shot(page, `login-password-${view}`, false) })
+    await ctx.close()
   }
   for (const [tag, id, day] of SCENES) {
     const acc = account(id, day)

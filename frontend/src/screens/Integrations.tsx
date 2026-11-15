@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Watch, Database } from 'lucide-react'
 import { Panel, PanelHeader } from '@/components/app/Panel'
 import { MissionTracking } from '@/components/app/MissionTracking'
+import { BluetoothConnect } from '@/components/app/BluetoothConnect'
+import { Fit3Connect } from '@/components/app/Fit3Connect'
 import { IPhoneConnection } from '@/components/app/IPhoneConnection'
 import { Button } from '@/components/ui/button'
 import { apiRequest, apiBase, ApiError, createClientId } from '@/lib/api'
@@ -105,13 +107,25 @@ export function Integrations({ owner }: { owner: string }) {
       else reportError(cause, signal)
     } finally { if (!rootSignal.aborted) setBusy(false) }
   }
+  async function loadOlder() {
+    if (!history?.nextCursor || loading || busy) return
+    const signal = lifetime.current!.signal
+    setLoading(true); setError('')
+    try {
+      const page = await apiRequest<WearableHistory>('/me/wearables?cursor=' + encodeURIComponent(history.nextCursor), undefined, signal, owner)
+      if (!signal.aborted && page.crewId === owner) setHistory(previous => previous ? { ...page, items: [...new Map([...previous.items, ...page.items].map(item => [item.id, item])).values()] } : page)
+    } catch (cause) { reportError(cause, signal) }
+    finally { if (!signal.aborted) setLoading(false) }
+  }
   return <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 py-6 md:px-8">
     <a href="#/" className="font-semibold text-interactive underline">Back to Home</a>
     <h1 className="font-display text-3xl font-semibold">Mission & device integrations</h1>
+    <Fit3Connect history={history} />
+    <BluetoothConnect key={owner} owner={owner} onSaved={() => { setLoading(true); void load(lifetime.current!.signal) }} />
     <IPhoneConnection apiOrigin={apiBase(import.meta.env.VITE_API_URL).replace(/\/api\/v1$/, '')} history={history} />
     <MissionTracking />
     <Panel>
-      <PanelHeader icon={<Watch />} title="Supported import paths" subtitle="File import available · automatic sync not connected" />
+      <PanelHeader icon={<Watch />} title="Supported import paths" subtitle="File import · Bluetooth heart rate available above" />
       <div className="grid gap-4 md:grid-cols-2">{sources.map(s => <article key={s.id} className="min-w-0 rounded-lg bg-surface-2 p-4">
         <h3 className="font-semibold">{s.name}</h3><p className="mt-1 text-sm font-semibold">{s.route}</p>
         <p className="mt-2 text-sm text-ink-soft">{s.help}</p>
@@ -155,13 +169,16 @@ export function Integrations({ owner }: { owner: string }) {
       <p className="text-sm text-ink-soft">These records are stored separately from simulated check-ups. They do not change your baseline, body map, alerts or mission simulation. Skin temperature, light and heart rate during activity retain their own meanings.</p>
       <Button variant="outline" className="self-start" disabled={loading || busy} onClick={() => { setError(''); setLoading(true); void load(lifetime.current!.signal) }}>{loading ? 'Loading…' : 'Refresh imported history'}</Button>
       {history && <>
-        <p role="status">{history.total} imported samples saved for this account.{history.truncated ? ' Showing the latest 100 only.' : ''}</p>
+        <p role="status">{history.total} imported samples saved for this account.{history.truncated ? ` Showing ${history.items.length}; older measurements are available below.` : ''}</p>
+        {history.total === 0 && <p className="text-sm text-ink-soft">No saved device readings yet. Connect a compatible Bluetooth transmitter or import a file to begin.</p>}
         <ul className="grid gap-3">{history.items.map(s => <li key={s.id} className="min-w-0 break-words rounded-lg bg-surface-2 p-3 text-sm">
           <p className="font-semibold">{metricInfo[s.metric][0]}: {s.value} {s.unit}</p>
-          <p>{sources.find(item => item.id === s.source)?.name} · {s.device}</p>
+          <p>{s.source === 'bluetooth' ? 'Bluetooth LE · Heart Rate service' : sources.find(item => item.id === s.source)?.name} · {s.device}</p>
+          {s.transport === 'android-health-connect' && <p>Uploaded by Android phone · Samsung Health / Health Connect</p>}
           <p>{new Date(s.at).toLocaleString()}{s.endAt ? ` – ${new Date(s.endAt).toLocaleString()}` : ''}</p>
           <p className="text-ink-soft">{s.quality === 'example' ? 'Fictional example' : 'Unverified · user-declared source'} · Not medically evaluated</p>
         </li>)}</ul>
+        {history.nextCursor && <Button variant="outline" className="self-start" disabled={loading || busy} onClick={() => void loadOlder()}>Load older measurements</Button>}
       </>}
     </Panel>
   </div>

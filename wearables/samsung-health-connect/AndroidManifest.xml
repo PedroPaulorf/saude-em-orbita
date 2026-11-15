@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.health7.fit3bridge" android:versionCode="1" android:versionName="0.1.0">
+    <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="36" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
+    <application android:label="Health7 Fit3 Bridge" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false" android:usesCleartextTraffic="true">
+        <activity android:name=".BridgeActivity" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity>
+        <activity android:name=".PrivacyActivity" android:exported="false" />
+        <activity-alias android:name=".ViewPermissionUsageActivity" android:exported="true" android:targetActivity=".PrivacyActivity" android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter><action android:name="android.intent.action.VIEW_PERMISSION_USAGE" /><category android:name="android.intent.category.HEALTH_PERMISSIONS" /></intent-filter>
+        </activity-alias>
+    </application>
+</manifest>

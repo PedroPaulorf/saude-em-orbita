@@ -21,14 +21,18 @@ import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
-import { Landing } from '@/screens/Landing'
 import { Login } from '@/screens/Login'
 import { Prevention } from '@/screens/Prevention'
 import { MedicalData } from '@/screens/MedicalData'
 import { Integrations } from '@/screens/Integrations'
+import { MenstrualCalendar } from '@/screens/MenstrualCalendar'
 import { Profile as ProfileScreen } from '@/screens/Profile'
 import type { Profile } from '@/lib/api'
 import type { Connection } from '@/types'
+
+// A landing traz GSAP e Lenis: carrega sob demanda, para não pesar o app de quem já está logado.
+const Landing = lazy(() => import('@/screens/Landing').then((m) => ({ default: m.Landing })))
+const landingFallback = <div className="min-h-screen bg-sa-deep" />
 
 const ProgressScreen = lazy(() => import('@/screens/Progress').then((m) => ({ default: m.ProgressScreen })))
 
@@ -48,7 +52,7 @@ export default function App() {
   }, [])
   if (state.phase === 'restoring') return <main className="p-8" role="status">Verifying your session…</main>
   // Sem sessão: a landing page explica o projeto; "Try the demo" leva ao login.
-  if (!state.profile) return route.path === '/login' ? <Login /> : <Landing />
+  if (!state.profile) return route.path === '/login' ? <Login /> : <Suspense fallback={landingFallback}><Landing /></Suspense>
   return <AuthenticatedApp key={state.profile.id} state={state} profile={state.profile} />
 }
 
@@ -85,6 +89,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const connection: Connection = pending ? 'queued' : state.error || !state.historyLoaded ? 'offline' : 'online'
   let screen
   switch (route.path) {
+    case '/menstrual': screen = <MenstrualCalendar profile={profile} />; break
     case '/integrations': screen = <Integrations key={profile.id} owner={profile.id} />; break
     case '/profile': screen = <ProfileScreen profile={profile} game={game} />; break
     case '/data': screen = <MedicalData state={state} section={route.params.get('section')} />; break
@@ -95,7 +100,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
     case '/check/behavioral': screen = <BehavioralCheckIn />; break
     default: screen = <Home connection={connection} game={game} profile={profile} checkins={state.checkins} />
   }
-  if (route.path === '/welcome') return <Landing signedIn />
+  if (route.path === '/welcome') return <Suspense fallback={landingFallback}><Landing signedIn /></Suspense>
   return (
     <AppShell path={route.path} missionDay={profile.missionDay} connection={connection}
       syncing={state.syncing} onSync={() => { void session.sync() }}

@@ -212,6 +212,7 @@ Prefixo `/api/v1`:
 
 | Método | Rota | Função |
 |---|---|---|
+| GET | `/auth/profiles` | Pública: perfis da tela de entrada (`username`, `name`, `role`, `bodyModel`), sem dados de saúde |
 | POST | `/auth/login` | Entrar com `{username, password}` |
 | POST | `/auth/logout` | Revogar a sessão atual |
 | GET | `/me` | Perfil do astronauta autenticado |

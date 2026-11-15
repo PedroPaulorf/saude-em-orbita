@@ -60,6 +60,16 @@ test('migration checksums tolerate Windows line endings but still reject content
   }
 })
 
+test('sign-in profile list is public and carries identity labels only', async () => {
+  const response = await get('/api/v1/auth/profiles', {})
+  assert.equal(response.statusCode, 200, response.body)
+  const { profiles } = response.json()
+  assert.deepEqual(profiles.find((p: { username: string }) => p.username === 'crew03'),
+    { username: 'crew03', name: 'Tripulante fictício 03', role: null, bodyModel: 'female' })
+  assert.equal(profiles.find((p: { username: string }) => p.username === 'crew02').bodyModel, 'male')
+  for (const profile of profiles) assert.deepEqual(Object.keys(profile).sort(), ['bodyModel', 'name', 'role', 'username'])
+})
+
 test('auth rejects bad credentials, cross-origin writes and missing CSRF; profiles are own only', async () => {
   assert.equal((await get('/api/v1/me', {})).statusCode, 401)
   assert.equal((await post('/api/v1/auth/login', { username: 'crew02', password: 'wrong' }, csrf)).statusCode, 401)

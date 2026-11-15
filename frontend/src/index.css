@@ -196,6 +196,16 @@
   animation: body-turn 0.35s ease-out;
 }
 
+/* Senha errada no login: o avatar balança de leve (só transform). */
+@keyframes login-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+@utility animate-login-shake {
+  animation: login-shake 0.35s ease-in-out;
+}
+
 /* Landing page: órbita girando devagar e flutuação. Só transform; desligadas com movimento reduzido (motion-safe:). */
 @keyframes orbit {
   to { transform: rotate(360deg); }

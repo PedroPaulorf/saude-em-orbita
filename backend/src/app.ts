@@ -11,6 +11,7 @@ import { canonical, strictDate, checkInSchema, historySchema, symptomSchema, eve
 import { initializeMedical, observations, storeObservations } from './medical.js'
 import { scenarioSchema, simulate, type Scenario } from './simulation.js'
 import { registerWearableRoutes } from './wearables.js'
+import { registerMenstrualRoutes } from './menstrual.js'
 
 export interface AiProvider { url: string; name: string; modelVersion: string; apiKey?: string; timeoutMs?: number }
 export interface Options { databaseUrl: string; origins?: string[]; secureCookies?: boolean; logger?: boolean; aiProvider?: AiProvider; sessionTtlSeconds?: number }
@@ -67,6 +68,13 @@ export async function createApp(options: Options) {
     sessions.set(request, found.rows[0].crew_id)
   }
   app.get('/health', async () => ({ status: 'ok', service: 'Health 7 API' }))
+  // Public profile picker for the sign-in screen: identity labels only, never health data.
+  app.get('/api/v1/auth/profiles', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async () => {
+    const { rows } = await db.query('SELECT username, profile FROM crew ORDER BY username LIMIT 24')
+    return { profiles: rows.map(({ username, profile }: Row) => ({
+      username, name: profile.nexus?.crewId ?? profile.displayName, role: profile.nexus?.role ?? null,
+      bodyModel: profile.bodyModel === 'female' ? 'female' : 'male' })) }
+  })
   app.post<{ Body: { username: string; password: string } }>('/api/v1/auth/login', {
     config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
     schema: { body: { type: 'object', additionalProperties: false, required: ['username', 'password'], properties: {
@@ -84,6 +92,7 @@ export async function createApp(options: Options) {
     api.addHook('onRequest', authenticate)
     registerDomainRoutes(api, db, crew, windowOf)
     registerWearableRoutes(api, db, crew)
+    registerMenstrualRoutes(api, db, crew)
     api.post('/auth/logout', async (request, reply) => {
       await db.query('DELETE FROM sessions WHERE token_hash=$1 AND crew_id=$2', [tokenHash(request.cookies.health7_session!), crew(request)])
       reply.clearCookie('health7_session', cookieOptions)
