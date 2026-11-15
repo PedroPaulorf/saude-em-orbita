@@ -26,6 +26,7 @@ export function RoadmapStepItem({
   compact,
   hideWhy,
   links = true,
+  riskLink = true,
 }: {
   step: RoadmapStep
   checkable?: boolean
@@ -36,8 +37,10 @@ export function RoadmapStepItem({
   hideWhy?: boolean
   /** Mostra o botão de água e o link do risco da NASA. */
   links?: boolean
+  /** Com links ligado, mostra também o link do risco da NASA (a tela enxuta mostra só a ação). */
+  riskLink?: boolean
 }) {
-  const risk = step.risk ? RISKS.get(step.risk) : undefined
+  const risk = riskLink && step.risk ? RISKS.get(step.risk) : undefined
   const kind = KIND[step.kind]
   return (
     <li className="flex gap-3">

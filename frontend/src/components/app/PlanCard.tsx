@@ -48,8 +48,25 @@ function PointsRule() {
 }
 
 /** Plano sugerido para um padrão ativo (ainda não iniciado). */
-export function PlanSuggestion({ pattern, blockedBy }: { pattern: PatternResult; blockedBy?: string }) {
+export function PlanSuggestion({ pattern, blockedBy, compact }: { pattern: PatternResult; blockedBy?: string; compact?: boolean }) {
   const plan = pattern.def.plan
+  // Tela enxuta: uma linha e o botão. Os passos aparecem quando o plano começa.
+  if (compact) {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface-2 px-4 py-3">
+        <p className="min-w-0 flex-1 text-[15px] text-ink">
+          {plan ? (
+            <>
+              Suggested <span className="font-mono">{plan.days}</span>-day routine plan: <span className="font-semibold">{pattern.def.title.replace(/\.$/, '')}</span>
+            </>
+          ) : (
+            <>No self-care plan for this pattern. It is flagged for your flight surgeon.</>
+          )}
+        </p>
+        {plan && !blockedBy && <Button onClick={() => startPlan(pattern.def.id)}>Start plan</Button>}
+      </div>
+    )
+  }
   if (!plan) {
     return (
       <Shell title="No self-care plan">
@@ -125,7 +142,7 @@ function autoLink(rule?: string) {
 }
 
 /** Plano em andamento: dia N de 5, passos de hoje, pontos de hoje. */
-export function PlanActive({ view, todayPoints, onEnd }: { view: PlanView; todayPoints: number; onEnd: () => void }) {
+export function PlanActive({ view, todayPoints, onEnd, compact }: { view: PlanView; todayPoints: number; onEnd: () => void; compact?: boolean }) {
   const today = view.today
   return (
     <Shell>
@@ -139,7 +156,7 @@ export function PlanActive({ view, todayPoints, onEnd }: { view: PlanView; today
           plan <span className="font-mono text-ink">+{todayPoints}</span> today
         </p>
       </div>
-      <DayStrip view={view} />
+      {!compact && <DayStrip view={view} />}
       {today && (
         <div className="grid gap-2">
           <p className="text-sm font-semibold text-ink-soft">
@@ -195,7 +212,7 @@ export function PlanActive({ view, todayPoints, onEnd }: { view: PlanView; today
           {today.complete && <p className="text-sm text-ink">Today is complete. +{P.planDayComplete} bonus.</p>}
         </div>
       )}
-      <PointsRule />
+      {!compact && <PointsRule />}
       <Button variant="ghost" size="sm" className="self-start text-ink-soft" onClick={onEnd}>
         End plan
       </Button>

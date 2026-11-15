@@ -123,6 +123,7 @@ test('prevention, progress, scenario and companion remain available with account
   await page.getByRole('dialog', { name: 'Companion', exact: true }).getByRole('button', { name: 'Close companion', exact: true }).click()
   await page.goto('/#/prevention')
   await expect(page.getByRole('heading', { name: 'Prevention', exact: true })).toBeVisible()
+  await page.getByText('Details', { exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Mission exposure', exact: true })).toBeVisible()
   await page.goto('/#/progress')
   await expect(page.getByRole('heading', { name: 'Progress', exact: true })).toBeVisible()
