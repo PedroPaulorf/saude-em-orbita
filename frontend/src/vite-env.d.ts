@@ -8,7 +8,6 @@ interface ImportMetaEnv {
   /** Webhook do n8n que registra o alerta de ESCALATE. Vazio = registro só no aparelho. */
   readonly VITE_N8N_ALERT_WEBHOOK_URL?: string
   readonly VITE_API_URL?: string
-  /** Conta de demonstração pública (usuário e senha). Preenchidas, o login mostra "Enter as a demo astronaut". */
-  readonly VITE_DEMO_USERNAME?: string
+  /** Senha pública dos perfis fictícios da demo; padrão senha123. Deve corresponder ao DEMO_PASSWORD do backend. */
   readonly VITE_DEMO_PASSWORD?: string
 }

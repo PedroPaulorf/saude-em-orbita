@@ -23,6 +23,8 @@ Chat do companheiro: copie `.env.example` para `.env.local` e preencha `VITE_N8N
 
 ### Login, registros e sincronização
 
+- Escolha um avatar para entrar. Nos oito perfis fictícios (`nx01` a `nx06`, `crew02` e `crew03`), a senha pública `senha123` já vem preenchida: basta pressionar Enter ou clicar em **Sign in**. Se o backend usar outro `DEMO_PASSWORD`, configure o mesmo valor em `VITE_DEMO_PASSWORD` e reinicie/recompile o frontend. **Use another account** mantém a entrada manual sem senha preenchida.
+- Se os perfis não carregarem, o login informa que a demo está indisponível e oferece **Try again**, em vez de trocar silenciosamente para o formulário manual. O frontend, a API e o PostgreSQL precisam estar disponíveis; em uma demo publicada, `VITE_API_URL` deve apontar para a API hospedada.
 - O perfil autenticado define nome, avatar e linha de base. Valores ausentes aparecem como ausentes, sem usar o histórico fixo do JSON como medições pessoais.
 - Os check-ups de saúde e comportamental continuam separados. Cada registro recebe um identificador estável, fica na fila da própria conta e é enviado ao servidor. `Sync now` e a reconexão repetem o envio sem duplicar registros.
 - Login e restauração da sessão exigem o servidor. Após autenticação, falhas de conexão conservam os registros pendentes. Ao sair ou trocar de conta, o app limpa a tela e impede respostas atrasadas de aparecerem na nova conta.

@@ -15,6 +15,8 @@ interface LoginProfile { username: string; name: string; role: string | null; bo
 type Step = { kind: 'pick' } | { kind: 'password'; index: number } | { kind: 'manual' }
 
 const TINTS = ['bg-sa-electric', 'bg-sa-yonder', 'bg-sa-rocket-600', 'bg-sa-neon-blue', 'bg-sa-martian']
+const DEMO_ACCOUNTS = new Set(['nx01', 'nx02', 'nx03', 'nx04', 'nx05', 'nx06', 'crew02', 'crew03'])
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD || 'senha123'
 
 /** Morphs the chosen avatar between the grid and the password step where the browser supports it. */
 function morph(update: () => void) {
@@ -34,6 +36,8 @@ function Avatar({ profile, index, className }: { profile: LoginProfile; index: n
 export function Login() {
   const state = useSession()
   const [profiles, setProfiles] = useState<LoginProfile[] | null>(null)
+  const [profilesFailed, setProfilesFailed] = useState(false)
+  const [profileRequest, setProfileRequest] = useState(0)
   const [step, setStep] = useState<Step>({ kind: 'pick' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -45,15 +49,17 @@ export function Login() {
   useEffect(() => {
     const controller = new AbortController()
     apiRequest<{ profiles: LoginProfile[] }>('/auth/profiles', undefined, controller.signal)
-      .then(result => setProfiles(result.profiles))
-      // Without the list (server offline, older API) the username form still works.
-      .catch(() => { if (!controller.signal.aborted) setProfiles([]) })
+      .then(result => { if (!controller.signal.aborted) setProfiles(result.profiles) })
+      .catch(() => {
+        if (!controller.signal.aborted) { setProfilesFailed(true); setProfiles([]) }
+      })
     return () => controller.abort()
-  }, [])
+  }, [profileRequest])
 
   const selected = step.kind === 'password' ? profiles?.[step.index] : undefined
-  const manual = step.kind === 'manual' || profiles?.length === 0
-  const canGoBack = !!profiles?.length && step.kind !== 'pick'
+  const demoAccount = !!selected && DEMO_ACCOUNTS.has(selected.username)
+  const manual = step.kind === 'manual'
+  const canGoBack = step.kind !== 'pick'
 
   // After a failed attempt the field is enabled again: put the cursor back in it.
   useEffect(() => { if (!state.busy && attempts > 0) passwordRef.current?.focus() }, [state.busy, attempts])
@@ -62,12 +68,21 @@ export function Login() {
   const error = selected && rawError === 'Incorrect username or password.' ? 'Incorrect password.' : rawError
 
   function open(next: Step) {
-    morph(() => { setStep(next); setPassword(''); setShowPassword(false); setAttempts(0); setDismissedError(state.error) })
+    const account = next.kind === 'password' ? profiles?.[next.index] : undefined
+    morph(() => {
+      setStep(next)
+      setPassword(account && DEMO_ACCOUNTS.has(account.username) ? DEMO_PASSWORD : '')
+      setShowPassword(false); setAttempts(0); setDismissedError(state.error)
+    })
+  }
+  function retryProfiles() {
+    setProfiles(null); setProfilesFailed(false); setDismissedError(state.error)
+    setProfileRequest(n => n + 1)
   }
   function submit(event: FormEvent) {
     event.preventDefault()
     setDismissedError(null)
-    void session.login(selected?.username ?? username.trim(), password).then(() => { setPassword(''); setAttempts(n => n + 1) })
+    void session.login(selected?.username ?? username.trim(), password).then(() => { setAttempts(n => n + 1) })
   }
 
   const passwordField = (
@@ -76,7 +91,7 @@ export function Login() {
       <div className="relative">
         <Input ref={passwordRef} id="login-password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password"
           required autoFocus={!!selected} className="h-11 pr-12" value={password} onChange={e => setPassword(e.target.value)} disabled={state.busy}
-          aria-invalid={error ? true : undefined} aria-describedby={error ? 'login-error' : undefined} />
+          aria-invalid={error ? true : undefined} aria-describedby={[demoAccount && 'demo-password-hint', error && 'login-error'].filter(Boolean).join(' ') || undefined} />
         <button type="button" onClick={() => setShowPassword(shown => !shown)} aria-label={showPassword ? 'Hide password' : 'Show password'}
           aria-pressed={showPassword} className="absolute inset-y-0 right-0 grid w-11 place-items-center rounded-md text-ink-soft hover:text-ink">
           {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
@@ -111,6 +126,7 @@ export function Login() {
           {/* Lets password managers file the password under the chosen account. */}
           <input type="text" name="username" autoComplete="username" value={selected.username} readOnly hidden />
           {passwordField}
+          {demoAccount && <p id="demo-password-hint" className="text-center text-sm text-ink-soft">Demo password is filled in. Press Enter or select Sign in.</p>}
           {errorLine}
           {submitButton}
           {backButton}
@@ -133,6 +149,21 @@ export function Login() {
           {backButton}
         </form>
       </div>
+    )
+  } else if (profilesFailed || profiles.length === 0) {
+    content = (
+      <section aria-labelledby="profiles-status" className="mx-auto grid w-full max-w-md gap-5 rounded-xl border border-hairline bg-surface-1 p-6 text-center">
+        <h1 id="profiles-status" className="font-display text-2xl font-semibold">
+          {profilesFailed ? 'Demo temporarily unavailable' : 'No demo profiles available'}
+        </h1>
+        <p role="status" className="text-ink-soft">
+          {profilesFailed
+            ? 'We couldn’t load the crew profiles. Check your connection and try again. If it continues, contact the demo organizer.'
+            : 'The demo profiles haven’t been set up yet. Contact the demo organizer or use another account.'}
+        </p>
+        <Button type="button" onClick={retryProfiles}>Try again</Button>
+        <Button type="button" variant="outline" onClick={() => open({ kind: 'manual' })}>Use another account</Button>
+      </section>
     )
   } else {
     content = (
