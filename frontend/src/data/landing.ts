@@ -22,6 +22,7 @@ const en = {
     text: 'Far from Earth there is no quick trip to the doctor. Radiation, isolation and altered gravity change the body day after day, and on the way to Mars a message to Earth takes 4 to 24 minutes, one way.',
     stickers: ['Radiation', 'Isolation', 'Distance from Earth', 'Bone loss', 'Heart and blood', 'Sleep', 'Immune system', 'Nutrition', 'Mood'],
     note: 'all of these are on NASA’s own list of human spaceflight risks',
+    signal: { earth: 'Earth', mars: 'Mars', unit: 'min, one way' },
   },
   idea: {
     title: 'Health7 checks seven measures a day against your own pre-flight self, and tells you what to do next.',
@@ -114,6 +115,7 @@ const pt: LandingCopy = {
     text: 'Longe da Terra não existe ida rápida ao médico. Radiação, isolamento e gravidade alterada mudam o corpo dia após dia, e a caminho de Marte uma mensagem para a Terra leva de 4 a 24 minutos, só de ida.',
     stickers: ['Radiação', 'Isolamento', 'Distância da Terra', 'Perda óssea', 'Coração e sangue', 'Sono', 'Sistema imune', 'Nutrição', 'Humor'],
     note: 'todos estão na lista oficial de riscos do voo espacial humano da NASA',
+    signal: { earth: 'Terra', mars: 'Marte', unit: 'min, só de ida' },
   },
   idea: {
     title: 'O Health7 confere sete medidas por dia contra você mesmo antes do voo, e diz o que fazer em seguida.',
@@ -197,5 +199,8 @@ export const TEAM: { name?: string; role?: string; photo?: string; link?: string
 
 /** Vídeo do pitch (YouTube embed). Vazio até o fim do hackathon. */
 export const PITCH_VIDEO_URL = ''
+
+/** Caminho de uma imagem da landing (public/landing/). */
+export const landingImg = (name: string) => `${import.meta.env.BASE_URL}landing/${name}`
 
 export const REPO_URL = 'https://github.com/PedroPaulorf/saude-em-orbita'
