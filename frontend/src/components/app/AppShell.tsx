@@ -91,6 +91,7 @@ export function AppShell({
   connection,
   syncing,
   syncDetail,
+  crewBar,
   onSync,
   account,
   companionOpen,
@@ -106,6 +107,8 @@ export function AppShell({
   connection: Connection
   syncing?: boolean
   syncDetail?: string
+  /** Barra da tripulação, logo abaixo do cabeçalho (some nos check-ups). */
+  crewBar?: ReactNode
   onSync?: () => void
   account: Account
   /** Painel do companheiro aberto? O painel é desenhado pelo App, aqui só o botão e o foco. */
@@ -227,6 +230,7 @@ export function AppShell({
           </div>
         </header>
 
+        {!path.startsWith('/check') && crewBar}
         {escalate && <EscalateBanner key={escalate.date} alert={escalate} />}
 
         <main id="main" tabIndex={-1} className="outline-none">

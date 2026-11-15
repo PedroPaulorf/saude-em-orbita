@@ -15,6 +15,8 @@ import { WATER_GOAL } from '@/lib/water'
 import { session, type SessionState } from '@/lib/session'
 import { useSession } from '@/lib/use-session'
 import { useGame } from '@/lib/useGame'
+import { useCrew } from '@/lib/crew'
+import { CrewBar } from '@/components/app/CrewBar'
 import { formatPoints } from '@/lib/game'
 import { initials } from '@/lib/person'
 import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
@@ -64,6 +66,8 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const vitals = useMemo(() => getTodayVitals(profile, state.checkins), [profile, state.checkins])
   // O fundo segue o estado do motor de monitoramento; sem motor, a avaliação das medidas de hoje.
   const monitor = useMonitor()
+  // Passo 4: estado de cada colega de tripulação, na barra logo abaixo do cabeçalho.
+  const crew = useCrew(profile, monitor)
   const level: HealthLevel = monitor ? LEVEL[monitor.state] : healthLevel(vitals)
   const patterns = usePatterns()
   // Frase do companheiro quando o estado não é estável; "rose": subiu desde o dia anterior.
@@ -99,6 +103,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   return (
     <AppShell path={route.path} missionDay={profile.missionDay} connection={connection}
       syncing={state.syncing} onSync={() => { void session.sync() }}
+      crewBar={<CrewBar crew={crew} />}
       syncDetail={state.syncing ? 'Syncing with server' : pending ? `${pending} check-in${pending === 1 ? '' : 's'} queued on this device` : state.historyLoaded ? 'History synced with server' : 'Server history unavailable'}
       account={{ name: profile.displayName, initials: initials(profile.displayName), rank: game.rank.name, points: formatPoints(game.totalPoints), onLogout: () => { navigate('/'); void session.logout() } }}
       companionOpen={companionOpen} companionLines={lines} onOpenDemoData={() => setDemoOpen(true)} onToggleCompanion={() => setCompanionOpen(o => !o)}
