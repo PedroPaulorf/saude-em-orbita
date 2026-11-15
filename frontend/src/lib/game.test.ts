@@ -18,8 +18,17 @@ const both = (...days: string[]) => days.flatMap((d) => [health(d), behavioral(d
 describe('daily points', () => {
   it('gives each check-up once per day, water up to the goal, the full-routine bonus and the streak', () => {
     const [day] = dailyPoints([...both('2026-11-10'), health('2026-11-10')], { '2026-11-10': GAME.waterGoal + 4 })
-    expect(day.points).toEqual({ health: P.healthCheckUp, behavioral: P.behavioralCheckIn, water: GAME.waterGoal * P.waterServing, bonus: P.fullRoutineBonus, streak: P.streakPerDay, plan: 0 })
+    expect(day.points).toEqual({ health: P.healthCheckUp, behavioral: P.behavioralCheckIn, water: GAME.waterGoal * P.waterServing, bonus: P.fullRoutineBonus, streak: P.streakPerDay, plan: 0, prevention: 0 })
     expect(day.routineTotal).toBeLessThanOrEqual(MAX_DAY_POINTS)
+  })
+
+  it('gives prevention points per objective done, up to the daily cap, even on a day without check-ups', () => {
+    const [day] = dailyPoints([], {}, [], { '2026-11-10': ['a', 'b'] })
+    expect(day.points.prevention).toBe(2 * P.preventionStep)
+    expect(day.total).toBe(2 * P.preventionStep)
+    const [capped] = dailyPoints([], {}, [], { '2026-11-10': ['a', 'b', 'c', 'd', 'e'] })
+    expect(capped.points.prevention).toBe(P.preventionStepsPerDay * P.preventionStep)
+    expect(summarize([], {}, '2026-11-10', [], { '2026-11-10': ['a'] }).today.points.prevention).toBe(P.preventionStep)
   })
 
   it('ignores rejected records', () => {

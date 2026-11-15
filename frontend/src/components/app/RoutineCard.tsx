@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { ArrowRight, CircleCheck, CircleDashed, Droplet, ListChecks, Minus, Plus, Route } from 'lucide-react'
+import { ArrowRight, CircleCheck, CircleDashed, Crosshair, Droplet, ListChecks, Minus, Plus, Route } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { GAME, MAX_DAY_POINTS, type DayPoints } from '@/lib/game'
 import type { PlanView } from '@/lib/plans'
@@ -102,6 +102,21 @@ export const RoutineCard = forwardRef<
             <Dotted text={`Plan · day ${plan.dayNumber} of ${plan.plan.days} · ${plan.today.doneCount} of ${plan.today.steps.length} steps`} />
           </span>
           {today.points.plan > 0 && <span className="font-mono text-sm">+{today.points.plan}</span>}
+          <ArrowRight className="size-4 text-ink-soft" aria-hidden />
+        </a>
+      )}
+      {!plan?.today && (
+        <a
+          href={href('/prevention')}
+          className="flex items-center gap-2.5 rounded-lg border border-hairline-strong px-3 py-2 text-[15px] text-ink no-underline hover:bg-surface-2"
+        >
+          <Crosshair className="size-4.5 shrink-0 text-interactive" aria-hidden />
+          <span className="flex-1">Prevention objectives</span>
+          <span className={cn('font-mono text-sm', today.points.prevention > 0 ? 'text-ink' : 'text-ink-soft')}>
+            {today.points.prevention > 0
+              ? `+${today.points.prevention}`
+              : `up to +${GAME.points.preventionStep * GAME.points.preventionStepsPerDay}`}
+          </span>
           <ArrowRight className="size-4 text-ink-soft" aria-hidden />
         </a>
       )}

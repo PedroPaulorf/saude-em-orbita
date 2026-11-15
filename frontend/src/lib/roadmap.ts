@@ -617,9 +617,19 @@ function loadDone(): Record<string, string[]> {
   return doneCache.value
 }
 
+const subscribeDone = (cb: () => void) => {
+  doneListeners.add(cb)
+  return () => { doneListeners.delete(cb) }
+}
+
+/** Todos os passos marcados, por dia UTC (o jogo conta os pontos de prevenção a partir daqui). */
+export function useDoneLog(): Record<string, string[]> {
+  return useSyncExternalStore(subscribeDone, loadDone, loadDone)
+}
+
 /** Passos de hoje marcados como feitos, por dia UTC. */
 export function useDoneSteps(day = new Date().toISOString().slice(0, 10)) {
-  const all = useSyncExternalStore((cb) => { doneListeners.add(cb); return () => doneListeners.delete(cb) }, loadDone, loadDone)
+  const all = useDoneLog()
   const done = all[day] ?? []
   function toggle(id: string) {
     const current = loadDone()
