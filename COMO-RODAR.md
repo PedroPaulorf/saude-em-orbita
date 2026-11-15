@@ -29,7 +29,7 @@ Edite `backend/.env`:
 |---|---|
 | `POSTGRES_PASSWORD` | uma senha qualquer para o banco |
 | `DATABASE_URL` | a mesma senha na URL: `postgresql://health7:SUA_SENHA@127.0.0.1:5433/health7` |
-| `DEMO_PASSWORD` | `health7-demo-2026` (já vem preenchida no exemplo). É a senha de login dos tripulantes |
+| `DEMO_PASSWORD` | `senha123` (já vem preenchida no exemplo). É a senha de login dos tripulantes |
 | `NEXUS_AUTO_REANCHOR` | `true` (já vem no exemplo): importa os tripulantes sozinho |
 
 Suba o banco:
@@ -77,12 +77,12 @@ O `.env.local` aponta para a API (`VITE_API_URL=http://localhost:3001`) e para o
 | `nx05` | NX-05, Crew Medical Officer | 30 | Estável em voo |
 | `nx06` | NX-06, Commander | 14 | Alerta (red flag no dia 14) |
 
-**Senha de todas as contas: `health7-demo-2026`**
+**Senha de todas as contas: `senha123`**
 
 | Login | Senha |
 |---|---|
-| `nx01`, `nx02`, `nx03`, `nx04`, `nx05`, `nx06` | `health7-demo-2026` |
-| `crew02`, `crew03` (só depois de `npm run seed`) | `health7-demo-2026` |
+| `nx01`, `nx02`, `nx03`, `nx04`, `nx05`, `nx06` | `senha123` |
+| `crew02`, `crew03` (só depois de `npm run seed`) | `senha123` |
 
 É uma senha **fictícia de demonstração**, igual para todos, e as contas só existem em banco local. Ela vale porque o `DEMO_PASSWORD` do `.env` é usado ao criar as contas. Se você usar outro valor, a senha será esse valor. Se o banco já tinha as contas, a senha antiga continua.
 
@@ -117,6 +117,6 @@ Detalhes e opções em [backend/README.md](backend/README.md).
 | Chat com "Demo reply" | Falta o `frontend/.env.local`. Copie o `.env.example` e reinicie o front. |
 | `docker compose` reclama de `POSTGRES_PASSWORD` | Falta o `backend/.env`. |
 | Erro de conexão no back | Porta ou senha da `DATABASE_URL` diferente das do Compose. |
-| Não consigo entrar com `nx01` | Use `health7-demo-2026`. Se mudou o `DEMO_PASSWORD` depois de criar as contas, a senha antiga ficou valendo: apague o banco (`docker compose down -v`) e suba de novo. |
+| Não consigo entrar com `nx01` | Use `senha123`. Se mudou o `DEMO_PASSWORD` depois de criar as contas, a senha antiga ficou valendo: a atualização do repositório não troca senhas existentes; solicite ao responsável a alteração das contas de demonstração. |
 
 Os arquivos `.env` e `.env.local` ficam fora do Git de propósito. Não os envie por commit.

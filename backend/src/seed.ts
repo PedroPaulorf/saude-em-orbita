@@ -1,7 +1,7 @@
 import type pg from 'pg'
 import { hashPassword } from './auth.js'
 export async function seedDemo(pool: pg.Pool, password: string) {
-  if (!password || password.length < 12 || password.length > 256) throw new Error('DEMO_PASSWORD must contain 12 to 256 characters')
+  if (!password || (password !== 'senha123' && password.length < 12) || password.length > 256) throw new Error('DEMO_PASSWORD must be senha123 for demonstrations or contain 12 to 256 characters')
   for (const [id, username, bodyModel, displayName] of [
     ['crew-02', 'crew02', 'male', 'Tripulante fictício 02'],
     ['crew-03', 'crew03', 'female', 'Tripulante fictício 03'],

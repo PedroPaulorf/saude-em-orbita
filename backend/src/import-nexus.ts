@@ -95,7 +95,7 @@ export async function importNexus(options: ImportOptions): Promise<ImportSummary
       if (existing) await db.query('UPDATE crew SET profile=$2 WHERE id=$1', [id, profile])
       else {
         const password = options.password ?? ''
-        if (password.length < 12 || password.length > 256) fail('DEMO_PASSWORD must contain 12 to 256 characters to create the NX accounts')
+        if ((password !== 'senha123' && password.length < 12) || password.length > 256) fail('DEMO_PASSWORD must be senha123 for demonstrations or contain 12 to 256 characters to create the NX accounts')
         await db.query('INSERT INTO crew(id,username,password_hash,profile) VALUES($1,$2,$3,$4)', [id, username, await hashPassword(password), profile])
       }
 

@@ -65,7 +65,7 @@ Principais configurações:
 | Variável | Uso |
 |---|---|
 | `DATABASE_URL` | Conexão do banco compartilhado da aplicação |
-| `DEMO_PASSWORD` | Senha fictícia de 12 a 256 caracteres usada ao criar as contas |
+| `DEMO_PASSWORD` | Senha padrão de demonstração: `senha123`; outras senhas devem ter 12 a 256 caracteres |
 | `POSTGRES_PASSWORD` | Senha do banco, quando usar o Compose |
 | `CORS_ORIGINS` | Origens permitidas do front, separadas por vírgula |
 | `COOKIE_SECURE` | `false` no HTTP local; `true` com HTTPS em produção |
@@ -143,7 +143,7 @@ limiares clínicos nem permite deduzir informações médicas da pessoa.
 Seis perfis **fictícios** da pesquisa NEXUS-Med, com 30 dias de voo cada. A importação é um comando explícito do operador, nunca roda na subida da API:
 
 ```powershell
-$env:DEMO_PASSWORD = '<senha com 12 caracteres ou mais>'
+$env:DEMO_PASSWORD = 'senha123'
 npm run import:nexus
 ```
 
