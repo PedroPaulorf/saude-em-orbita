@@ -38,6 +38,8 @@ export class SessionController {
       if(this.valid(epoch)) { this.reset(); this.update({error:error instanceof ApiError && error.status===401 ? null : 'Cannot verify your session. Connect to the server and sign in.'}) }
     }
   }
+  /** Nome trocado na ficha da pessoa: o servidor já gravou, aqui só atualiza a sessão aberta. */
+  renamed(displayName:string) { if(this.state.profile) this.update({profile:{...this.state.profile,displayName}}) }
   async login(username:string,password:string) {
     if(this.state.busy) return
     this.broadcast()

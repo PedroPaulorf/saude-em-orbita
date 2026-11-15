@@ -15,6 +15,7 @@
     "shots": "node scripts/ux-shots.mjs"
   },
   "dependencies": {
+    "@fontsource/caveat": "^5.3.0",
     "@fontsource/fira-code": "^5.3.0",
     "@fontsource/fira-sans": "^5.3.0",
     "@fontsource/overpass": "^5.3.0",

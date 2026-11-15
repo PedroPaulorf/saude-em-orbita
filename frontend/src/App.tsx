@@ -3,8 +3,7 @@ import { AppShell } from '@/components/app/AppShell'
 import { ChatPanel } from '@/components/app/ChatPanel'
 import { DemoDataDialog } from '@/components/app/DemoDataDialog'
 import { ScreenBoundary, ScreenSkeleton } from '@/components/app/ScreenStates'
-import { GameEvents, RankChip } from '@/components/app/GameBits'
-import { Button } from '@/components/ui/button'
+import { GameEvents } from '@/components/app/GameBits'
 import { navigate, useRoute } from '@/lib/route'
 import { getTodayVitals } from '@/lib/health'
 import { healthLevel, type HealthLevel } from '@/lib/present'
@@ -16,14 +15,18 @@ import { WATER_GOAL } from '@/lib/water'
 import { session, type SessionState } from '@/lib/session'
 import { useSession } from '@/lib/use-session'
 import { useGame } from '@/lib/useGame'
+import { formatPoints } from '@/lib/game'
+import { initials } from '@/lib/person'
 import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { DetailedStats } from '@/screens/DetailedStats'
 import { Home } from '@/screens/Home'
+import { Landing } from '@/screens/Landing'
 import { Login } from '@/screens/Login'
 import { Prevention } from '@/screens/Prevention'
 import { MedicalData } from '@/screens/MedicalData'
 import { Integrations } from '@/screens/Integrations'
+import { Profile as ProfileScreen } from '@/screens/Profile'
 import type { Profile } from '@/lib/api'
 import type { Connection } from '@/types'
 
@@ -31,6 +34,7 @@ const ProgressScreen = lazy(() => import('@/screens/Progress').then((m) => ({ de
 
 export default function App() {
   const state = useSession()
+  const route = useRoute()
   useEffect(() => {
     void session.restore()
     const online = () => { void session.sync() }
@@ -43,7 +47,8 @@ export default function App() {
     return () => { window.clearInterval(retryTimer); window.removeEventListener('online', online); window.removeEventListener('storage', changed) }
   }, [])
   if (state.phase === 'restoring') return <main className="p-8" role="status">Verifying your session…</main>
-  if (!state.profile) return <Login />
+  // Sem sessão: a landing page explica o projeto; "Try the demo" leva ao login.
+  if (!state.profile) return route.path === '/login' ? <Login /> : <Landing />
   return <AuthenticatedApp key={state.profile.id} state={state} profile={state.profile} />
 }
 
@@ -53,6 +58,8 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const [companionOpen, setCompanionOpen] = useState(false)
   const [demoOpen, setDemoOpen] = useState(false)
   useEffect(() => { window.scrollTo({ top: 0 }) }, [route.path])
+  // Logado, o endereço do login não tem o que mostrar: volta para a Home.
+  useEffect(() => { if (route.path === '/login') navigate('/', undefined, { replace: true }) }, [route.path])
   // Fundo da página na cor da saúde de hoje: azul, laranja ou vermelho (styles/theme.css).
   const vitals = useMemo(() => getTodayVitals(profile, state.checkins), [profile, state.checkins])
   // O fundo segue o estado do motor de monitoramento; sem motor, a avaliação das medidas de hoje.
@@ -79,6 +86,7 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   let screen
   switch (route.path) {
     case '/integrations': screen = <Integrations key={profile.id} owner={profile.id} />; break
+    case '/profile': screen = <ProfileScreen profile={profile} game={game} />; break
     case '/data': screen = <MedicalData state={state} section={route.params.get('section')} />; break
     case '/prevention': screen = <Prevention game={game} connection={connection} params={route.params} profile={profile} checkins={state.checkins} />; break
     case '/progress': screen = <Suspense fallback={<ScreenSkeleton label="Loading progress" />}><ProgressScreen game={game} /></Suspense>; break
@@ -87,11 +95,12 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
     case '/check/behavioral': screen = <BehavioralCheckIn />; break
     default: screen = <Home connection={connection} game={game} profile={profile} checkins={state.checkins} />
   }
+  if (route.path === '/welcome') return <Landing signedIn />
   return (
     <AppShell path={route.path} missionDay={profile.missionDay} connection={connection}
       syncing={state.syncing} onSync={() => { void session.sync() }}
       syncDetail={state.syncing ? 'Syncing with server' : pending ? `${pending} check-in${pending === 1 ? '' : 's'} queued on this device` : state.historyLoaded ? 'History synced with server' : 'Server history unavailable'}
-      headerExtra={<><RankChip game={game} /><Button variant="ghost" size="sm" onClick={() => { navigate('/'); void session.logout() }}>Log out</Button></>}
+      account={{ name: profile.displayName, initials: initials(profile.displayName), rank: game.rank.name, points: formatPoints(game.totalPoints), onLogout: () => { navigate('/'); void session.logout() } }}
       companionOpen={companionOpen} companionLines={lines} onOpenDemoData={() => setDemoOpen(true)} onToggleCompanion={() => setCompanionOpen(o => !o)}
       companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
       escalate={monitor?.state === 'ESCALATE' ? { crew: profile.nexus?.crewId ?? profile.displayName, crewId: profile.id, date: monitor.date, day: monitor.day,
