@@ -11,7 +11,8 @@
     "data:risks": "node scripts/build-risks.mjs",
     "data:donki": "node scripts/build-donki-snapshot.ts",
     "test": "vitest run",
-    "test:e2e": "node e2e/run.mjs"
+    "test:e2e": "node e2e/run.mjs",
+    "shots": "node scripts/ux-shots.mjs"
   },
   "dependencies": {
     "@fontsource/fira-code": "^5.3.0",

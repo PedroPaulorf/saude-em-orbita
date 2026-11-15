@@ -16,11 +16,12 @@ Cofre da equipe no NASA Space Apps 2026, desafio **Create Health Monitoring Soft
 
 ## 02 Planos
 
-Os planos já foram implementados. Cada um termina com uma seção "Desvios", que registra o que mudou na implementação.
+Os planos 1 a 3 já foram implementados; o 4 está a implementar. Cada um termina com uma seção "Desvios", que registra o que mudou na implementação.
 
 1. [[Plano do front-end v2]]: o novo visual, as telas, a gamificação e o chat com n8n.
 2. [[Plano do front-end v3 - medicina preventiva]]: os sinais precoces, o plano de volta à linha de base e a radiação acumulada.
 3. [[Plano do assistente - monitoramento e plano de ação]]: os dados NEXUS-Med, o motor de regras, os estados de alerta e o plano de ação.
+4. [[Plano do front-end v4 - UX e UI]]: a avaliação das telas e as correções de leitura, cor e hierarquia.
 
 ## 03 Pesquisa
 
