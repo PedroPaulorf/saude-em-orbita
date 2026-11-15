@@ -191,3 +191,22 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   await importNexus({ databaseUrl: process.env.DATABASE_URL ?? fail('DATABASE_URL is required'), password: process.env.DEMO_PASSWORD, ...args, log: console.log })
   console.log('NEXUS-Med synthetic crew imported. Sign in as nx01 to nx06 with the demo password.')
 }
+
+/**
+ * Demo sem passo manual: se o "hoje" guardado nas contas NEXUS ficou para trás (virou o dia),
+ * refaz a importação com --reset. Só mexe nas contas sintéticas; usado pelo servidor com NEXUS_AUTO_REANCHOR=true.
+ */
+export async function reanchorNexusIfStale(databaseUrl: string, password?: string, log: (line: string) => void = () => {}, now = new Date()) {
+  const today = utcDate(now.getTime() - 6 * 3600000)
+  const db = openDatabase(databaseUrl)
+  let stale = false
+  try {
+    const { rows } = await db.query(`SELECT profile->'nexus'->>'anchorDate' AS anchor FROM crew WHERE profile->>'source'=$1`, [NEXUS_SOURCE])
+    // Banco sem tripulação NEXUS: importa (só se houver DEMO_PASSWORD para criar as contas).
+    stale = rows.length === 0 ? Boolean(password) : rows.some(r => r.anchor !== today)
+  } finally { await db.end() }
+  if (!stale) return false
+  log(`NEXUS: dados ancorados em dia antigo; reimportando com hoje = ${today}`)
+  await importNexus({ databaseUrl, password, reset: true, now, log })
+  return true
+}

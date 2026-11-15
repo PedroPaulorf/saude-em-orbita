@@ -20,3 +20,16 @@ const app = await createApp({ databaseUrl, logger: true, secureCookies,
 for (const signal of ['SIGINT', 'SIGTERM'] as const) process.once(signal, () => { app.close().catch(error => { app.log.error(error); process.exitCode = 1 }) })
 try { await app.listen({ host: process.env.HOST ?? '127.0.0.1', port }) }
 catch (error) { app.log.error(error); await app.close(); process.exitCode = 1 }
+
+if (process.env.NEXUS_AUTO_REANCHOR === 'true' && !process.exitCode) {
+  const { reanchorNexusIfStale } = await import('./import-nexus.js')
+  let running = false
+  const tick = async () => {
+    if (running) return
+    running = true
+    try { await reanchorNexusIfStale(databaseUrl, process.env.DEMO_PASSWORD, line => app.log.info(line)) }
+    catch (error) { app.log.error(error) } finally { running = false }
+  }
+  await tick()
+  setInterval(tick, 10 * 60 * 1000).unref()
+}
