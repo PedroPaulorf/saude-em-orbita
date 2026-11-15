@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Watch, Database } from 'lucide-react'
 import { Panel, PanelHeader } from '@/components/app/Panel'
 import { MissionTracking } from '@/components/app/MissionTracking'
+import { IPhoneConnection } from '@/components/app/IPhoneConnection'
 import { Button } from '@/components/ui/button'
-import { apiRequest, ApiError, createClientId } from '@/lib/api'
+import { apiRequest, apiBase, ApiError, createClientId } from '@/lib/api'
 import { session } from '@/lib/session'
 import { sources, metricInfo, parseNormalized, parseAppleXml, exampleFile, exampleCsv, type ParsedWearables, type WearableSource, type WearableHistory } from '@/lib/wearables'
 
@@ -86,6 +87,7 @@ export function Integrations({ owner }: { owner: string }) {
   return <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 py-6 md:px-8">
     <a href="#/" className="font-semibold text-interactive underline">Back to Home</a>
     <h1 className="font-display text-3xl font-semibold">Mission & device integrations</h1>
+    <IPhoneConnection apiOrigin={apiBase(import.meta.env.VITE_API_URL).replace(/\/api\/v1$/, '')} history={history} />
     <MissionTracking />
     <Panel>
       <PanelHeader icon={<Watch />} title="Supported import paths" subtitle="File import available · automatic sync not connected" />
@@ -96,7 +98,7 @@ export function Integrations({ owner }: { owner: string }) {
       </article>)}</div>
     </Panel>
     <Panel>
-      <PanelHeader title="Import measurements" subtitle="Preview locally, then save to your signed-in account." />
+      <PanelHeader id="apple-file-import" title="Import measurements" subtitle="Preview locally, then save to your signed-in account." />
       <p className="text-sm text-ink-soft">Samsung, Garmin and ActLumus files must follow the Health7 template; proprietary raw exports need mapping first. Source and device labels are supplied by the file and are not verified by a manufacturer.</p>
       <div className="grid gap-1 font-semibold"><label htmlFor="wearable-source">Data source</label>
         <select id="wearable-source" className="min-h-11 rounded-lg border border-hairline bg-surface-2 p-2" value={source} disabled={busy || reading} onChange={e => { setSource(e.target.value as WearableSource); resetFile() }}>

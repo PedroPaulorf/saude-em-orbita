@@ -2,6 +2,8 @@
 
 Implementação de 14/11/2026. A interface mantém o inglês usado no restante do Health7.
 
+Na branch experimental `teste/conectar-dispositivos`, o botão **Connect iPhone** ao lado de Start/Redo abre a configuração do companion iOS. O código-fonte HealthKit está em [ios/](../ios/README.md), com sincronização em primeiro plano e instruções para compilar no Mac. Ainda requer instalação e validação em iPhone físico; o navegador não faz pareamento direto. Veja [escopo e validação](iphone-connection.md).
+
 ## Acesso e estado das integrações
 
 A Home contém os cartões **Artemis mission tracking** e **Watches & research devices**. A rota autenticada `#/integrations`, também acessível por `#/data`, reúne os caminhos de importação e o histórico da conta.
