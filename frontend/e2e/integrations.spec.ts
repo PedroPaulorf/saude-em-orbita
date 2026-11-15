@@ -1,10 +1,9 @@
 import { test, expect, type Page } from '@playwright/test'
 import { exampleCsv, exampleFile } from '../src/lib/wearables'
+import { signIn } from './helpers'
 
 async function login(page: Page, username: string) {
-  await page.getByLabel('Username', { exact: true }).fill(username)
-  await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await signIn(page, username)
   await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
 }
 test('AROW links and wearable imports work with consent, normalized formats, Apple XML, duplicates and private persistent history', async ({ page }) => {
