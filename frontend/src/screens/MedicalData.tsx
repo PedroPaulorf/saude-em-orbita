@@ -79,6 +79,7 @@ export function MedicalData({ state, section }: { state: SessionState; section?:
   return <div className="mx-auto grid w-full max-w-4xl gap-5 px-4 py-6 md:px-8">
     <a href="#/" className="font-semibold text-interactive underline">Back to Home</a>
     <h1 className="font-display text-3xl font-semibold">Medical data & sources</h1>
+    <a href="#/integrations" className="font-semibold text-interactive underline">Mission & device integrations</a>
     <Panel>
       <PanelHeader icon={<Database />} title={`Records for ${state.profile!.displayName}`} />
       <p className="text-sm text-ink-soft">{pending} check-ups pending · {saved.length} confirmed records in the loaded window.</p>

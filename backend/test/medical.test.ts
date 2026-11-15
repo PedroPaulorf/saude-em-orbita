@@ -31,6 +31,8 @@ const post = (path: string, body: any, headers = a) => app.inject({ method: 'POS
 before(async () => {
   await admin.query('CREATE SCHEMA ' + schema)
   await migrate(db); await seedDemo(db, password)
+  // Exercise absent-baseline behavior independently of optional demo seed fields.
+  await db.query("UPDATE crew SET profile=profile #- '{baseline,spo2}' WHERE id='crew-02'")
   // An existing check-up has no collection metadata; never fabricate it on upgrade.
   await db.query('INSERT INTO checkins(id,crew_id,client_id,at,payload) VALUES($1,$2,$3,$4,$5)', [randomUUID(), 'crew-02', 'legacy', payload.at, { ...payload, clientId: 'legacy', provenance: undefined }])
   app = await createApp({ databaseUrl: scoped.toString() })

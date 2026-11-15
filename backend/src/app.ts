@@ -10,6 +10,7 @@ import { registerDomainRoutes, personFor, healthFor, environmentFor } from './do
 import { canonical, strictDate, checkInSchema, historySchema, symptomSchema, eventSchema, analysisSchema, type CheckInInput } from './contracts.js'
 import { initializeMedical, observations, storeObservations } from './medical.js'
 import { scenarioSchema, simulate, type Scenario } from './simulation.js'
+import { registerWearableRoutes } from './wearables.js'
 
 export interface AiProvider { url: string; name: string; modelVersion: string; apiKey?: string; timeoutMs?: number }
 export interface Options { databaseUrl: string; origins?: string[]; secureCookies?: boolean; logger?: boolean; aiProvider?: AiProvider; sessionTtlSeconds?: number }
@@ -82,6 +83,7 @@ export async function createApp(options: Options) {
   app.register(async api => {
     api.addHook('onRequest', authenticate)
     registerDomainRoutes(api, db, crew, windowOf)
+    registerWearableRoutes(api, db, crew)
     api.post('/auth/logout', async (request, reply) => {
       await db.query('DELETE FROM sessions WHERE token_hash=$1 AND crew_id=$2', [tokenHash(request.cookies.health7_session!), crew(request)])
       reply.clearCookie('health7_session', cookieOptions)

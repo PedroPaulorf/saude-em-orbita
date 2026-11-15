@@ -166,7 +166,7 @@ export function AppShell({
                 Day <span className="font-mono">{missionDay}</span>
               </span>
               {headerExtra && <span className="hidden items-center gap-2 lg:inline-flex">{headerExtra}</span>}
-              <SimulatedChip onClick={onOpenDemoData} />
+              {path !== '/integrations' && <SimulatedChip onClick={onOpenDemoData} />}
               <ConnectionStatus state={connection} syncing={syncing} detail={syncDetail} onSync={onSync} />
             </div>
           </div>

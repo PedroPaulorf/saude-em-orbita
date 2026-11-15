@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { AvatarCard } from '@/components/app/AvatarCard'
+import { IntegrationLinks } from '@/components/app/MissionTracking'
 import { BehavioralCheckInCard, HealthCheckUpCard } from '@/components/app/CheckUpCards'
 import { HealthNotes } from '@/components/app/HealthNotes'
 import { ReportCompact, ReportDialog } from '@/components/app/Report'
@@ -124,6 +125,7 @@ export function Home({ connection, game, profile, checkins }: { connection: Conn
         />
       </div>
 
+      <IntegrationLinks />
       <SpaceWeatherDialog
         open={weatherOpen}
         onOpenChange={setWeatherOpen}
