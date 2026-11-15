@@ -94,4 +94,45 @@ test('history explicitly reports truncation and samples survive batches larger t
   const saved = (await history()).json()
   assert.equal(saved.total, 110); assert.equal(saved.items.length, 100); assert.equal(saved.truncated, true)
   assert.ok(saved.items.every((s: any, i: number, rows: any[]) => i === 0 || rows[i - 1].at >= s.at))
+  assert.ok(saved.nextCursor)
+  const older = (await app.inject({ url: path + '?cursor=' + saved.nextCursor, headers: a })).json()
+  assert.equal(older.items.length, 10); assert.equal(older.nextCursor, null); assert.equal(older.truncated, false)
+  assert.equal(new Set([...saved.items, ...older.items].map((s: any) => s.id)).size, 110)
+  assert.equal((await app.inject({ url: path + '?cursor=' + saved.nextCursor, headers: b })).json().total, 0)
+  assert.equal((await app.inject({ url: path + '?cursor=invalid', headers: a })).statusCode, 400)
+})
+
+test('Bluetooth persists generic HRS transport without inferring a manufacturer or resting context', async () => {
+  await app.close(); app = await createApp({ databaseUrl: scoped.toString() })
+  const bluetooth = batch('ble-reading', { source: 'bluetooth', format: 'bluetooth-hrs-v1', samples: [{ ...sample, metric: 'heartRate' }] })
+  for (const invalid of [
+    { ...bluetooth, format: 'health7-json-v1' }, { ...bluetooth, source: 'samsung' },
+    { ...bluetooth, quality: 'example' }, { ...bluetooth, samples: [sample] },
+    { ...bluetooth, samples: [{ ...sample, metric: 'heartRate', endAt: sample.at }] },
+  ]) assert.equal((await post(invalid, b)).statusCode, 400)
+  const created = await post(bluetooth, b)
+  assert.equal(created.statusCode, 201, created.body)
+  assert.equal((await post(bluetooth, b)).statusCode, 200)
+  const rows = (await history(b)).json()
+  assert.equal(rows.total, 1)
+  assert.equal(rows.items[0].source, 'bluetooth'); assert.equal(rows.items[0].metric, 'heartRate')
+  assert.equal(rows.items[0].transport, 'bluetooth-le'); assert.equal(rows.items[0].protocol, 'heart-rate-service')
+  assert.equal(rows.items[0].verification, 'user-declared'); assert.equal(rows.items[0].assessment, 'not-evaluated')
+})
+
+test('Samsung phone bridge keeps Health Connect provenance, restrictions and retry identity', async () => {
+  await app.close(); app = await createApp({ databaseUrl: scoped.toString() })
+  const phone = batch('phone-reading', { source: 'samsung', format: 'samsung-health-connect-v1', samples: [{ ...sample, device: 'Samsung Health | SM-R390', metric: 'heartRate' }] })
+  for (const invalid of [
+    { ...phone, source: 'garmin' }, { ...phone, quality: 'example' },
+    { ...phone, samples: [{ ...sample, metric: 'restingHeartRate' }] },
+  ]) assert.equal((await post(invalid, b)).statusCode, 400)
+  const saved = await post(phone, b)
+  assert.equal(saved.statusCode, 201, saved.body)
+  assert.equal((await post(phone, b)).statusCode, 200)
+  const same = await post({ ...phone, clientId: 'same-from-new-sync' }, b)
+  assert.equal(same.json().added, 0); assert.equal(same.json().duplicates, 1)
+  const item = (await history(b)).json().items.find((s: any) => s.device === 'Samsung Health | SM-R390')
+  assert.equal(item.transport, 'android-health-connect'); assert.equal(item.protocol, 'samsung-health-heart-rate')
+  assert.equal(item.verification, 'user-declared'); assert.equal(item.assessment, 'not-evaluated')
 })

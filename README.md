@@ -2,7 +2,7 @@
 
 Projeto da equipe no NASA Space Apps 2026 para o desafio **Create Health Monitoring Software for Astronauts on Space Missions**.
 
-O Health 7 é um protótipo com frontend React, backend Node/Fastify e PostgreSQL. Ele tem login individual, avatar por perfil, check-ups, histórico de sintomas, prevenção, progresso e um chat opcional com n8n. Os dados de saúde são fictícios e servem só para a demonstração.
+O Health 7 é um protótipo com frontend React, backend Node/Fastify e PostgreSQL. Ele tem login individual, avatar por perfil, check-ups, histórico de sintomas, prevenção, progresso e um chat opcional com n8n. Check-ups e cenários usam dados fictícios para demonstração; medidas importadas de dispositivos ficam identificadas e separadas, sem avaliação médica.
 
 ## Estrutura
 
@@ -27,5 +27,7 @@ O Health 7 é um protótipo com frontend React, backend Node/Fastify e PostgreSQ
 Veja [CONTRIBUTING.md](CONTRIBUTING.md): uma branch por tarefa, um PR para `main` e a revisão de outro membro.
 
 ## AROW e vestíveis
+
+**Galaxy Fit3 e Bluetooth:** `#/integrations` também oferece conexão com transmissores BLE Heart Rate e um aplicativo Android de ligação para ler batimentos compartilhados pelo Samsung Health. O Fit3 usa o celular como ponte. Veja [configuração e limites](docs/bluetooth-fit3.md) e a [revisão do frontend](<cofre/03 Pesquisa/2026-11-15-revisao-frontend-bluetooth-fit3.md>).
 
 A Home e `#/integrations` oferecem o recurso oficial da NASA e importação de medidas por arquivo para Apple Health, Samsung, Garmin e ActLumus. Dados importados ficam identificados e separados dos check-ups simulados, sem avaliação médica. Conexões automáticas com fabricantes ainda precisam de aplicativos e permissões. Consulte a [documentação](docs/integrations.md) e o [relatório da implementação](<cofre/03 Pesquisa/2026-11-14-integracoes-arow-vestiveis.md>).

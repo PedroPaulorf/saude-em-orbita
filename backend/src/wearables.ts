@@ -14,17 +14,17 @@ export const wearableMetrics = {
   photopicLight: { unit: 'lux', min: 0, max: 200000 },
   melanopicLight: { unit: 'melanopic-lux', min: 0, max: 200000 },
 } as const
-type Source = 'apple' | 'samsung' | 'garmin' | 'actlumus'
+type Source = 'apple' | 'samsung' | 'garmin' | 'actlumus' | 'bluetooth'
 interface Sample { device: string; metric: keyof typeof wearableMetrics; value: number; unit: string; at: string; endAt?: string }
-interface ImportInput { clientId: string; version: 1; source: Source; format: 'health7-json-v1' | 'health7-csv-v1' | 'apple-health-xml'; quality: 'unverified' | 'example'; samples: Sample[] }
+interface ImportInput { clientId: string; version: 1; source: Source; format: 'health7-json-v1' | 'health7-csv-v1' | 'apple-health-xml' | 'bluetooth-hrs-v1' | 'samsung-health-connect-v1'; quality: 'unverified' | 'example'; samples: Sample[] }
 const date = { type: 'string', format: 'date-time', maxLength: 40 }
 export const wearableSchema = {
   type: 'object', additionalProperties: false,
   required: ['clientId', 'version', 'source', 'format', 'quality', 'samples'],
   properties: {
     clientId: { type: 'string', pattern: '^[A-Za-z0-9_-]{1,128}$' }, version: { const: 1 },
-    source: { enum: ['apple', 'samsung', 'garmin', 'actlumus'] },
-    format: { enum: ['health7-json-v1', 'health7-csv-v1', 'apple-health-xml'] },
+    source: { enum: ['apple', 'samsung', 'garmin', 'actlumus', 'bluetooth'] },
+    format: { enum: ['health7-json-v1', 'health7-csv-v1', 'apple-health-xml', 'bluetooth-hrs-v1', 'samsung-health-connect-v1'] },
     quality: { enum: ['unverified', 'example'] },
     samples: { type: 'array', minItems: 1, maxItems: 500, items: {
       type: 'object', additionalProperties: false, required: ['device', 'metric', 'value', 'unit', 'at'],
@@ -37,6 +37,11 @@ export const wearableSchema = {
 const fail = (statusCode: number, message: string): never => { throw Object.assign(new Error(message), { statusCode }) }
 const hash = (input: unknown) => createHash('sha256').update(canonical(input)).digest('hex')
 function normalize(input: ImportInput) {
+  if ((input.source === 'bluetooth') !== (input.format === 'bluetooth-hrs-v1')) fail(400, 'Bluetooth source requires the HRS format, and vice versa')
+  if (input.format === 'samsung-health-connect-v1' && (input.source !== 'samsung' || input.quality !== 'unverified' || input.samples.some(s => s.metric !== 'heartRate' || s.endAt !== undefined)))
+    fail(400, 'Samsung Health Connect accepts unverified Samsung heart-rate point samples only')
+  if (input.source === 'bluetooth' && (input.quality !== 'unverified' || input.samples.some(s => s.metric !== 'heartRate' || s.endAt !== undefined)))
+    fail(400, 'Bluetooth HRS accepts only unverified point-in-time heart-rate samples')
   if (input.format === 'apple-health-xml' && input.source !== 'apple') fail(400, 'Apple XML requires Apple source')
   const samples = input.samples.map((s, index) => {
     const metric = wearableMetrics[s.metric]
@@ -78,8 +83,12 @@ export function registerWearableRoutes(api: FastifyInstance, db: pg.Pool, crew: 
         [id, owner, input.clientId, digest, input.source, input.format, input.quality, input.samples.length])
       let added = 0
       for (const s of input.samples) {
-        const sampleKey = hash([input.source, input.quality, s.device, s.metric, s.at, s.endAt ?? null])
-        const payload = { ...s, source: input.source, quality: input.quality, verification: 'user-declared', assessment: 'not-evaluated' }
+        const identity = [input.source, input.quality, s.device, s.metric, s.at, s.endAt ?? null]
+        if (input.format === 'samsung-health-connect-v1') identity.push('android-health-connect')
+        const sampleKey = hash(identity)
+        const payload = { ...s, source: input.source, quality: input.quality, verification: 'user-declared', assessment: 'not-evaluated',
+          ...(input.source === 'bluetooth' ? { transport: 'bluetooth-le', protocol: 'heart-rate-service' } : {}) }
+        if (input.format === 'samsung-health-connect-v1') Object.assign(payload, { transport: 'android-health-connect', protocol: 'samsung-health-heart-rate' })
         const old = await client.query('SELECT payload FROM wearable_samples WHERE crew_id=$1 AND sample_key=$2', [owner, sampleKey])
         if (old.rowCount) {
           if (canonical(old.rows[0].payload) !== canonical(payload)) fail(409, 'Existing observation has different content; batch was not saved')
@@ -94,14 +103,28 @@ export function registerWearableRoutes(api: FastifyInstance, db: pg.Pool, crew: 
     } catch (error) { await client.query('ROLLBACK'); throw error }
     finally { client.release() }
   })
-  api.get('/me/wearables', async request => {
+  api.get<{ Querystring: { cursor?: string } }>('/me/wearables', { schema: { querystring: {
+    type: 'object', additionalProperties: false, properties: { cursor: { type: 'string', minLength: 1, maxLength: 256, pattern: '^[A-Za-z0-9_-]+$' } },
+  } } }, async request => {
     const owner = crew(request)
+    let beforeAt: string | null = null, beforeId: string | null = null
+    if (request.query.cursor) {
+      try {
+        const decoded = JSON.parse(Buffer.from(request.query.cursor, 'base64url').toString('utf8'))
+        if (!Array.isArray(decoded) || decoded.length !== 2 || typeof decoded[0] !== 'string' || typeof decoded[1] !== 'string'
+          || !/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(decoded[1])) throw new Error('Invalid cursor')
+        beforeAt = strictDate(decoded[0]); beforeId = decoded[1]
+      } catch { fail(400, 'Invalid history cursor') }
+    }
     // One SQL snapshot keeps count and rows consistent during concurrent imports.
     const result = await db.query(`SELECT (SELECT count(*)::int FROM wearable_samples WHERE crew_id=$1) AS total,
       coalesce((SELECT jsonb_agg(t ORDER BY t.at DESC,t.id DESC) FROM
-      (SELECT id,import_id AS "importId",at,payload,received_at AS "receivedAt" FROM wearable_samples WHERE crew_id=$1 ORDER BY at DESC,id DESC LIMIT 100) t),'[]'::jsonb) AS items`, [owner])
+      (SELECT id,import_id AS "importId",at,payload,received_at AS "receivedAt" FROM wearable_samples WHERE crew_id=$1
+      AND ($2::timestamptz IS NULL OR (at,id)<($2::timestamptz,$3::uuid)) ORDER BY at DESC,id DESC LIMIT 101) t),'[]'::jsonb) AS items`, [owner, beforeAt, beforeId])
     const { total, items } = result.rows[0]
-    return { crewId: owner, total, truncated: total > items.length, items: items.map((r: any) => ({ ...r.payload, id: r.id, importId: r.importId, receivedAt: r.receivedAt })) }
+    const page = items.slice(0, 100), last = page.at(-1), truncated = items.length > page.length
+    const nextCursor = truncated && last ? Buffer.from(JSON.stringify([new Date(last.at).toISOString(), last.id])).toString('base64url') : null
+    return { crewId: owner, total, truncated, nextCursor, items: page.map((r: any) => ({ ...r.payload, id: r.id, importId: r.importId, receivedAt: r.receivedAt })) }
   })
 }
 function importOutput(row: any) {

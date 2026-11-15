@@ -31,7 +31,7 @@ try {
       await migrate(db)
       await seedDemo(db, 'browser-fixture-password-29')
       // Preserve production login-rate limits and prevent records/rank events leaking between specs.
-      const child = spawn(process.execPath, [frontendRequire.resolve('@playwright/test/cli'), 'test', spec], {
+      const child = spawn(process.execPath, [frontendRequire.resolve('@playwright/test/cli'), 'test', spec, '--output', 'test-results/artifacts/' + spec.replace('.spec.ts', '')], {
         cwd: fileURLToPath(new URL('../', import.meta.url)), stdio: 'inherit', windowsHide: true,
         env: { ...process.env, HEALTH7_E2E_DATABASE_URL: scoped.toString() },
       })
