@@ -6,14 +6,16 @@ import { IPhoneConnection } from '@/components/app/IPhoneConnection'
 import { Button } from '@/components/ui/button'
 import { apiRequest, apiBase, ApiError, createClientId } from '@/lib/api'
 import { session } from '@/lib/session'
-import { sources, metricInfo, parseNormalized, parseAppleXml, exampleFile, exampleCsv, type ParsedWearables, type WearableSource, type WearableHistory } from '@/lib/wearables'
+import { sources, metricInfo, parseNormalized, exampleFile, exampleCsv, type ParsedWearables, type WearableSource, type WearableHistory } from '@/lib/wearables'
+import { readAppleFile } from '@/lib/apple-file'
+import { nextImportBatch, pauseImport } from '@/lib/wearable-batches'
 
 function download(name: string, text: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type }))
   const a = document.createElement('a'); a.href = url; a.download = name; a.click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
-interface Preview { data: ParsedWearables; clientId: string }
+interface Preview { data: ParsedWearables; clientId: string; progress: { offset: number; added: number; duplicates: number } }
 export function Integrations({ owner }: { owner: string }) {
   const [source, setSource] = useState<WearableSource>('apple')
   const [preview, setPreview] = useState<Preview | null>(null)
@@ -22,6 +24,8 @@ export function Integrations({ owner }: { owner: string }) {
   const [error, setError] = useState(''), [message, setMessage] = useState('')
   const [history, setHistory] = useState<WearableHistory | null>(null)
   const [loading, setLoading] = useState(true)
+  const [readProgress, setReadProgress] = useState(0)
+  const readController = useRef<AbortController | null>(null), uploadController = useRef<AbortController | null>(null)
   const lifetime = useRef<AbortController | null>(null), fileVersion = useRef(0)
   const fileInput = useRef<HTMLInputElement>(null)
   const adapter = sources.find(s => s.id === source)!
@@ -45,44 +49,61 @@ export function Integrations({ owner }: { owner: string }) {
     }).catch(cause => reportError(cause, controller.signal)).finally(() => {
       if (!controller.signal.aborted) setLoading(false)
     })
-    return () => { controller.abort() }
+    return () => { controller.abort(); readController.current?.abort(); uploadController.current?.abort() }
     // Component is keyed by account; requests are also bound to its authenticated owner.
   }, [fetchHistory, owner, reportError])
   function resetFile() {
+    readController.current?.abort()
     fileVersion.current++; setPreview(null); setConsent(false); setError(''); setMessage(''); setReading(false)
     if (fileInput.current) fileInput.current.value = ''
   }
   async function readFile(file: File) {
     const version = ++fileVersion.current, signal = lifetime.current!.signal
+    readController.current?.abort(); readController.current = new AbortController(); setReadProgress(0)
     setPreview(null); setConsent(false); setError(''); setMessage(''); setReading(true)
     try {
-      if (file.size > 10 * 1024 * 1024) throw new Error('File exceeds 10 MB. Split or convert it before importing.')
       const extension = file.name.split('.').pop()?.toLowerCase()
       if (!['json', 'csv', 'xml'].includes(extension ?? '')) throw new Error('Choose JSON, CSV or extracted Apple XML; ZIP is not supported.')
-      const text = await file.text()
-      if (signal.aborted || version !== fileVersion.current) return
+      const limit = extension === 'xml' ? 200 : 10
+      if (file.size > limit * 1024 * 1024) throw new Error(`File exceeds ${limit} MB. Apple XML supports 200 MB; JSON/CSV supports 10 MB.`)
       if (extension === 'xml' && source !== 'apple') throw new Error('Apple Health XML requires the Apple adapter.')
-      const data = extension === 'xml' ? parseAppleXml(text) : parseNormalized(text, source, extension === 'csv')
-      setPreview({ data, clientId: createClientId() })
+      const data = extension === 'xml'
+        ? await readAppleFile(file, readController.current.signal, setReadProgress)
+        : parseNormalized(await file.text(), source, extension === 'csv')
+      if (signal.aborted || version !== fileVersion.current) return
+      setPreview({ data, clientId: createClientId(), progress: { offset: 0, added: 0, duplicates: 0 } })
     } catch (cause) { if (version === fileVersion.current) reportError(cause, signal) }
     finally { if (!signal.aborted && version === fileVersion.current) setReading(false) }
   }
   async function save() {
     if (!preview || !consent || busy) return
-    const signal = lifetime.current!.signal
+    const rootSignal = lifetime.current!.signal
+    uploadController.current = new AbortController()
+    const signal = AbortSignal.any([rootSignal, uploadController.current.signal])
     setBusy(true); setError(''); setMessage('')
+    let progress = { ...preview.progress }
     try {
-      const { skipped: _skipped, ...data } = preview.data
-      const response = await apiRequest<{ crewId: string; added: number; duplicates: number }>('/me/wearables/imports', { ...data, clientId: preview.clientId }, signal, owner)
-      if (signal.aborted || response.crewId !== owner) return
-      setMessage(`Import saved: ${response.added} added, ${response.duplicates} duplicates. No medical assessment was generated.`)
+      while (progress.offset < preview.data.samples.length) {
+        if (signal.aborted) throw new DOMException('Paused', 'AbortError')
+        const batch = nextImportBatch(preview.data, preview.clientId, progress.offset)
+        const response = await apiRequest<{ crewId: string; clientId: string; added: number; duplicates: number }>('/me/wearables/imports', batch, signal, owner)
+        if (signal.aborted) throw new DOMException('Paused', 'AbortError')
+        if (response.crewId !== owner || response.clientId !== batch.clientId) throw new Error('Unexpected import confirmation. Verify your account before retrying.')
+        progress = { offset: progress.offset + batch.samples.length, added: progress.added + response.added, duplicates: progress.duplicates + response.duplicates }
+        const checkpoint = progress
+        setPreview(current => current?.clientId === preview.clientId ? { ...current, progress: checkpoint } : current)
+        setMessage(`Confirmed ${progress.offset.toLocaleString()} / ${preview.data.samples.length.toLocaleString()} measurements · ${progress.added.toLocaleString()} added · ${progress.duplicates.toLocaleString()} duplicates. Keep this page open.`)
+        if (progress.offset < preview.data.samples.length) await pauseImport(signal)
+      }
+      setMessage(`Import saved: ${progress.added} added, ${progress.duplicates} duplicates. No medical assessment was generated.`)
       setPreview(null); setConsent(false)
       if (fileInput.current) fileInput.current.value = ''
       setLoading(true); await load(signal)
     } catch (cause) {
-      if (cause instanceof ApiError && cause.status === 0) setError('Cannot confirm the import. Keep this preview and retry; the same identifier prevents duplicate batches.')
+      if (signal.aborted && !rootSignal.aborted) setMessage(`Import paused after ${progress.offset.toLocaleString()} confirmed measurements. Resume to continue without duplicates.`)
+      else if (cause instanceof ApiError && cause.retryable) setError('Import interrupted. Confirmed batches remain saved. Keep this preview and retry; the next batch keeps its identifier. If rate-limited, wait one minute before resuming.')
       else reportError(cause, signal)
-    } finally { if (!signal.aborted) setBusy(false) }
+    } finally { if (!rootSignal.aborted) setBusy(false) }
   }
   return <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 py-6 md:px-8">
     <a href="#/" className="font-semibold text-interactive underline">Back to Home</a>
@@ -110,21 +131,21 @@ export function Integrations({ owner }: { owner: string }) {
         <Button variant="outline" onClick={() => download(`health7-${source}-example.json`, JSON.stringify(exampleFile(source), null, 2), 'application/json')}>Download JSON template</Button>
         <Button variant="outline" onClick={() => download(`health7-${source}-example.csv`, exampleCsv(source), 'text/csv')}>Download CSV template</Button>
       </div>
-      <p className="text-xs text-ink-soft">Templates contain fictional data marked “example”. For actual records use “unverified”. Maximum 10 MB and 500 samples per file; normalized uploads are limited to 256 KiB. XML supports heart rate, resting heart rate, oxygen saturation, respiratory rate, body mass and sleeping wrist temperature with the documented units; sleep categories and other types are skipped.</p>
+      <p className="text-xs text-ink-soft">Apple XML: maximum 200 MB and one million supported measurements, sent automatically in batches of up to 500 after confirmation. Supports steps, walking/running distance, walking speed, active and basal energy, heart rate, resting heart rate, oxygen saturation, respiratory rate, body mass and sleeping wrist temperature. Sleep categories and other types are skipped and counted. JSON/CSV: maximum 10 MB and 500 measurements per file. Normalized requests stay below 256 KiB. Templates are fictional examples.</p>
       <label className="grid gap-2 font-semibold">Measurement file
         <input ref={fileInput} type="file" accept={source === 'apple' ? '.json,.csv,.xml' : '.json,.csv'} disabled={busy || reading} className="min-h-11 max-w-full rounded-lg border border-hairline p-2 text-sm" onChange={e => { if (e.target.files?.[0]) void readFile(e.target.files[0]) }} />
       </label>
-      {reading && <p role="status">Reading file locally…</p>}
+      {reading && <div role="status"><p>Reading file locally… {readProgress}% · Nothing is being uploaded.</p><Button variant="outline" onClick={resetFile}>Cancel reading</Button></div>}
       {preview && <div className="grid gap-3 rounded-lg bg-surface-2 p-4">
         <h3 className="font-semibold">Import preview</h3>
         <p>{preview.data.samples.length} samples · {preview.data.quality === 'example' ? 'Fictional example data' : 'Unverified measurements'} · {preview.data.skipped} unsupported XML records skipped</p>
         <ul className="grid gap-2 text-sm">{preview.data.samples.slice(0, 5).map((s, i) => <li key={i} className="break-words">{metricInfo[s.metric][0]}: {s.value} {s.unit} · {s.device} · {new Date(s.at).toLocaleString()}{s.endAt ? ` – ${new Date(s.endAt).toLocaleString()}` : ''}</li>)}</ul>
-        {preview.data.samples.length > 5 && <details><summary className="cursor-pointer text-sm font-semibold">Review remaining {preview.data.samples.length - 5} samples</summary>
-          <ul className="mt-2 grid max-h-80 gap-2 overflow-y-auto text-sm">{preview.data.samples.slice(5).map((s, i) => <li key={i} className="break-words">{metricInfo[s.metric][0]}: {s.value} {s.unit} · {s.device} · {new Date(s.at).toLocaleString()}{s.endAt ? ` – ${new Date(s.endAt).toLocaleString()}` : ''}</li>)}</ul>
+        {preview.data.samples.length > 5 && <details><summary className="cursor-pointer text-sm font-semibold">Review sample preview (up to 100 of {preview.data.samples.length.toLocaleString()} measurements)</summary>
+          <ul className="mt-2 grid max-h-80 gap-2 overflow-y-auto text-sm">{preview.data.samples.slice(5, 100).map((s, i) => <li key={i} className="break-words">{metricInfo[s.metric][0]}: {s.value} {s.unit} · {s.device} · {new Date(s.at).toLocaleString()}{s.endAt ? ` – ${new Date(s.endAt).toLocaleString()}` : ''}</li>)}</ul>
         </details>}
         <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={consent} disabled={busy} onChange={e => setConsent(e.target.checked)} className="mt-1 size-5 shrink-0" />I reviewed the source, units and data quality and authorize saving these records to my account.</label>
-        <div className="flex flex-wrap gap-2"><Button disabled={!consent || busy} onClick={() => void save()}>{busy ? 'Saving…' : 'Save imported measurements'}</Button><Button variant="outline" disabled={busy} onClick={resetFile}>Discard preview</Button></div>
-        <p className="text-xs text-ink-soft">The file is not uploaded. Only the normalized samples are sent to your Health7 server after confirmation. There is no offline upload queue; keep the original file for retry.</p>
+        <div className="flex flex-wrap gap-2"><Button disabled={!consent || busy} onClick={() => void save()}>{busy ? 'Saving…' : preview.progress.offset ? 'Resume import' : 'Save imported measurements'}</Button>{busy && <Button variant="outline" onClick={() => uploadController.current?.abort()}>Pause import</Button>}<Button variant="outline" disabled={busy} onClick={resetFile}>Discard preview</Button></div>
+        <p className="text-xs text-ink-soft">Only normalized measurements are sent after confirmation. Large imports can take several minutes. Keep this page open to retain progress; after closing it, reselect the original file and existing records will be deduplicated. Pausing does not undo already saved batches.</p>
       </div>}
       {error && <p role="alert" className="break-words text-sm text-flag-ink">{error}</p>}
       {message && <p role="status" className="text-sm">{message}</p>}
