@@ -15,7 +15,7 @@ const admin = new pg.Pool({ connectionString: process.env.TEST_DATABASE_URL })
 const { openDatabase, migrate } = await import('../../backend/dist/database.js')
 const { seedDemo } = await import('../../backend/dist/seed.js')
 try {
-  const specs = (await readdir(new URL('./', import.meta.url))).filter(name => name.endsWith('.spec.ts')).sort()
+  const specs = (await readdir(new URL('./', import.meta.url))).filter(name => name.endsWith('.spec.ts') && (!process.argv[2] || name.includes(process.argv[2]))).sort()
   for (const spec of specs) {
     const schema = 'health7_browser_' + randomUUID().replaceAll('-', '')
     const scoped = new URL(process.env.TEST_DATABASE_URL)
