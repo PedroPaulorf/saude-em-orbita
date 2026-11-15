@@ -88,6 +88,7 @@ export interface Account {
 export function AppShell({
   path,
   missionDay,
+  mission,
   connection,
   syncing,
   syncDetail,
@@ -103,6 +104,8 @@ export function AppShell({
 }: {
   path: Path
   missionDay: number
+  /** Nome curto da missão escolhida ("ISS"); leva à troca de missão. */
+  mission?: string
   connection: Connection
   syncing?: boolean
   syncDetail?: string
@@ -175,9 +178,14 @@ export function AppShell({
             <div className="ml-auto flex min-w-0 items-center gap-2 md:gap-3">
               {/* Missão: dia, sincronização e aviso de dado simulado num bloco só */}
               <div className="flex h-10 items-stretch overflow-hidden rounded-full border border-hairline-strong bg-surface-1 text-sm">
-                <span className="flex items-center px-2.5 font-semibold whitespace-nowrap text-ink sm:px-3">
+                <a
+                  href={href('/mission')}
+                  title={mission ? `Mission: ${mission}. Select to change mission` : 'Choose mission'}
+                  className="flex items-center px-2.5 font-semibold whitespace-nowrap text-ink no-underline hover:bg-surface-2 sm:px-3"
+                >
+                  {mission && <span className="mr-1.5 hidden text-sa-yonder lg:inline">{mission}</span>}
                   Day&nbsp;<span className="font-mono">{missionDay}</span>
-                </span>
+                </a>
                 <span aria-hidden className="my-2.5 w-px bg-hairline-strong" />
                 <ConnectionStatus state={connection} syncing={syncing} detail={syncDetail} onSync={onSync} />
                 {path !== '/integrations' && (

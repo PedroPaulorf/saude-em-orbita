@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForSync } from './helpers'
+import { chooseMission, waitForSync } from './helpers'
 import { createRequire } from 'node:module'
 
 test('stats and report retain assessment evidence when the current personal baseline changes', async ({ page }) => {
@@ -8,6 +8,7 @@ test('stats and report retain assessment evidence when the current personal base
   await page.getByLabel('Username', { exact: true }).fill('crew02')
   await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await chooseMission(page)
   await waitForSync(page)
   const vitals = { sleep: 5.1, heartRate: 71, bloodPressure: 118, bloodPressureDiastolic: 76, temperature: 36.7 }
   const saved = await page.request.post('http://127.0.0.1:3003/api/v1/me/checkins', {
@@ -64,6 +65,7 @@ test('stats and report retain assessment evidence when the current personal base
   await page.getByLabel('Username', { exact: true }).fill('crew03')
   await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await chooseMission(page)
   await waitForSync(page)
   await page.goto('/#/stats?region=head')
   await expect(page.getByText('No sleep measurements recorded.', { exact: true })).toBeVisible()
