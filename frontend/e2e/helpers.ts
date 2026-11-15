@@ -17,10 +17,16 @@ export async function sync(page: Page) {
   await waitForSync(page)
 }
 
+/** Passo 2: depois do login vem a escolha da missão. */
+export async function chooseMission(page: Page, name = 'ISS') {
+  await page.getByRole('button', { name: new RegExp(`^Choose ${name}:`) }).click()
+}
+
 export async function login(page: Page, username: string) {
   await page.getByLabel('Username', { exact: true }).fill(username)
   await page.getByLabel('Password', { exact: true }).fill(PASSWORD)
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await chooseMission(page)
   await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
   await waitForSync(page)
 }
