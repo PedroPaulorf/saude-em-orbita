@@ -1,4 +1,4 @@
-import { Brain, CircleCheck, CircleDashed, HeartPulse } from 'lucide-react'
+import { Brain, CircleCheck, CircleDashed, HeartPulse, Smartphone } from 'lucide-react'
 import { compareReaction, useCognitive } from '@/lib/cognitive'
 import { Button } from '@/components/ui/button'
 import { behavioralQuestions } from '@/lib/health'
@@ -74,8 +74,9 @@ export function HealthCheckUpCard({
           </li>
         ))}
       </ul>
-      <div className="mt-auto">
+      <div className="mt-auto flex flex-wrap gap-2">
         <StartButton done={!!doneAt} primary={primary} to={href('/check/health')} label="health check-up" />
+        <Button asChild variant="outline"><a href={href('/integrations', { device: 'iphone' })}><Smartphone aria-hidden />Connect iPhone</a></Button>
       </div>
     </Panel>
   )

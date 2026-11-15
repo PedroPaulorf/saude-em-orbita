@@ -10,6 +10,8 @@ import '@fontsource/overpass/700.css'
 import '@fontsource/fira-code/400.css'
 import '@fontsource/fira-code/500.css'
 import '@fontsource/fira-code/700.css'
+import '@fontsource/caveat/500.css'
+import '@fontsource/caveat/700.css'
 import './index.css'
 import App from './App.tsx'
 

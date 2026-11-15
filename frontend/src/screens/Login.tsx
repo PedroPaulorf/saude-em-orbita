@@ -5,6 +5,7 @@ import { AstronautIcon } from '@/components/app/AstronautIcon'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { apiRequest } from '@/lib/api'
+import { href } from '@/lib/route'
 import { session } from '@/lib/session'
 import { useSession } from '@/lib/use-session'
 import { cn } from '@/lib/utils'
@@ -162,8 +163,9 @@ export function Login() {
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-8 px-6 py-12"
       onKeyDown={event => { if (event.key === 'Escape' && canGoBack && !state.busy) open({ kind: 'pick' }) }}>
-      <p className="text-center font-display text-xl font-black uppercase tracking-wide">Health7</p>
+      <a href={href('/welcome')} className="text-center font-display text-xl font-black uppercase tracking-wide text-ink no-underline">Health7</a>
       {content}
+      <a href={href('/welcome')} className="text-center text-sm font-semibold">About Health7</a>
       <p className="mx-auto max-w-md text-center text-sm text-ink-soft">Fictional demonstration profiles. A server connection is required to verify your session. Pending check-ins stay linked to their owner on this device.</p>
     </main>
   )
