@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { ChevronDown, ListChecks, RefreshCw } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { Disclosure } from '@/components/app/Disclosure'
 import { Dot } from '@/components/app/Dot'
-import { Panel, PanelHeader } from '@/components/app/Panel'
+import { Panel } from '@/components/app/Panel'
+import { Objectives } from '@/components/app/Objectives'
 import { PatternCard } from '@/components/app/PatternCard'
 import { RadiationCard } from '@/components/app/RadiationCard'
 import { RoadmapStepItem } from '@/components/app/RoadmapStep'
@@ -28,7 +29,7 @@ import type { CheckIn } from '@/lib/storage'
 import { useRoadmapInput } from '@/lib/useRoadmapInput'
 import { useMonitor } from '@/lib/useMonitor'
 
-/** Quantos passos aparecem em "What to do today". O resto fica em Details. */
+/** Quantos passos aparecem em "Today's objectives". O resto fica em Details. */
 const TODAY_STEPS = 3
 const PHASE: Record<PhaseId, string> = {
   today: 'bg-sa-rocket-600 text-white',
@@ -42,7 +43,7 @@ const PHASE: Record<PhaseId, string> = {
   Padrão não é diagnóstico: vai para o relatório do cirurgião de voo.
 
   Tela enxuta, uma coluna, três perguntas: como estou (estado da regra), o que faço hoje (no máximo
-  três passos, ou o plano em andamento) e por quê (os sinais principais). Padrões, próximos dias,
+  três objetivos com pontos, em Objectives.tsx, ou o plano em andamento) e por quê (os sinais principais). Padrões, próximos dias,
   radiação, planos anteriores e a explicação ficam fechados em "Details". Em ESCALATE, só o protocolo.
 */
 export function Prevention({ game, connection, params, profile, checkins }: { game: GameSummary; connection: Connection; params?: URLSearchParams; profile: Profile; checkins: CheckIn[] }) {
@@ -104,7 +105,6 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
   const todaySteps = roadmap.phases.find((p) => p.id === 'today')?.steps ?? []
   // Com plano em andamento, hoje é o plano: o roteiro inteiro fica em Details.
   const shown = running ? [] : todaySteps.slice(0, TODAY_STEPS)
-  const doable = shown.filter((s) => s.kind === 'do')
   const laterPhases = roadmap.phases.filter((p) => p.id !== 'today' || p.steps.length > shown.length)
 
   return (
@@ -157,40 +157,14 @@ export function Prevention({ game, connection, params, profile, checkins }: { ga
       ) : running ? (
         <PlanActive compact view={running} todayPoints={game.today.points.plan} onEnd={() => setConfirmEnd(true)} />
       ) : (
-        <Panel aria-labelledby="today-title" className="gap-4 md:p-6">
-          <PanelHeader
-            id="today-title"
-            icon={<ListChecks />}
-            tone="orange"
-            title="What to do today"
-            aside={
-              <>
-                {doable.length > 0 && (
-                  <span className="font-mono text-sm text-ink-soft">
-                    {doable.filter((s) => done.includes(s.id)).length}/{doable.length}
-                    <span className="sr-only"> steps done</span>
-                  </span>
-                )}
-                {ROADMAP_URL && (
-                  <Button variant="ghost" size="sm" onClick={regenerate} disabled={loading} className="text-interactive" title="Rewrite with AI">
-                    <RefreshCw className={cn('size-4', loading && 'animate-spin')} aria-hidden />
-                    <span className="sr-only">Rewrite with AI</span>
-                  </Button>
-                )}
-              </>
-            }
-          />
-          {shown.length ? (
-            <ul className="grid gap-4">
-              {shown.map((s) => (
-                <RoadmapStepItem key={s.id} step={s} checkable hideWhy riskLink={false} done={done.includes(s.id)} onToggle={() => toggle(s.id)} />
-              ))}
-            </ul>
-          ) : (
-            <p className="text-ink-soft">Nothing extra today. Keep the routine.</p>
-          )}
-          {suggestion && <PlanSuggestion compact pattern={suggestion} />}
-        </Panel>
+        <Objectives
+          steps={shown}
+          done={done}
+          onToggle={toggle}
+          earned={game.today.points.prevention}
+          rewrite={ROADMAP_URL ? { loading, onClick: regenerate } : undefined}
+          footer={suggestion && <PlanSuggestion compact pattern={suggestion} />}
+        />
       )}
       {justFinished && <PlanFinished view={justFinished} outcome={justFinished.plan.outcome ?? 'back-to-baseline'} onOpenReport={() => setReportOpen(true)} />}
 

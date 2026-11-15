@@ -223,3 +223,29 @@
 @utility animate-float {
   animation: float-y 6s ease-in-out infinite;
 }
+
+/* Objetivos da Prevention: a marca entra com um leve salto, o "+15" sobe e some, a faixa de conclusão desliza.
+   Curtas e só transform/opacidade; o componente usa motion-safe:, então somem com movimento reduzido. */
+@keyframes check-pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@utility animate-check-pop {
+  animation: check-pop 0.28s ease-out;
+}
+@keyframes points-rise {
+  0% { opacity: 0; transform: translateY(4px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-22px); }
+}
+@utility animate-points-rise {
+  animation: points-rise 0.9s ease-out forwards;
+}
+@keyframes clear-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@utility animate-clear-in {
+  animation: clear-in 0.35s ease-out;
+}

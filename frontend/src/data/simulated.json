@@ -107,7 +107,9 @@
       "streakMaxPerDay": 25,
       "planStep": 5,
       "planDayComplete": 10,
-      "planCompleted": 50
+      "planCompleted": 50,
+      "preventionStep": 15,
+      "preventionStepsPerDay": 3
     },
     "startingPoints": 2940,
     "ranks": [

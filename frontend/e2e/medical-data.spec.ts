@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { login, sync } from './helpers'
+import { login, logout, sync } from './helpers'
 
 test('medical data uses the signed-in history and private saved scenarios on desktop and mobile', async ({ page }) => {
   await page.route('**/DONKI-API/**', route => route.abort())
@@ -25,7 +25,7 @@ test('medical data uses the signed-in history and private saved scenarios on des
   await page.screenshot({ path: 'test-results/medical-data-mobile.png', fullPage: true })
   const saved = await page.request.get('http://127.0.0.1:3003/api/v1/me/simulations')
   const scenarioId = (await saved.json()).items[0].id
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await login(page, 'crew02')
   const other = await page.request.get(`http://127.0.0.1:3003/api/v1/me/simulations/${scenarioId}`)
   expect(other.status()).toBe(404)

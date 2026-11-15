@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import type { Profile as SessionProfile } from '@/lib/api'
 import { formatPoints, GAME, type GameSummary } from '@/lib/game'
 import { configForProfile } from '@/lib/health'
+import { useMission } from '@/lib/mission'
 import { bmi, initials, usePerson, type Person, type PersonPatch, type Sex } from '@/lib/person'
 import { navigate } from '@/lib/route'
 import { session } from '@/lib/session'
@@ -91,6 +92,7 @@ function EditForm({ person, saving, onSave, onCancel }: { person: Person; saving
 export function Profile({ profile, game }: { profile: SessionProfile; game: GameSummary }) {
   const { person, error, saving, save } = usePerson(profile.id)
   const [editing, setEditing] = useState(false)
+  const mission = useMission(profile.id)
   const name = person?.name ?? profile.displayName
   const next = game.next
   const from = game.rank.min
@@ -112,7 +114,12 @@ export function Profile({ profile, game }: { profile: SessionProfile; game: Game
             <p className="font-display text-2xl leading-tight font-semibold break-words text-ink">{name}</p>
             <p className="mt-1 flex flex-wrap gap-2 text-sm">
               <span className="rounded-full bg-surface-2 px-2.5 py-0.5 font-mono text-ink-soft">{profile.id}</span>
-              <span className="rounded-full bg-sa-neon-blue px-2.5 py-0.5 font-semibold text-white">Mission day {profile.missionDay}</span>
+              <span className="rounded-full bg-sa-neon-blue px-2.5 py-0.5 font-semibold text-white">
+                {mission ? `${mission.short} · ` : ''}Mission day {profile.missionDay}
+              </span>
+              <a href="#/mission" className="rounded-full px-1 py-0.5 font-semibold">
+                Change mission
+              </a>
             </p>
           </div>
         </div>
@@ -168,7 +175,7 @@ export function Profile({ profile, game }: { profile: SessionProfile; game: Game
             <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               <Fact label="Age" value={person.age} unit="years" />
               <Fact label="Sex" value={person.sex ? SEX_TEXT[person.sex] : null} />
-                            <Fact label="Height" value={person.heightCm} unit="cm" />
+              <Fact label="Height" value={person.heightCm} unit="cm" />
               <Fact label="Weight" value={person.weightKg} unit="kg" />
               <Fact label="BMI" value={bmi(person)} />
               <Fact label="Last weigh-in" value={person.weightMeasuredAt ? new Date(person.weightMeasuredAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null} />

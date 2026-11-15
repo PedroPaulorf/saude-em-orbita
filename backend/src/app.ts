@@ -206,6 +206,25 @@ export async function createApp(options: Options) {
       const window = windowOf(request.query)
       return { ...await symptomsFor(crew(request), window), ...window }
     })
+    /*
+      Barra da tripulação (passo 4): os colegas da mesma tripulação (NEXUS-Med com NEXUS-Med, demo com demo),
+      com o perfil e as últimas 3 semanas de check-ups e sintomas. O app calcula o estado de cada um com o
+      mesmo motor de monitoramento e mostra só o estado e a barra. Sem o cenário da pesquisa (seria o gabarito).
+    */
+    api.get('/crew', async request => {
+      const me = crew(request)
+      const all = (await db.query('SELECT id, profile FROM crew ORDER BY id')).rows
+      const group = (row: Row) => row.profile?.source === 'synthetic-nexus' ? 'nexus' : 'demo'
+      const mine = group(all.find(r => r.id === me) ?? { profile: {} })
+      const window = { from: new Date(Date.now() - 21 * 86400000).toISOString(), to: new Date().toISOString(), limit: 60 }
+      const members = await Promise.all(all.filter(r => group(r) === mine).map(async row => {
+        const { scenario: _scenario, ...profile } = row.profile ?? {}
+        const checks = await db.query('SELECT * FROM checkins WHERE crew_id=$1 AND at >= $2 AND at <= $3 ORDER BY at DESC,id DESC LIMIT $4', [row.id, window.from, window.to, window.limit])
+        const symptoms = await symptomsFor(row.id, window)
+        return { profile, self: row.id === me, checkins: checks.rows.map(checkinOutput).reverse(), symptoms: symptoms.items }
+      }))
+      return { items: members, from: window.from, to: window.to }
+    })
     async function contextFor(crewId: string, window: ReturnType<typeof windowOf>) {
       const profile = (await db.query('SELECT profile FROM crew WHERE id=$1', [crewId])).rows[0].profile
       const checks = await db.query('SELECT * FROM checkins WHERE crew_id=$1 AND at >= $2 AND at <= $3 ORDER BY at DESC,id DESC LIMIT $4', [crewId, window.from, window.to, window.limit + 1])

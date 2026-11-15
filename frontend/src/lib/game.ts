@@ -4,7 +4,7 @@
   recalculado a cada leitura, ele não tem como divergir dos registros.
 
   Princípio: os pontos premiam o que a pessoa faz, nunca o que a medida mostra. Fazer o check-up
-  dá ponto; ter a pressão "boa" não. Ninguém perde ponto por um valor medido.
+  dá ponto, marcar um objetivo de prevenção feito dá ponto; ter a pressão "boa" não. Ninguém perde ponto por um valor medido.
   O dia é o dia UTC, como no resto do app.
 */
 import simulated from '@/data/simulated.json'
@@ -28,10 +28,11 @@ export interface DayPoints {
   /** Dias seguidos com os dois check-ups, terminando neste dia (0 se o dia não tem os dois). */
   streak: number
   fullRoutine: boolean
-  points: { health: number; behavioral: number; water: number; bonus: number; streak: number; plan: number }
+  /** prevention: objetivos de prevenção marcados no dia (passos "do" do roteiro de hoje), até o teto diário. */
+  points: { health: number; behavioral: number; water: number; bonus: number; streak: number; plan: number; prevention: number }
   /** Pontos da rotina (check-ups, água, bônus, sequência): é o que o anel de 125 mostra. */
   routineTotal: number
-  /** Rotina + plano. */
+  /** Rotina + plano + objetivos de prevenção. */
   total: number
 }
 
@@ -47,8 +48,14 @@ function prevDay(day: string) {
   return d.toISOString().slice(0, 10)
 }
 
+/** Objetivos de prevenção marcados, por dia UTC: { "2026-11-15": ["step-id", ...] }. */
+export type PreventionLog = Record<string, string[]>
+
+/** Pontos de prevenção de um dia: cada objetivo marcado vale preventionStep, até preventionStepsPerDay. */
+export const preventionPoints = (done: number) => Math.min(Math.max(0, done), P.preventionStepsPerDay) * P.preventionStep
+
 /** Pontos dia a dia, em ordem de data. Cada check-up conta uma vez por dia, a água até a meta. */
-export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredPlan[] = []): DayPoints[] {
+export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredPlan[] = [], prevention: PreventionLog = {}): DayPoints[] {
   const days = new Map<string, { health: boolean; behavioral: boolean }>()
   for (const c of checkIns) {
     if (c.sync === 'rejected') continue
@@ -60,6 +67,7 @@ export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredP
   for (const [day, n] of Object.entries(water)) if (n > 0 && !days.has(day)) days.set(day, { health: false, behavioral: false })
   const planPts = planPointsByDay(plans, { checkIns, water, waterGoal: GAME.waterGoal }, P)
   for (const day of planPts.keys()) if (!days.has(day)) days.set(day, { health: false, behavioral: false })
+  for (const [day, ids] of Object.entries(prevention)) if (ids.length && !days.has(day)) days.set(day, { health: false, behavioral: false })
 
   const sorted = [...days.keys()].sort()
   const both = new Set(sorted.filter((d) => days.get(d)!.health && days.get(d)!.behavioral))
@@ -83,9 +91,10 @@ export function dailyPoints(checkIns: CheckIn[], water: WaterLog, plans: StoredP
         const pp = planPts.get(day)
         return pp ? pp.steps + pp.dayBonus + pp.completion : 0
       })(),
+      prevention: preventionPoints(prevention[day]?.length ?? 0),
     }
     const routineTotal = points.health + points.behavioral + points.water + points.bonus + points.streak
-    const total = routineTotal + points.plan
+    const total = routineTotal + points.plan + points.prevention
     return { day, healthDone: health, behavioralDone: behavioral, water: servings, streak, fullRoutine, points, routineTotal, total }
   })
 }
@@ -142,8 +151,9 @@ export function summarize(
   water: WaterLog,
   todayKey = new Date().toISOString().slice(0, 10),
   plans: StoredPlan[] = [],
+  prevention: PreventionLog = {},
 ): GameSummary {
-  const days = dailyPoints(checkIns, water, plans)
+  const days = dailyPoints(checkIns, water, plans, prevention)
   const empty: DayPoints = {
     day: todayKey,
     healthDone: false,
@@ -151,7 +161,7 @@ export function summarize(
     water: 0,
     streak: 0,
     fullRoutine: false,
-    points: { health: 0, behavioral: 0, water: 0, bonus: 0, streak: 0, plan: 0 },
+    points: { health: 0, behavioral: 0, water: 0, bonus: 0, streak: 0, plan: 0, prevention: 0 },
     routineTotal: 0,
     total: 0,
   }

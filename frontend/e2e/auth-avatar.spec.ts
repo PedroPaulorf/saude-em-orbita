@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { login, signIn, sync, syncButton, waitForSync } from './helpers'
+import { login, logout, signIn, sync, syncButton, waitForSync } from './helpers'
 
 // Check-up de saúde: seis medidas, uma por etapa, e por último urina e fezes (opcional).
 const HEALTH_STEPS = (sleep: string) => [
@@ -62,9 +62,9 @@ test('login selects female avatar, head shows own sleep and switching accounts c
   await expect(page.getByRole('heading', { name: /^Browser fixture head symptom/ })).toBeVisible()
   await page.screenshot({ path: 'test-results/avatar-head.png', fullPage: true })
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Open profile$/ })).toBeVisible()
   await expect(page.getByText(/5\.1/).first()).toBeVisible()
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await login(page, 'crew02')
   await expect(page.locator('[data-body-model="male"]')).toBeVisible()
   await page.getByRole('button', { name: /^Head:/ }).first().click()
@@ -104,12 +104,12 @@ test('a pending record is uploaded only after its owner signs in again', async (
   await login(page, 'crew03')
   await page.route('**/api/v1/me/checkins', route => route.request().method() === 'POST' ? route.abort() : route.continue())
   await checkup(page, '7.4')
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await page.unroute('**/api/v1/me/checkins')
   await login(page, 'crew02')
   const other = await page.request.get('http://127.0.0.1:3003/api/v1/me/checkins')
   expect((await other.json()).items.some((row: { vitals: { sleep: number } }) => row.vitals.sleep === 7.4)).toBe(false)
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await login(page, 'crew03')
   const own = await page.request.get('http://127.0.0.1:3003/api/v1/me/checkins')
   expect((await own.json()).items.filter((row: { vitals: { sleep: number } }) => row.vitals.sleep === 7.4)).toHaveLength(1)
@@ -131,13 +131,13 @@ test('prevention, progress, scenario and companion remain available with account
   await expect(page.getByRole('heading', { name: 'Mission exposure', exact: true })).toBeVisible()
   await page.goto('/#/progress')
   await expect(page.getByRole('heading', { name: 'Progress', exact: true })).toBeVisible()
-  await page.getByRole('button', { name: 'Simulated data', exact: true }).click()
+  await page.getByTitle('Demo data', { exact: true }).click()
   await page.getByRole('radio', { name: /Day 3/ }).click()
   await page.getByRole('button', { name: 'Load scenario', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Prevention', exact: true })).toBeVisible()
   await waitForSync(page)
   await page.screenshot({ path: 'test-results/prevention-merged.png', fullPage: true })
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await login(page, 'crew02')
   await page.getByRole('button', { name: 'Open companion chat', exact: true }).click()
   await expect(page.getByText('Private crew03 demo message', { exact: true })).toHaveCount(0)

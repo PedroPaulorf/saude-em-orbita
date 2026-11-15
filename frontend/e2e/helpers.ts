@@ -25,8 +25,16 @@ export async function signIn(page: Page, username: string, password = PASSWORD) 
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
 }
 
+/** Select a mission for a new account/device; returning accounts keep their choice. */
+export async function chooseMission(page: Page, name = 'ISS') {
+  const picker = page.getByRole('heading', { name: 'Choose your mission', exact: true })
+  await expect(picker.or(page.getByRole('link', { name: /Open profile$/ }))).toBeVisible()
+  if (await picker.isVisible()) await page.getByRole('button', { name: new RegExp(`^Choose ${name}:`) }).click()
+}
+
 export async function login(page: Page, username: string) {
   await signIn(page, username)
+  await chooseMission(page)
   await expect(page.getByRole('link', { name: /Open profile$/ })).toBeVisible()
   await waitForSync(page)
 }

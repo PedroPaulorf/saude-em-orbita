@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { AppShell } from '@/components/app/AppShell'
 import { ChatPanel } from '@/components/app/ChatPanel'
 import { DemoDataDialog } from '@/components/app/DemoDataDialog'
@@ -15,8 +15,12 @@ import { WATER_GOAL } from '@/lib/water'
 import { session, type SessionState } from '@/lib/session'
 import { useSession } from '@/lib/use-session'
 import { useGame } from '@/lib/useGame'
+import { useCrew } from '@/lib/crew'
+import { CrewBar } from '@/components/app/CrewBar'
 import { formatPoints } from '@/lib/game'
 import { initials } from '@/lib/person'
+import { useMission } from '@/lib/mission'
+import { MissionSelect } from '@/screens/MissionSelect'
 import { BehavioralCheckIn } from '@/screens/BehavioralCheckIn'
 import { HealthCheckUp } from '@/screens/HealthCheckUp'
 import { DetailedStats } from '@/screens/DetailedStats'
@@ -39,6 +43,15 @@ const ProgressScreen = lazy(() => import('@/screens/Progress').then((m) => ({ de
 export default function App() {
   const state = useSession()
   const route = useRoute()
+  const wasAuthenticated = useRef(false)
+  useEffect(() => {
+    if (state.profile) wasAuthenticated.current = true
+    else if (wasAuthenticated.current && state.phase === 'signed-out') {
+      wasAuthenticated.current = false
+      // An expired or invalidated session returns to sign-in; a normal logout returns to the landing.
+      if (state.error) navigate('/login', undefined, { replace: true })
+    }
+  }, [state.profile, state.phase, state.error])
   useEffect(() => {
     void session.restore()
     const online = () => { void session.sync() }
@@ -61,6 +74,9 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const game = useGame()
   const [companionOpen, setCompanionOpen] = useState(false)
   const [demoOpen, setDemoOpen] = useState(false)
+  // Passo 2: sem missão escolhida (ou em #/mission), a tela de missões vem antes do app.
+  const mission = useMission(profile.id)
+  const choosingMission = !mission || route.path === '/mission'
   useEffect(() => { window.scrollTo({ top: 0 }) }, [route.path])
   // Logado, o endereço do login não tem o que mostrar: volta para a Home.
   useEffect(() => { if (route.path === '/login') navigate('/', undefined, { replace: true }) }, [route.path])
@@ -68,6 +84,8 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
   const vitals = useMemo(() => getTodayVitals(profile, state.checkins), [profile, state.checkins])
   // O fundo segue o estado do motor de monitoramento; sem motor, a avaliação das medidas de hoje.
   const monitor = useMonitor()
+  // Passo 4: estado de cada colega de tripulação, na barra logo abaixo do cabeçalho.
+  const crew = useCrew(profile, monitor)
   const level: HealthLevel = monitor ? LEVEL[monitor.state] : healthLevel(vitals)
   const patterns = usePatterns()
   // Frase do companheiro quando o estado não é estável; "rose": subiu desde o dia anterior.
@@ -81,9 +99,10 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
     [profile.displayName, vitals, game.today.healthDone, game.today.behavioralDone, game.today.water, changeState, changeRose, changeTopic],
   )
   useEffect(() => {
+    if (choosingMission) return
     document.documentElement.dataset.health = level
     return () => { delete document.documentElement.dataset.health }
-  }, [level])
+  }, [level, choosingMission])
   const pending = state.checkins.filter(c => c.sync === 'pending').length
   const rejected = state.checkins.filter(c => c.sync === 'rejected').length
   const connection: Connection = pending ? 'queued' : state.error || !state.historyLoaded ? 'offline' : 'online'
@@ -101,11 +120,17 @@ function AuthenticatedApp({ state, profile }: { state: SessionState; profile: Pr
     default: screen = <Home connection={connection} game={game} profile={profile} checkins={state.checkins} />
   }
   if (route.path === '/welcome') return <Suspense fallback={landingFallback}><Landing signedIn /></Suspense>
+  const logout = () => { navigate('/'); void session.logout() }
+  if (choosingMission) {
+    return <MissionSelect crewId={profile.id} name={profile.displayName} current={mission?.id} onLogout={logout}
+      onChosen={() => { if (route.path === '/mission') navigate('/', undefined, { replace: true }) }} />
+  }
   return (
-    <AppShell path={route.path} missionDay={profile.missionDay} connection={connection}
+    <AppShell path={route.path} missionDay={profile.missionDay} mission={mission?.short} connection={connection}
       syncing={state.syncing} onSync={() => { void session.sync() }}
+      crewBar={<CrewBar crew={crew} />}
       syncDetail={state.syncing ? 'Syncing with server' : pending ? `${pending} check-in${pending === 1 ? '' : 's'} queued on this device` : state.historyLoaded ? 'History synced with server' : 'Server history unavailable'}
-      account={{ name: profile.displayName, initials: initials(profile.displayName), rank: game.rank.name, points: formatPoints(game.totalPoints), onLogout: () => { navigate('/'); void session.logout() } }}
+      account={{ name: profile.displayName, initials: initials(profile.displayName), rank: game.rank.name, points: formatPoints(game.totalPoints), onLogout: logout }}
       companionOpen={companionOpen} companionLines={lines} onOpenDemoData={() => setDemoOpen(true)} onToggleCompanion={() => setCompanionOpen(o => !o)}
       companionPanel={<ChatPanel game={game} onClose={() => setCompanionOpen(false)} />}
       escalate={monitor?.state === 'ESCALATE' ? { crew: profile.nexus?.crewId ?? profile.displayName, crewId: profile.id, date: monitor.date, day: monitor.day,

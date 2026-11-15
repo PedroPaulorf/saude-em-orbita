@@ -213,6 +213,7 @@ Prefixo `/api/v1`:
 | Método | Rota | Função |
 |---|---|---|
 | GET | `/auth/profiles` | Pública: perfis da tela de entrada (`username`, `name`, `role`, `bodyModel`), sem dados de saúde |
+| GET | `/crew` | Autenticada: perfis fictícios do mesmo grupo (NEXUS ou demo), com 21 dias de check-ups e sintomas para a barra da tripulação; não inclui o cenário da pesquisa |
 | POST | `/auth/login` | Entrar com `{username, password}` |
 | POST | `/auth/logout` | Revogar a sessão atual |
 | GET | `/me` | Perfil do astronauta autenticado |

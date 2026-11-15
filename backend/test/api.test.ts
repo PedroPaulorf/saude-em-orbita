@@ -70,6 +70,32 @@ test('sign-in profile list is public and carries identity labels only', async ()
   for (const profile of profiles) assert.deepEqual(Object.keys(profile).sort(), ['bodyModel', 'name', 'role', 'username'])
 })
 
+test('crew summary requires authentication, keeps groups separate and omits research scenarios', async () => {
+  assert.equal((await get('/api/v1/crew', {})).statusCode, 401)
+  const id = 'crew-nexus-merge-test'
+  const original = (await pool.query('SELECT profile FROM crew WHERE id=$1', ['crew-02'])).rows[0].profile
+  const profile = { ...original, id, source: 'synthetic-nexus', scenario: 'research-only-answer' }
+  await pool.query('INSERT INTO crew(id,username,password_hash,profile) SELECT $1,$2,password_hash,$3 FROM crew WHERE id=$4',
+    [id, 'nexus-merge-test', profile, 'crew-02'])
+  try {
+    const demo = await get('/api/v1/crew')
+    assert.equal(demo.statusCode, 200, demo.body)
+    assert.deepEqual(demo.json().items.map((item: any) => item.profile.id).sort(), ['crew-02', 'crew-03'])
+    assert.equal(demo.json().items.filter((item: any) => item.self).length, 1)
+    assert.equal(demo.json().items.find((item: any) => item.self).profile.id, 'crew-02')
+    const nexus = await get('/api/v1/crew', await login('nexus-merge-test'))
+    assert.equal(nexus.statusCode, 200, nexus.body)
+    assert.equal(nexus.json().items.length, 1)
+    assert.equal(nexus.json().items[0].profile.id, id)
+    assert.equal(nexus.json().items[0].self, true)
+    assert.ok(!('scenario' in nexus.json().items[0].profile))
+  } finally {
+    await pool.query('DELETE FROM sessions WHERE crew_id=$1', [id])
+    await pool.query('DELETE FROM person WHERE id=$1', [id])
+    await pool.query('DELETE FROM crew WHERE id=$1', [id])
+  }
+})
+
 test('auth rejects bad credentials, cross-origin writes and missing CSRF; profiles are own only', async () => {
   assert.equal((await get('/api/v1/me', {})).statusCode, 401)
   assert.equal((await post('/api/v1/auth/login', { username: 'crew02', password: 'wrong' }, csrf)).statusCode, 401)

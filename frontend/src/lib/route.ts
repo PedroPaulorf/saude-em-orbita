@@ -1,11 +1,11 @@
 /*
   Rota por hash, sem biblioteca: funciona no GitHub Pages com base './' e com o botão voltar.
-  #/  ·  #/prevention  ·  #/progress  ·  #/stats?region=head  ·  #/check/health  ·  #/check/behavioral  ·  #/profile  ·  #/welcome (landing)  ·  #/login
+  #/  ·  #/prevention  ·  #/progress  ·  #/stats?region=head  ·  #/check/health  ·  #/check/behavioral  ·  #/profile  ·  #/welcome (landing)  ·  #/login  ·  #/mission (escolha da missão)
 */
 import { useSyncExternalStore } from 'react'
 
-export type Path = '/' | '/prevention' | '/progress' | '/stats' | '/check/health' | '/check/behavioral' | '/data' | '/integrations' | '/menstrual' | '/profile' | '/welcome' | '/login'
-const PATHS: Path[] = ['/', '/prevention', '/progress', '/stats', '/check/health', '/check/behavioral', '/data', '/integrations', '/menstrual', '/profile', '/welcome', '/login']
+export type Path = '/' | '/prevention' | '/progress' | '/stats' | '/check/health' | '/check/behavioral' | '/data' | '/integrations' | '/menstrual' | '/profile' | '/welcome' | '/login' | '/mission'
+const PATHS: Path[] = ['/', '/prevention', '/progress', '/stats', '/check/health', '/check/behavioral', '/data', '/integrations', '/menstrual', '/profile', '/welcome', '/login', '/mission']
 
 export interface Route {
   path: Path
