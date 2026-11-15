@@ -6,30 +6,31 @@ import { href } from '@/lib/route'
 import { cn } from '@/lib/utils'
 import { Wave } from './landing/bits'
 import { Closing } from './landing/Closing'
+import { Demo } from './landing/Demo'
 import { Features } from './landing/Features'
 import { Hero } from './landing/Hero'
+import { Honest } from './landing/Honest'
 import { How } from './landing/How'
 import { draw, gsap, jumpTo, MOTION, ScrollTrigger, scrollToSection, scrollToTop, useBlink, useGSAP, useSmoothScroll } from './landing/motion'
 import { Problem } from './landing/Problem'
 import { Science } from './landing/Science'
-import { Team } from './landing/Team'
 import { Trust } from './landing/Trust'
 
 /*
   Landing page: explica o projeto para quem abre o link e leva para a demo. Fica fora do AppShell.
   Vitrine nas cores do Space Apps: seções de cor sólida separadas por ondas, título grosso em
-  amarelo, anotações manuscritas com setas, cartões levemente tortos. O rosto do companheiro e o
-  boneco do Body são os componentes do próprio app, ao vivo.
+  amarelo, anotações manuscritas com setas, cartões levemente tortos. O rosto do Seven (o
+  companheiro) e as telas mostradas são os componentes do próprio app, ao vivo.
 
   A página reage ao scroll (GSAP + ScrollTrigger, scroll suave com Lenis). Cada seção mora em
   screens/landing/ e monta a própria cena; este arquivo cuida do que atravessa a página inteira:
-  cabeçalho fixo com a seção ativa, barra de progresso, o companheiro que acompanha no canto, os
+  cabeçalho fixo com a seção ativa, barra de progresso, o Seven que acompanha no canto, os
   títulos que sobem, as setas que se desenham e as ondas. Com movimento reduzido nada disso roda e
   a página fica estática e completa. As regras estão em landing/motion.ts.
 */
 
 const LANG_KEY = 'health7:lang'
-const NAV = ['how', 'features', 'science', 'team'] as const
+const NAV = ['how', 'demo', 'features', 'science'] as const
 type NavId = (typeof NAV)[number]
 
 function useLang(): [Lang, (l: Lang) => void] {
@@ -65,6 +66,8 @@ export function Landing({ signedIn = false }: { signedIn?: boolean }) {
   const [scrolled, setScrolled] = useState(false)
   const [mood, setMood] = useState<Mood>('curious')
   const [follow, setFollow] = useState(false)
+  /** Na simulação o Seven já está na barra da janela: o do canto sai de cena. */
+  const [inDemo, setInDemo] = useState(false)
   const blink = useBlink(4100)
   /** Posição do scroll antes de trocar de idioma: as cenas são refeitas e a página voltaria a pular. */
   const keepScroll = useRef<number | null>(null)
@@ -99,6 +102,7 @@ export function Landing({ signedIn = false }: { signedIn?: boolean }) {
         }),
       )
       ScrollTrigger.create({ trigger: '#hero', start: 'bottom 45%', endTrigger: '#closing', end: 'top 45%', onToggle: (self) => setFollow(self.isActive) })
+      ScrollTrigger.create({ trigger: '#demo', start: 'top 75%', end: 'bottom 35%', onToggle: (self) => setInDemo(self.isActive) })
       gsap.fromTo(q('.js-progress'), { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } })
 
       const mm = gsap.matchMedia()
@@ -137,6 +141,28 @@ export function Landing({ signedIn = false }: { signedIn?: boolean }) {
     { dependencies: [lang], revertOnUpdate: true },
   )
 
+  // A simulação e as telas interativas mudam de altura conforme a pessoa mexe. As posições das
+  // cenas mais abaixo dependem disso: recalcula quando a altura da página muda de fato.
+  useEffect(() => {
+    const el = root.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    let height = el.offsetHeight
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const observer = new ResizeObserver(() => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        if (Math.abs(el.offsetHeight - height) < 2) return
+        ScrollTrigger.refresh()
+        height = el.offsetHeight
+      }, 250)
+    })
+    observer.observe(el)
+    return () => {
+      clearTimeout(timer)
+      observer.disconnect()
+    }
+  }, [])
+
   const switchLang = () => {
     keepScroll.current = window.scrollY
     setLang(lang === 'en' ? 'pt' : 'en')
@@ -172,7 +198,7 @@ export function Landing({ signedIn = false }: { signedIn?: boolean }) {
                       active === id ? 'bg-sa-yellow text-sa-deep' : 'text-sa-yellow hover:bg-white/10',
                     )}
                   >
-                    {t.nav[id]}
+                    {id === 'demo' ? t.nav.try : t.nav[id]}
                   </button>
                 </li>
               ))}
@@ -200,27 +226,29 @@ export function Landing({ signedIn = false }: { signedIn?: boolean }) {
         <Problem t={t} lang={lang} />
         <Wave className="bg-sa-neon-blue" fill="fill-sa-yellow" flip />
         <How t={t} lang={lang} />
-        <Wave className="bg-sa-yellow" fill="fill-sa-deep" />
+        <Wave className="bg-sa-yellow" fill="fill-sa-neon-blue" />
+        <Demo t={t} lang={lang} demoHref={demoHref} />
+        <Wave className="bg-sa-neon-blue" fill="fill-sa-deep" flip />
         <Features t={t} lang={lang} />
-        <Wave className="bg-sa-deep" fill="fill-sa-rocket-600" flip />
+        <Wave className="bg-sa-deep" fill="fill-sa-rocket-600" />
         <Trust t={t} lang={lang} />
-        <Wave className="bg-sa-rocket-600" fill="fill-sa-deep" />
+        <Wave className="bg-sa-rocket-600" fill="fill-sa-deep" flip />
         <Science t={t} lang={lang} />
-        <Wave className="bg-sa-deep" fill="fill-sa-neon-blue" flip />
-        <Team t={t} lang={lang} />
-        <Wave className="bg-sa-neon-blue" fill="fill-sa-deep" />
+        <Wave className="bg-sa-deep" fill="fill-sa-neon-blue" />
+        <Honest t={t} lang={lang} />
+        <Wave className="bg-sa-neon-blue" fill="fill-sa-deep" flip />
         <Closing t={t} lang={lang} cta={cta} />
       </main>
 
-      {/* ---------- o companheiro acompanha a página e leva para a demo ---------- */}
+      {/* ---------- o Seven acompanha a página e leva para a demo ---------- */}
       <a
         href={demoHref}
         aria-label={demoLabel}
-        aria-hidden={!follow}
-        tabIndex={follow ? 0 : -1}
+        aria-hidden={!(follow && !inDemo)}
+        tabIndex={follow && !inDemo ? 0 : -1}
         className={cn(
           'group fixed right-4 bottom-4 z-40 flex items-center gap-3 no-underline transition-[opacity,translate,scale] duration-300 md:right-6 md:bottom-6',
-          follow ? 'opacity-100' : 'pointer-events-none translate-y-8 scale-50 opacity-0',
+          follow && !inDemo ? 'opacity-100' : 'pointer-events-none translate-y-8 scale-50 opacity-0',
         )}
       >
         <span className="hidden translate-x-2 rounded-full bg-white px-4 py-2 font-bold text-sa-deep opacity-0 shadow-[4px_4px_0_0_#07173f] transition-[opacity,translate] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 md:block">

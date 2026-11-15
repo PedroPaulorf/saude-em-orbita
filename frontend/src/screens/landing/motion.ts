@@ -126,6 +126,14 @@ export function scrollToTop() {
   else window.scrollTo(0, 0)
 }
 
+/** Sobe até o topo de um elemento só se ele já passou para cima da tela (troca de passo na simulação). */
+export function revealTop(el: Element) {
+  const top = el.getBoundingClientRect().top
+  if (top >= 72) return
+  if (lenis) lenis.scrollTo(window.scrollY + top - 80)
+  else window.scrollTo(0, window.scrollY + top - 80)
+}
+
 /** Volta para uma posição sem animar (usado ao trocar de idioma, que refaz as cenas). */
 export function jumpTo(y: number) {
   // Pelo ScrollTrigger, para ele não devolver a posição antiga no próximo refresh.

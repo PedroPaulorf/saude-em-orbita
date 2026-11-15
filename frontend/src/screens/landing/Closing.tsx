@@ -1,12 +1,12 @@
 import { useRef, useState, type ReactNode } from 'react'
-import { Code, Play } from 'lucide-react'
+import { Code } from 'lucide-react'
 import { CompanionFace } from '@/components/app/CompanionButton'
-import { PITCH_VIDEO_URL, REPO_URL, type LandingCopy } from '@/data/landing'
-import { H2, Note, Words } from './bits'
+import { REPO_URL, type LandingCopy } from '@/data/landing'
+import { Words } from './bits'
 import { finePointer, gsap, useBlink, useScene } from './motion'
 
 /*
-  Pitch + chamada final + rodapé. O companheiro, que acompanhou a página no canto, volta grande ao
+  Chamada final + rodapé. O Seven, que acompanhou a página no canto, volta grande ao
   lado do convite. O botão é levemente "magnético": chega perto e ele vem ao encontro do ponteiro.
 */
 
@@ -16,7 +16,6 @@ export function Closing({ t, lang, cta }: { t: LandingCopy; lang: string; cta: R
   const blink = useBlink(3300)
 
   useScene(ref, lang, ({ q }) => {
-    gsap.from(q('.js-pitch'), { scale: 0.9, y: 60, ease: 'none', scrollTrigger: { trigger: q('.js-pitch')[0], start: 'top 100%', end: 'top 55%', scrub: 0.6 } })
     gsap
       .timeline({ scrollTrigger: { trigger: q('.js-invite')[0], start: 'top 82%' } })
       .from(q('.js-end-face'), { scale: 0, rotation: -30, duration: 0.7, ease: 'back.out(1.7)' }, 0)
@@ -44,23 +43,7 @@ export function Closing({ t, lang, cta }: { t: LandingCopy; lang: string; cta: R
   return (
     <section ref={ref} id="closing" className="bg-sa-deep">
       <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-24">
-        <H2 text={t.pitch.title} className="text-sa-yellow" />
-        <div className="js-pitch mx-auto mt-10 aspect-video w-full max-w-3xl overflow-hidden rounded-2xl border-4 border-dashed border-white/25">
-          {PITCH_VIDEO_URL ? (
-            <iframe src={PITCH_VIDEO_URL} title={t.pitch.title} className="size-full" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen />
-          ) : (
-            <div className="grid size-full place-items-center text-center">
-              <span className="grid place-items-center gap-3">
-                <span aria-hidden className="grid size-16 place-items-center rounded-full bg-sa-rocket-600 text-white">
-                  <Play className="size-7 translate-x-0.5" />
-                </span>
-                <Note className="text-sa-yonder">{t.pitch.soon}</Note>
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="js-invite mt-24 flex flex-col items-start gap-8 md:mt-32 md:flex-row md:items-center">
+        <div className="js-invite flex flex-col items-start gap-8 md:flex-row md:items-center">
           <div aria-hidden className="relative grid size-[150px] shrink-0 place-items-center md:size-[190px]">
             <span className="js-end-orbit absolute inset-0">
               <span className="absolute inset-0 motion-safe:animate-orbit">

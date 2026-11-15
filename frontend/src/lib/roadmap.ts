@@ -135,7 +135,8 @@ interface Advice {
   action?: 'water'
 }
 
-const ADVICE: Partial<Record<`${VitalId}:${Dir}`, Advice>> = {
+/** Exportada para a simulação da landing page usar os mesmos textos do roteiro. */
+export const ADVICE: Partial<Record<`${VitalId}:${Dir}`, Advice>> = {
   'sleep:below': {
     headline: 'Protect your sleep tonight',
     today: 'Dim the lights and put screens away one hour before your sleep period.',

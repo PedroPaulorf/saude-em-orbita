@@ -1,53 +1,20 @@
-import { useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { CloudSun, MessageCircle, PersonStanding, Radio, Timer, type LucideIcon } from 'lucide-react'
-import { BodyAvatar } from '@/components/app/BodyAvatar'
+import { useRef, useState, type ReactNode } from 'react'
+import { CalendarDays, CloudSun, MessageCircle, Radio, Timer, Watch, type LucideIcon } from 'lucide-react'
 import { CompanionFace } from '@/components/app/CompanionButton'
 import type { LandingCopy } from '@/data/landing'
 import type { Mood } from '@/lib/companion'
 import { cn } from '@/lib/utils'
-import type { BodyRegion, Status } from '@/types'
 import { H2, Note, Scribble, Shot } from './bits'
-import { gsap, reducedMotion, ScrollTrigger, useBlink, useScene } from './motion'
+import { CycleCalendar, WatchPanel } from './FeatureDemos'
+import { gsap, useBlink, useScene } from './motion'
 
 /*
-  Recursos (seção escura): cinco blocos, texto de um lado e desenho do outro.
-  O texto entra de lado uma vez; o desenho endireita conforme o scroll, e três deles reagem a ele:
-  o corpo acende as regiões e vira de costas, as luzes de largada acendem e apagam, e o sol do
-  clima espacial gira. O companheiro responde ao mouse.
+  Recursos (seção escura): seis blocos, texto de um lado e desenho do outro.
+  O texto entra de lado uma vez; o desenho endireita conforme o scroll, e dois deles reagem a ele:
+  as luzes de largada acendem e apagam, e o sol do clima espacial gira. O relógio e o calendário
+  são telas do app com dados simulados (FeatureDemos.tsx) e dá para mexer neles. O Seven responde
+  ao mouse. O corpo clicável saiu daqui: está na simulação (Demo.tsx).
 */
-
-const REGIONS: BodyRegion['id'][] = ['head', 'chest', 'core', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg']
-// Estágio 0: tudo na linha de base. 1: peito em atenção. 2: perna sinalizada. 3: vira de costas.
-const regionsAt = (stage: number): BodyRegion[] =>
-  REGIONS.map((id) => {
-    let status: Status = 'baseline'
-    if (id === 'chest' && stage >= 1) status = 'attention'
-    if (id === 'leftLeg' && stage >= 2) status = 'flagged'
-    return { id, status }
-  })
-
-/** O boneco do Body guiado pelo scroll: as regiões acendem em ordem e ele vira de costas. */
-function ScrollBody({ lang }: { lang: string }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [stage, setStage] = useState(() => (reducedMotion() ? 2 : 0))
-  useScene(ref, lang, ({ root }) => {
-    ScrollTrigger.create({
-      trigger: root,
-      start: 'top 70%',
-      end: 'bottom 25%',
-      onUpdate: (self) => {
-        const p = self.progress
-        setStage(p > 0.68 ? 3 : p > 0.4 ? 2 : p > 0.18 ? 1 : 0)
-      },
-    })
-  })
-  const view = stage >= 3 ? 'back' : 'front'
-  return (
-    <div ref={ref} inert aria-hidden className="mx-auto w-fit" style={{ '--avatar-h': 'min(420px, 70vw)' } as CSSProperties}>
-      <BodyAvatar key={view} view={view} regions={regionsAt(stage)} compact className="motion-safe:animate-body-turn" />
-    </div>
-  )
-}
 
 /** Luzes de largada penduradas sobre o print do teste de reflexo: acendem coluna a coluna e apagam. */
 function StartLights() {
@@ -78,7 +45,7 @@ function Sun() {
   )
 }
 
-/** A barra do companheiro: o rosto reage ao mouse e cada clique troca a frase. */
+/** A barra do Seven: o rosto reage ao mouse e cada clique troca a frase. */
 function CompanionPill({ bubbles }: { bubbles: string[] }) {
   const [i, setI] = useState(0)
   const [hover, setHover] = useState(false)
@@ -129,7 +96,6 @@ export function Features({ t, lang }: { t: LandingCopy; lang: string }) {
   })
 
   const items: { key: Key; Icon: LucideIcon; tone: string; visual: ReactNode }[] = [
-    { key: 'body', Icon: PersonStanding, tone: 'bg-sa-yonder text-sa-deep', visual: <ScrollBody lang={lang} /> },
     {
       key: 'mind',
       Icon: Timer,
@@ -152,7 +118,9 @@ export function Features({ t, lang }: { t: LandingCopy; lang: string }) {
         </div>
       ),
     },
+    { key: 'watch', Icon: Watch, tone: 'bg-sa-neon-blue text-white', visual: <WatchPanel /> },
     { key: 'ground', Icon: Radio, tone: 'bg-sa-martian text-white', visual: <Shot src="report.jpg" alt="" className="mx-auto max-w-md rotate-1 border-sa-rocket-600 shadow-[10px_10px_0_0_#d93400]" /> },
+    { key: 'cycle', Icon: CalendarDays, tone: 'bg-sa-yonder text-sa-deep', visual: <CycleCalendar /> },
     { key: 'companion', Icon: MessageCircle, tone: 'bg-sa-neon-blue text-white', visual: <CompanionPill bubbles={t.hero.bubbles} /> },
   ]
 

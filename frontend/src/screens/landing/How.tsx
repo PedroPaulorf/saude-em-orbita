@@ -1,54 +1,49 @@
 import { useRef } from 'react'
 import type { LandingCopy } from '@/data/landing'
-import { cn } from '@/lib/utils'
-import { H2, Shot } from './bits'
+import { StatusBadge } from '@/components/app/StatusBadge'
+import { AppWindow, CheckCard, MeasureTile, TodayPanel } from './app-bits'
+import { H2 } from './bits'
 import { count, gsap, markPinned, useScene } from './motion'
+import { QUESTIONS, simulate } from './sim'
 
 /*
   Como funciona (seção amarela): três passos.
 
   Em tela larga a seção vira um palco preso: os três passos ficam à esquerda e o desenho de cada um
-  troca à direita conforme o scroll. No passo 2 o cartão conta de 62 a 67 bpm e ganha o selo; no
-  passo 3 os itens do roteiro entram em ordem. O layout de palco só existe enquanto a cena está
+  troca à direita conforme o scroll. Os desenhos são telas do próprio app (app-bits.tsx), com um
+  dia de exemplo calculado pelas regras dele (sim.ts). No passo 2 a medida conta da linha de base
+  até o valor de hoje e ganha o selo; no passo 3 os passos do roteiro entram em ordem. O layout de palco só existe enquanto a cena está
   montada (data-pinned na seção); sem ela, os passos ficam lado a lado ou empilhados, como antes.
 */
 
-/** Comparação ao vivo: o que o app mostra quando uma medida sai da sua linha de base. */
-function CompareCard({ c }: { c: LandingCopy['how']['compare'] }) {
-  return (
-    <div className="rounded-2xl border-4 border-sa-deep bg-sa-deep p-5 text-white shadow-[8px_8px_0_0_#07173f]">
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-semibold text-white/80">{c.label}</p>
-        <span className="js-state rounded-full bg-sa-yellow px-3 py-0.5 text-sm font-bold text-sa-deep">{c.state}</span>
-      </div>
-      <p className="mt-2 font-mono text-5xl">
-        <span className="js-bpm">67</span>
-        <span className="ml-1.5 text-lg text-white/70">bpm</span>
-      </p>
-      <p className="mt-1 font-mono text-white/75">
-        {c.baseline} 62 <span className="js-delta inline-block text-sa-yellow">+5</span>
-      </p>
-      <p className="js-rule mt-4 border-t border-white/15 pt-3 text-sm text-white/80">{c.rule}</p>
-    </div>
-  )
-}
+/** O dia de exemplo desta seção: frequência cardíaca 6 bpm acima da linha de base, o resto dentro dela. */
+const DAY = simulate({ heartRate: 68, sleep: 6.9 })
+const HEART = DAY.vitals.find((v) => v.id === 'heartRate')!
+const PRESSURE = DAY.vitals.find((v) => v.id === 'bloodPressure')!
 
-const PHASE = ['bg-sa-rocket-600 text-white', 'bg-sa-yellow text-sa-deep', 'bg-sa-yonder text-sa-deep']
-
-/** Roteiro preventivo em miniatura: um passo por fase, como no app. */
-function MiniRoadmap({ r }: { r: LandingCopy['how']['roadmap'] }) {
-  return (
-    <ol className="grid gap-3 rounded-2xl border-4 border-sa-deep bg-sa-deep p-4 text-white shadow-[8px_8px_0_0_#07173f]">
-      {r.phases.map((p, i) => (
-        <li key={p} className="js-road rounded-xl bg-white/[0.06] p-3">
-          <span className={cn('rounded-md px-2 py-0.5 text-sm font-bold', PHASE[i])}>{p}</span>
-          <p className="mt-2 leading-snug">{r.items[i]}</p>
-          {i === 0 && <p className="mt-1.5 text-sm font-semibold text-sa-yonder underline underline-offset-2">{r.risk}</p>}
-        </li>
-      ))}
-    </ol>
-  )
-}
+/** As três telas do app, uma por passo. São decorativas aqui: quem quiser mexer usa a simulação logo abaixo. */
+const VISUALS = [
+  <AppWindow key="check" className="-rotate-2">
+    <CheckCard config={QUESTIONS[0].config} step={0} total={7} value="" />
+  </AppWindow>,
+  <AppWindow key="compare" className="rotate-[1.5deg]">
+    <section className="flex flex-col gap-4 rounded-xl border border-hairline bg-surface-1 p-5">
+      <header className="flex flex-wrap items-start justify-between gap-2">
+        <p className="font-display text-xl font-semibold">Chest · Heart and lungs</p>
+        <span className="js-state inline-flex">
+          <StatusBadge status={HEART.status} />
+        </span>
+      </header>
+      <ul className="grid gap-2">
+        <MeasureTile v={HEART} hooks />
+        <MeasureTile v={PRESSURE} />
+      </ul>
+    </section>
+  </AppWindow>,
+  <AppWindow key="roadmap" className="-rotate-1">
+    <TodayPanel day={DAY} />
+  </AppWindow>,
+]
 
 export function How({ t, lang }: { t: LandingCopy; lang: string }) {
   const ref = useRef<HTMLElement>(null)
@@ -58,12 +53,12 @@ export function How({ t, lang }: { t: LandingCopy; lang: string }) {
     const visuals = q('.js-visual')
     const bpm = q('.js-bpm')[0]
     const restore = () => {
-      bpm.textContent = '67'
+      bpm.textContent = HEART.value
     }
     // O cartão "acorda": conta os batimentos, salta o +5 e carimba o selo.
     const wake = (tl: gsap.core.Timeline, at: number | string) =>
       tl
-        .add(count(bpm, 62, 67, { duration: 0.6 }), at)
+        .add(count(bpm, HEART.baselineValue ?? 62, Number(HEART.value), { duration: 0.6 }), at)
         .from(q('.js-delta'), { scale: 0, autoAlpha: 0, duration: 0.3, ease: 'back.out(3)' }, '>-0.1')
         .from(q('.js-state'), { scale: 0, rotation: -14, autoAlpha: 0, duration: 0.3, ease: 'back.out(2.5)' }, '<0.1')
         .from(q('.js-rule'), { autoAlpha: 0, duration: 0.3 }, '<0.1')
@@ -89,7 +84,7 @@ export function How({ t, lang }: { t: LandingCopy; lang: string }) {
       tl.to({}, { duration: 0.3 })
       const next = tl.duration()
       swap(1, 2, next)
-      tl.from(q('.js-road'), road, next + 0.45).to({}, { duration: 0.5 })
+      tl.from(q('.js-roadmap li'), road, next + 0.45).to({}, { duration: 0.5 })
       return () => {
         unpin()
         restore()
@@ -108,7 +103,7 @@ export function How({ t, lang }: { t: LandingCopy; lang: string }) {
       })
     })
     wake(gsap.timeline({ scrollTrigger: { trigger: visuals[1], start: 'top 70%' } }), 0)
-    gsap.from(q('.js-road'), { ...road, scrollTrigger: { trigger: visuals[2], start: 'top 70%' } })
+    gsap.from(q('.js-roadmap li'), { ...road, scrollTrigger: { trigger: visuals[2], start: 'top 70%' } })
     return restore
   })
 
@@ -131,18 +126,8 @@ export function How({ t, lang }: { t: LandingCopy; lang: string }) {
                   <p className="text-lg leading-relaxed">{s.text}</p>
                 </div>
               </div>
-              <div className="js-visual mt-2 group-data-[pinned]/pin:col-start-2 group-data-[pinned]/pin:row-span-3 group-data-[pinned]/pin:row-start-1 group-data-[pinned]/pin:mt-0">
-                {i === 0 && <Shot src="checkup.jpg" alt="" className="-rotate-2" />}
-                {i === 1 && (
-                  <div className="rotate-[1.5deg]">
-                    <CompareCard c={t.how.compare} />
-                  </div>
-                )}
-                {i === 2 && (
-                  <div className="-rotate-1">
-                    <MiniRoadmap r={t.how.roadmap} />
-                  </div>
-                )}
+              <div inert aria-hidden className="js-visual mt-2 group-data-[pinned]/pin:col-start-2 group-data-[pinned]/pin:row-span-3 group-data-[pinned]/pin:row-start-1 group-data-[pinned]/pin:mt-0">
+                {VISUALS[i]}
               </div>
             </li>
           ))}
