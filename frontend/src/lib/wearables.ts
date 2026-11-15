@@ -126,12 +126,13 @@ export function appleRecord(attributes: Record<string, string>): WearableSample 
   const conversions: Record<string, Record<string, number>> = {
     walkingRunningDistance: { m: 1, km: 1000, mi: 1609.344 },
     walkingSpeed: { 'm/s': 1, 'km/hr': 1 / 3.6, 'mi/hr': 0.44704 },
-    activeEnergy: { kcal: 1, kJ: 1 / 4.184, cal: 0.001 },
-    basalEnergy: { kcal: 1, kJ: 1 / 4.184, cal: 0.001 },
+    activeEnergy: { kcal: 1, Cal: 1, kJ: 1 / 4.184, J: 1 / 4184, cal: 0.001 },
+    basalEnergy: { kcal: 1, Cal: 1, kJ: 1 / 4.184, J: 1 / 4184, cal: 0.001 },
     bodyMass: { kg: 1, lb: 0.45359237 },
   }
   const factor = conversions[adapter.metric]?.[attributes.unit] ?? (attributes.unit === adapter.unit ? 1 : undefined)
-  if (factor === undefined || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(attributes.value ?? '') || !Number.isFinite(Number(attributes.value))) throw new Error(`Unsupported Apple unit or value for ${attributes.type}. Convert it explicitly using the JSON/CSV template.`)
+  if (factor === undefined) throw new Error(`Unsupported Apple unit "${attributes.unit ?? '(missing)'}" for ${attributes.type}. Nothing was sent or saved. Report this unit so its conversion can be verified.`)
+  if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(attributes.value ?? '') || !Number.isFinite(Number(attributes.value))) throw new Error(`Invalid numeric value for ${attributes.type} (unit "${attributes.unit}"). Nothing was sent or saved.`)
   const appleDate = (s: string) => s?.replace(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) ([+-]\d{2})(\d{2})$/, '$1T$2$3:$4')
   return { device: attributes.sourceName, metric: adapter.metric, value: adapter.convert(Number(attributes.value) * factor), unit: metricInfo[adapter.metric][1], at: appleDate(attributes.startDate), endAt: appleDate(attributes.endDate) }
 }

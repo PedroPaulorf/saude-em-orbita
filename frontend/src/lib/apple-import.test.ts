@@ -36,3 +36,13 @@ test('malformed or unsafe XML fails before any upload, and unsupported types sta
   for (const xml of ['<HealthData><Record></HealthData>', '<wrong/>', '<!DOCTYPE HealthData SYSTEM "file:///secret"><HealthData/>', '<!DOCTYPE HealthData [<!ENTITY x "secret">]><HealthData/>']) expect(() => parseAppleXml(xml)).toThrow()
   expect(() => parseAppleXml('<HealthData><Record type="UnknownType"/></HealthData>')).toThrow('UnknownType')
 })
+
+test('Apple large calories preserve energy magnitude and differ from small calories', () => {
+  for (const type of ['BasalEnergyBurned', 'ActiveEnergyBurned']) {
+    const read = (unit: string, value: string) => parseAppleXml(`<HealthData>${record(type, value, unit)}</HealthData>`).samples[0]
+    expect(read('Cal', '42')).toMatchObject({ value: 42, unit: 'kcal' })
+    expect(read('cal', '42000').value).toBe(42)
+    expect(read('J', '4184').value).toBeCloseTo(1)
+    expect(() => read('unknown-unit', '42')).toThrow('unknown-unit')
+  }
+})
