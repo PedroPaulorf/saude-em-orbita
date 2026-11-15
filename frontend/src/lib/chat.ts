@@ -8,6 +8,7 @@
   - Sem VITE_N8N_CHAT_WEBHOOK_URL: modo de demonstração, com respostas prontas marcadas "Demo reply".
 */
 import { useSyncExternalStore } from 'react'
+import { aiFailureMessage } from './ai-error'
 import { getActiveCrewId, scopedStorageKey } from '@/lib/active-profile'
 import { indicators, type DonkiSnapshot, type SpaceWeatherSource } from '@/lib/donki'
 import type { GameSummary } from '@/lib/game'
@@ -295,9 +296,6 @@ export async function send(text: string, context: ReturnType<typeof buildContext
   } catch (err) {
     currentState()
     if (owner !== requestOwner || state.sessionId !== sessionId || !state.pending) return
-    const timedOut = err instanceof DOMException && (err.name === 'TimeoutError' || err.name === 'AbortError')
-    // fetch rejeita com TypeError quando não há rede (ou o CORS bloqueia)
-    const network = err instanceof TypeError
     set({
       pending: false,
       messages: [
@@ -305,11 +303,7 @@ export async function send(text: string, context: ReturnType<typeof buildContext
         {
           id: uid(),
           role: 'assistant',
-          text: timedOut
-            ? 'Your companion took too long to answer.'
-            : network
-              ? OFFLINE_TEXT
-              : "Your companion couldn't answer right now.",
+          text: aiFailureMessage(err),
           at: new Date().toISOString(),
           error: { retryOf: userId },
         },

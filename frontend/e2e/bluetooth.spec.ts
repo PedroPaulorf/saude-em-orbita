@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { login } from './helpers'
+import { login, logout } from './helpers'
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/DONKI-API/**', route => route.abort())
@@ -64,7 +64,7 @@ test('Bluetooth receives HRS, requires save consent, retries an immutable snapsh
   await page.setViewportSize({ width: 390, height: 844 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   await page.screenshot({ path: 'test-results/bluetooth-mobile.png', fullPage: true })
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   expect(await page.evaluate(() => (window as any).bleDisconnects)).toBe(1)
   await login(page, 'crew03')
   await page.goto('/#/integrations')

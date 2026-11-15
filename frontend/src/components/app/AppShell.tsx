@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { ChartLine, House, PersonStanding, ShieldPlus, type LucideIcon } from 'lucide-react'
+import { ChartLine, House, LogOut, PersonStanding, ShieldPlus, type LucideIcon } from 'lucide-react'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { href, type Path } from '@/lib/route'
@@ -30,23 +30,25 @@ const CONNECTION_TEXT: Record<Connection, string> = {
 
 /** Estado da comunicação com o solo: ponto + palavra, nunca só cor. Clicar sincroniza. */
 function ConnectionStatus({ state, syncing, detail, onSync }: { state: Connection; syncing?: boolean; detail?: string; onSync?: () => void }) {
+  const text = syncing ? 'Syncing' : CONNECTION_TEXT[state]
   return (
     <button
       type="button"
       onClick={onSync}
       disabled={syncing}
       title={`${detail ?? CONNECTION_TEXT[state]}. Select to sync now. Server sync does not send reports to Earth.`}
-      className="inline-flex h-9 items-center gap-2 rounded-full px-2 font-mono text-[13px] text-ink-soft hover:bg-surface-1 hover:text-ink disabled:opacity-70"
+      className="inline-flex h-full items-center gap-2 px-3 text-sm text-ink-soft hover:bg-surface-2 hover:text-ink disabled:opacity-70"
     >
       <span role="status" className="inline-flex items-center gap-2">
-      <span
-        aria-hidden
-        className={cn(
-          'size-2.5 rounded-full border-2',
-          state === 'offline' ? 'border-ink-soft' : 'border-interactive bg-interactive',
-        )}
-      />
-      {syncing ? 'Syncing' : CONNECTION_TEXT[state]}
+        <span
+          aria-hidden
+          className={cn(
+            'size-2.5 rounded-full border-2',
+            state === 'offline' ? 'border-ink-soft' : state === 'queued' ? 'border-sa-yellow bg-sa-yellow' : 'border-sa-yonder bg-sa-yonder',
+            syncing && 'animate-blink',
+          )}
+        />
+        <span className="sr-only xl:not-sr-only">{text}</span>
       </span>
     </button>
   )
@@ -74,6 +76,15 @@ export function SimulatedChip({ className, onClick }: { className?: string; onCl
   )
 }
 
+/** Quem está logado: no cabeçalho, avatar com iniciais, rank e pontos. Leva ao perfil. */
+export interface Account {
+  name: string
+  initials: string
+  rank: string
+  points: string
+  onLogout: () => void
+}
+
 export function AppShell({
   path,
   missionDay,
@@ -81,7 +92,7 @@ export function AppShell({
   syncing,
   syncDetail,
   onSync,
-  headerExtra,
+  account,
   companionOpen,
   companionLines = [],
   onToggleCompanion,
@@ -96,8 +107,7 @@ export function AppShell({
   syncing?: boolean
   syncDetail?: string
   onSync?: () => void
-  /** Chip de rank e pontos. */
-  headerExtra?: ReactNode
+  account: Account
   /** Painel do companheiro aberto? O painel é desenhado pelo App, aqui só o botão e o foco. */
   companionOpen?: boolean
   /** Frases da barra do companheiro. */
@@ -154,28 +164,70 @@ export function AppShell({
                         active === t.path ? 'bg-surface-2 text-ink' : 'text-ink-soft hover:bg-surface-1 hover:text-ink',
                       )}
                     >
-                      {t.label}
+                      <span className="lg:hidden">{t.short}</span>
+                      <span className="hidden lg:inline">{t.label}</span>
                     </a>
                   </li>
                 ))}
               </ul>
             </nav>
 
-            <div className="ml-auto flex min-w-0 items-center gap-3 md:gap-5">
-              <span className="hidden text-sm font-semibold text-ink sm:inline">
-                Day <span className="font-mono">{missionDay}</span>
-              </span>
-              {headerExtra && <span className="hidden items-center gap-2 lg:inline-flex">{headerExtra}</span>}
-              {path !== '/integrations' && <SimulatedChip onClick={onOpenDemoData} />}
-              <ConnectionStatus state={connection} syncing={syncing} detail={syncDetail} onSync={onSync} />
+            <div className="ml-auto flex min-w-0 items-center gap-2 md:gap-3">
+              {/* Missão: dia, sincronização e aviso de dado simulado num bloco só */}
+              <div className="flex h-10 items-stretch overflow-hidden rounded-full border border-hairline-strong bg-surface-1 text-sm">
+                <span className="flex items-center px-2.5 font-semibold whitespace-nowrap text-ink sm:px-3">
+                  Day&nbsp;<span className="font-mono">{missionDay}</span>
+                </span>
+                <span aria-hidden className="my-2.5 w-px bg-hairline-strong" />
+                <ConnectionStatus state={connection} syncing={syncing} detail={syncDetail} onSync={onSync} />
+                {path !== '/integrations' && (
+                  <>
+                <span aria-hidden className="my-2.5 w-px bg-hairline-strong md:hidden lg:block" />
+                <button
+                  type="button"
+                  onClick={onOpenDemoData}
+                  aria-haspopup="dialog"
+                  title="Demo data"
+                  className="flex items-center px-2 text-xs font-semibold whitespace-nowrap text-ink-soft hover:bg-surface-2 hover:text-ink sm:px-3 md:hidden lg:flex"
+                >
+                  <span className="rounded-full border border-dashed border-ink-soft/60 px-2 py-0.5">Simulated</span>
+                </button>
+                  </>
+                )}
+              </div>
+
+              {/* Conta: sair, seguido do perfil */}
+              <button
+                type="button"
+                onClick={account.onLogout}
+                title="Log out"
+                className="hidden h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-ink-soft hover:bg-surface-1 hover:text-ink md:inline-flex"
+              >
+                <LogOut className="size-4" aria-hidden />
+                <span className="hidden xl:inline">Log out</span>
+              </button>
+              <a
+                href={href('/profile')}
+                aria-current={path === '/profile' ? 'page' : undefined}
+                aria-label={`${account.name}, ${account.rank}, ${account.points} points. Open profile`}
+                className={cn(
+                  'flex h-10 items-center gap-2.5 rounded-full text-ink no-underline lg:border lg:border-hairline-strong lg:bg-surface-1 lg:py-1 lg:pr-4 lg:pl-1 lg:hover:bg-surface-2',
+                  path === '/profile' && 'lg:border-sa-rocket-600',
+                )}
+              >
+                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-sa-rocket-600 font-display text-sm font-black text-white lg:size-8">
+                  {account.initials}
+                </span>
+                <span aria-hidden className="hidden leading-tight lg:block">
+                  <span className="block text-sm font-semibold whitespace-nowrap">{account.rank}</span>
+                  <span className="block font-mono text-xs whitespace-nowrap text-ink-soft">{account.points} pts</span>
+                </span>
+              </a>
             </div>
           </div>
         </header>
 
         {escalate && <EscalateBanner key={escalate.date} alert={escalate} />}
-
-        {/* Abaixo de 1024 px: o chip de rank e "Log out" numa segunda linha */}
-        {headerExtra && <div className="mx-auto flex max-w-[1360px] items-center justify-end gap-2 px-4 pt-3 md:px-8 lg:hidden">{headerExtra}</div>}
 
         <main id="main" tabIndex={-1} className="outline-none">
           {children}

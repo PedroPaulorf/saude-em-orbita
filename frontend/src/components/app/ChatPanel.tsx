@@ -38,6 +38,7 @@ function Bubble({ m, onRetry, disabled }: { m: ChatMessage; onRetry: () => void;
       {!mine && <Avatar />}
       <div className={cn('flex max-w-[82%] flex-col gap-1', mine ? 'items-end' : 'items-start')}>
         <div
+          role={m.error ? 'alert' : undefined}
           className={cn(
             'rounded-2xl px-4 py-3 text-base leading-relaxed whitespace-pre-wrap',
             mine ? 'rounded-br-md bg-panel text-ink' : 'rounded-tl-md bg-surface-2 text-ink',
@@ -144,7 +145,7 @@ export function ChatPanel({ game, onClose }: { game: GameSummary; onClose: () =>
             </span>
           </h2>
           <p className="text-xs text-ink-soft sm:text-sm">
-            <Dotted text={DEMO_MODE ? 'Demo mode · ready-made replies' : 'Here to talk, any time'} />
+            <Dotted text={DEMO_MODE ? 'Demo mode · ready-made replies' : messages.at(-1)?.error ? 'AI temporarily unavailable · you can retry' : 'Here to talk, any time'} />
           </p>
         </div>
         {!empty && (

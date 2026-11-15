@@ -13,6 +13,11 @@ export const wearableMetrics = {
   skinTemperature: { unit: 'degC', min: -20, max: 60 },
   photopicLight: { unit: 'lux', min: 0, max: 200000 },
   melanopicLight: { unit: 'melanopic-lux', min: 0, max: 200000 },
+  stepCount: { unit: 'count', min: 0, max: 1000000 },
+  walkingRunningDistance: { unit: 'm', min: 0, max: 10000000 },
+  walkingSpeed: { unit: 'm/s', min: 0, max: 100 },
+  activeEnergy: { unit: 'kcal', min: 0, max: 100000 },
+  basalEnergy: { unit: 'kcal', min: 0, max: 100000 },
 } as const
 type Source = 'apple' | 'samsung' | 'garmin' | 'actlumus' | 'bluetooth'
 interface Sample { device: string; metric: keyof typeof wearableMetrics; value: number; unit: string; at: string; endAt?: string }
@@ -64,7 +69,7 @@ function normalize(input: ImportInput) {
 
 export function registerWearableRoutes(api: FastifyInstance, db: pg.Pool, crew: (request: FastifyRequest) => string) {
   api.post<{ Body: ImportInput }>('/me/wearables/imports', {
-    bodyLimit: 262144, schema: { body: wearableSchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    bodyLimit: 262144, schema: { body: wearableSchema }, config: { rateLimit: { max: 120, timeWindow: '1 minute', keyGenerator: (request: FastifyRequest) => crew(request) } },
   }, async (request, reply) => {
     const owner = crew(request), input = normalize(request.body)
     const digest = hash(input), client = await db.connect()

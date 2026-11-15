@@ -136,3 +136,20 @@ test('Samsung phone bridge keeps Health Connect provenance, restrictions and ret
   assert.equal(item.transport, 'android-health-connect'); assert.equal(item.protocol, 'samsung-health-heart-rate')
   assert.equal(item.verification, 'user-declared'); assert.equal(item.assessment, 'not-evaluated')
 })
+
+test('Apple activity readings keep their own units and never become clinical check-ups', async () => {
+  const samples = [
+    { ...sample, metric: 'stepCount', unit: 'count', value: 300 },
+    { ...sample, metric: 'walkingRunningDistance', unit: 'm', value: 2000 },
+    { ...sample, metric: 'walkingSpeed', unit: 'm/s', value: 1.2 },
+    { ...sample, metric: 'activeEnergy', unit: 'kcal', value: 40 },
+    { ...sample, metric: 'basalEnergy', unit: 'kcal', value: 65 },
+  ]
+  const result = await post(batch('apple-activity', { samples }))
+  assert.equal(result.statusCode, 201, result.body)
+  assert.equal(result.json().added, 5)
+  assert.equal((await post(batch('apple-activity', { samples }))).json().added, 5)
+  assert.equal((await post(batch('apple-activity-overlap', { samples }))).json().duplicates, 5)
+  assert.equal((await post(batch('wrong-activity-unit', { samples: [{ ...samples[0], unit: 'bpm' }] }))).statusCode, 400)
+  assert.equal((await db.query("SELECT count(*)::int AS n FROM checkins WHERE crew_id='crew-02'")).rows[0].n, 0)
+})

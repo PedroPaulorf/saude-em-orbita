@@ -1,12 +1,7 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
+import { login, logout } from './helpers'
 test.use({ actionTimeout: 15_000 })
 
-async function login(page: Page, username: string) {
-  await page.getByLabel('Username', { exact: true }).fill(username)
-  await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Log out', exact: true })).toBeVisible()
-}
 test('female calendar creates, persists, edits and deletes private records on desktop and mobile', async ({ page }) => {
   test.setTimeout(90_000)
   await page.route('**/DONKI-API/**', route => route.abort())
@@ -44,7 +39,7 @@ test('female calendar creates, persists, edits and deletes private records on de
   await page.getByRole('button', { name: 'Delete period starting 28 Feb 2024', exact: true }).click()
   await page.getByRole('button', { name: 'Confirm delete', exact: true }).click()
   await expect(page.getByText('No periods recorded in this month.')).toBeVisible()
-  await page.getByRole('button', { name: 'Log out', exact: true }).click()
+  await logout(page)
   await login(page, 'crew02')
   await expect(page.getByRole('link', { name: /Menstrual calendar Record period/ })).toHaveCount(0)
   await page.goto('/#/menstrual')

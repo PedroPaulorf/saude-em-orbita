@@ -1,13 +1,11 @@
 import { test, expect } from '@playwright/test'
-import { waitForSync } from './helpers'
+import { signIn, waitForSync } from './helpers'
 import { createRequire } from 'node:module'
 
 test('stats and report retain assessment evidence when the current personal baseline changes', async ({ page }) => {
   await page.route('**/DONKI-API/**', route => route.abort())
   await page.goto('/')
-  await page.getByLabel('Username', { exact: true }).fill('crew02')
-  await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await signIn(page, 'crew02')
   await waitForSync(page)
   const vitals = { sleep: 5.1, heartRate: 71, bloodPressure: 118, bloodPressureDiastolic: 76, temperature: 36.7 }
   const saved = await page.request.post('http://127.0.0.1:3003/api/v1/me/checkins', {
@@ -61,9 +59,7 @@ test('stats and report retain assessment evidence when the current personal base
   await expect(page.locator('#mission-scenarios')).toBeInViewport()
   // A different account cannot see the measurement or its archived assessment.
   await page.getByRole('button', { name: 'Log out', exact: true }).click()
-  await page.getByLabel('Username', { exact: true }).fill('crew03')
-  await page.getByLabel('Password', { exact: true }).fill('browser-fixture-password-29')
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await signIn(page, 'crew03')
   await waitForSync(page)
   await page.goto('/#/stats?region=head')
   await expect(page.getByText('No sleep measurements recorded.', { exact: true })).toBeVisible()

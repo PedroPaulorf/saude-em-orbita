@@ -17,6 +17,8 @@ O Health 7 é um protótipo com frontend React, backend Node/Fastify e PostgreSQ
 
 ## Executar
 
+Quer subir tudo com os mesmos tripulantes do projeto? Siga o [COMO-RODAR.md](COMO-RODAR.md).
+
 1. Configure o banco e inicie a API seguindo o [README do backend](backend/README.md).
 2. Inicie a interface seguindo o [README do frontend](frontend/README.md).
 

@@ -68,6 +68,13 @@ export async function createApp(options: Options) {
     sessions.set(request, found.rows[0].crew_id)
   }
   app.get('/health', async () => ({ status: 'ok', service: 'Health 7 API' }))
+  // Public profile picker for the sign-in screen: identity labels only, never health data.
+  app.get('/api/v1/auth/profiles', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async () => {
+    const { rows } = await db.query('SELECT username, profile FROM crew ORDER BY username LIMIT 24')
+    return { profiles: rows.map(({ username, profile }: Row) => ({
+      username, name: profile.nexus?.crewId ?? profile.displayName, role: profile.nexus?.role ?? null,
+      bodyModel: profile.bodyModel === 'female' ? 'female' : 'male' })) }
+  })
   app.post<{ Body: { username: string; password: string } }>('/api/v1/auth/login', {
     config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
     schema: { body: { type: 'object', additionalProperties: false, required: ['username', 'password'], properties: {

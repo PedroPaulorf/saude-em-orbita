@@ -14,6 +14,7 @@ npm run build      # gera dist/ (site estático para GitHub Pages ou Vercel)
 npm run lint
 npm run data:risks # regenera src/data/hrp-risks.json a partir das notas do cofre
 npm run data:donki # atualiza a cópia local do DONKI (src/data/donki-snapshot.json)
+npm run shots      # prints de todas as telas com a API simulada, sem banco (scripts/ux-shots.mjs)
 ```
 
 Chat do companheiro: copie `.env.example` para `.env.local` e preencha `VITE_N8N_CHAT_WEBHOOK_URL` (ver "Chat de IA" abaixo). Sem isso o chat roda em modo de demonstração.

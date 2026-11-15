@@ -14,6 +14,7 @@
 */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { scopedStorageKey } from '@/lib/active-profile'
+import { aiFailureMessage } from './ai-error'
 import { baselinePairs, eliminationToday, fmtDelta, fmtNum, type BaselinePair, type ParamId } from '@/lib/baselines'
 import { evaluate } from '@/lib/health'
 import { ESCALATE_PROTOCOL, signalText, topSignals, type MonitorResult, type MonitorState } from '@/lib/monitor'
@@ -543,16 +544,16 @@ export async function buildWithAi(input: RoadmapInput, base: Roadmap): Promise<R
       body: JSON.stringify({ mode: 'roadmap', instructions: AI_INSTRUCTIONS, context: aiContext(input) }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     })
-    if (!res.ok) return { ...base, fallback: `AI service answered ${res.status}` }
+    if (!res.ok) return { ...base, fallback: aiFailureMessage(new Error(`HTTP ${res.status}`)) }
     const text = await res.text()
     let body: unknown = text
     try { body = JSON.parse(text) } catch { /* texto puro */ }
     const ai = parseAiRoadmap(body)
-    if (!ai) return { ...base, fallback: 'AI answer was not a valid roadmap' }
+    if (!ai) return { ...base, fallback: aiFailureMessage(new Error('Invalid roadmap')) }
     // Sinais e "ground" continuam vindo das regras: a IA escreve os passos, não decide o que é sinalizado.
     return { ...base, ...ai, engine: 'ai', fallback: undefined, generatedAt: new Date().toISOString(), ground: base.ground || ai.phases.some((p) => p.steps.some((s) => s.kind === 'ground')) }
-  } catch {
-    return { ...base, fallback: 'AI service did not answer in time' }
+  } catch (error) {
+    return { ...base, fallback: aiFailureMessage(error) }
   }
 }
 
